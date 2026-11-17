@@ -401,3 +401,5 @@ Le catalogue proposé dans Découvrir est limité aux syllabes disposant d’au 
 Dans Découvrir, les cartes composées d’une seule lettre sont réservées à la rubrique Lettres. La liste Syllabes présente uniquement des cartes d’au moins deux lettres, chacune accompagnée d’au moins six mots. Ce choix organise la navigation enfant ; il ne constitue pas une définition linguistique de la syllabe.
 
 Après une réussite dans les exercices de fondation, la voix répète la cible (lettre, syllabe ou mot), attend 450 ms après la fin de sa prononciation, puis dit « Bravo ! ». Cela vaut aussi pour la dernière réponse de la mission. Une navigation, une nouvelle écoute ou la coupure du son annule la félicitation en attente. Les consignes de lancement et de réessai restent limitées à la cible seule.
+
+Dans les exercices de choix d’une syllabe, la réécoute utilise un grand pictogramme haut-parleur au côté du compagnon discret. L’ensemble forme un seul bouton, sans dépendre de la lecture d’un libellé et sans ajouter une seconde commande au même niveau.

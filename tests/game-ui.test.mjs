@@ -104,6 +104,10 @@ test('les jeux n’exposent plus de groupes et gardent un audio limité à la ci
 
 test('la syllabe est prononcée seule au lancement, après erreur et en réécoute',async()=>{
  const f=fixture(profileAt(2));await import('../app/app.js?simple-syllable-audio');f.click('resume');
+ assert.match(f.app.innerHTML,/exercise-syllable-repeat/);
+ assert.match(f.app.innerHTML,/Réécouter la syllabe/);
+ assert.match(f.app.innerHTML,/syllable-repeat-speaker/);
+ assert.equal((f.app.innerHTML.match(/data-action="repeat"/g)||[]).length,1);
  assert.equal(f.spoken.at(-1),'ma');f.click('answer',1);assert.equal(f.spoken.at(-1),'ma');
  f.click('repeat');assert.equal(f.spoken.at(-1),'ma');
  f.click('answer',0);assert.equal(f.spoken.at(-1),'ma');
