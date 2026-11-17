@@ -1,3 +1,4 @@
+import { createSyllableDemo, answerSyllableDemo, renderSyllableDemo } from './syllable-demo.js';
 import { exerciseSpeech } from './exercise-speech.js';
 import { createNavigationHistory } from './navigation.js';
 import { createDiscoveryState, renderDiscovery, discoveryGuidance, updateDiscovery } from './discovery.js';
@@ -70,7 +71,7 @@ function speak(text, after = null) {
 }
 function stopAudio() { speechRequest++; clearTimeout(praiseTimer); voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 function announce(text) { document.querySelector('#announcer').textContent = text; }
-function controls(focus = false, showParents = true) { return `<div class="controls">${focus ? '' : `<button class="tool help-voice" data-action="guide" aria-label="Écouter comment jouer">${icon('audio')}</button>`}<button class="tool" data-action="audio" aria-label="${profile.audio ? 'Couper le son' : 'Activer le son'}" aria-pressed="${!profile.audio}">${icon(profile.audio ? 'audio' : 'mute')}</button><button class="tool" data-action="settings" aria-label="Réglages">${icon('settings')}</button>${showParents ? '<a class="parents-top-link" href="/parents/">Pour les parents <span aria-hidden="true">↗</span></a>' : ''}</div>`; }
+function controls(focus = false, showParents = true) { return `<div class="controls">${focus ? '' : `<button class="tool help-voice" data-action="guide" aria-label="Écouter comment jouer">${icon('audio')}</button>`}<button class="tool" data-action="audio" aria-label="${profile.audio ? 'Couper le son' : 'Activer le son'}" aria-pressed="${!profile.audio}">${icon(profile.audio ? 'audio' : 'mute')}</button><button class="tool" data-action="settings" aria-label="Réglages">${icon('settings')}</button>${screen === 'mission' ? `<button class="tool" data-action="pause" aria-label="Faire une pause et garder ma place">${picture('pause')}</button>` : ''}${showParents ? '<a class="parents-top-link" href="/parents/">Pour les parents <span aria-hidden="true">↗</span></a>' : ''}</div>`; }
 function header(focus = false) { return `<header class="header child-header ${focus ? 'exercise-header' : ''}">${focus ? `<button class="tool exit-picture" data-action="${screen === 'discover' ? 'discovery-home' : 'quit'}" aria-label="${screen === 'discover' ? 'Revenir à l’accueil sans modifier ma mission' : 'Arrêter l’exercice et revenir à l’accueil'}">${picture('home')}</button>` : '<div class="brand-with-purpose"><a class="brand" href="#" data-action="home" aria-label="Accueil Azyl.it"><span class="brand-mark">ϟ</span>azyl<span class="brand-dot">.it</span></a><a class="parent-purpose" href="/parents/" aria-label="Pour les parents : notre démarche pour apprendre à lire">Apprendre à lire, chacun à son rythme.</a></div>'}${controls(focus || screen === 'difficulty' || (screen === 'onboarding' && step === 1), !focus)}</header>`; }
 function navigationGuidance() {
   if (screen === 'discover') return speak(discoveryGuidance(discoveryState));
@@ -301,6 +302,24 @@ function settings() {
   dialog.querySelector('#settings-voice').onclick = settingsGuidance;
   preview(); dialog.showModal(); settingsGuidance();
 }
+function showSyllableDemo(question) {
+  const dialog=document.querySelector('#confirm');
+  let state=createSyllableDemo(question);
+  const close=()=>{ stopAudio(); dialog.oncancel=null; dialog.close(); document.querySelector('[data-action="repeat"]')?.focus(); };
+  const draw=()=>{
+    dialog.innerHTML=renderSyllableDemo(state);
+    dialog.querySelector('#demo-close').onclick=close;
+    if(state.correct) dialog.querySelector('#demo-done').onclick=close;
+    dialog.querySelector('#demo-listen').onclick=()=>{ if(hasVoice){profile.audio=true;save();} speak(state.target); };
+    dialog.querySelectorAll('[data-demo-answer]').forEach(button=>button.onclick=()=>{
+      state=answerSyllableDemo(state,state.options[Number(button.dataset.demoAnswer)]);
+      draw(); speak(state.target,state.correct?'Bravo !':null);
+      dialog.querySelector(state.correct?'#demo-done':'[data-demo-answer]')?.focus();
+    });
+  };
+  stopAudio(); draw(); dialog.oncancel=event=>{event.preventDefault();close();}; dialog.showModal();
+  speak('Un exemple. Écoute, puis touche la carte montrée par la main. ' + state.target);
+}
 function historyDialog() {
   const dialog = document.querySelector('#confirm');
   const entries = profile.exerciseHistory.slice(-40).reverse();
@@ -355,7 +374,8 @@ const actions = {
   'start-selected'() { stopAudio(); clearTimeout(calibrationTimer); calibrationState = null; profile.session = null; profile.onboarded = true; save(); startMission(); },
   'next-foundation'() { if (suggestedStage === null) return; profile.level = 0; profile.beginnerStage = suggestedStage; save(); startMission(); },
   start: startMission,
-  resume() { if (!profile.session) return actions.home(); rememberGroup(profile,profile.session); save(); screen = 'mission'; feedback = null; render(true); readQuestion(); },
+  resume() { if (!profile.session) return actions.home(); rememberGroup(profile,profile.session); save(); screen = 'mission'; feedback = profile.session.results.length > profile.session.index ? {correct:true} : profile.session.attempts || profile.session.helpUsed ? {correct:false} : null; render(true); readQuestion(); },
+  pause() { stopAudio(); save(); actions.home(); speak('Touche le grand triangle pour continuer ton jeu.'); },
   audio() { profile.audio = !profile.audio; stopAudio(); save(); render(); announce(profile.audio ? 'Audio activé' : 'Audio coupé'); if (profile.audio) navigationGuidance(); },
   guide() { profile.audio = true; save(); render(); navigationGuidance(); },
   settings,
@@ -369,7 +389,11 @@ const actions = {
   'pair-target'(button) { interact('target', Number(button.dataset.card)); },
   'build-tile'(button) { interact('tile', Number(button.dataset.card)); },
   'build-undo'() { interact('undo'); },
-  help() { profile.session.helpUsed = true; feedback = { correct: false }; save(); render(); speak(currentQuestion().foundation ? exerciseSpeech(currentQuestion(),profile.session.interaction) : currentQuestion().hint); },
+  help() {
+    const question=currentQuestion(); profile.session.helpUsed = true; feedback = {correct:false}; save(); render();
+    if(question.type === 'simple_syllable' && !question.mechanic) return showSyllableDemo(question);
+    speak(question.foundation ? exerciseSpeech(question,profile.session.interaction) : question.hint);
+  },
   'feedback-audio'() { speak(currentQuestion().foundation ? exerciseSpeech(currentQuestion(),profile.session?.interaction) : feedback.correct ? 'Bravo ! Touche la grande flèche pour continuer.' : 'Tu as essayé, cherchons ensemble. ' + currentQuestion().hint); },
   next() { if (!feedback?.correct) return; stopAudio(); profile.session.index++; profile.session.attempts = 0; profile.session.helpUsed = false; profile.session.rejected = []; profile.session.interaction = null; feedback = null; save(); render(true); readQuestion(); },
   quit() {

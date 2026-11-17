@@ -2,6 +2,21 @@
 
 Document de travail du 17 novembre 2026. Référence : [objectifs initiaux](../description.md), [spécification actuelle](../spec.md), [audit de navigation](audit-navigation-enfant.md) et [couverture du catalogue](catalogue-syllabes.md).
 
+## Statut des phases — suivi du 17 novembre 2026
+
+| Phase | Statut | Avancée de cet incrément | Prochaine validation |
+| --- | --- | --- | --- |
+| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise conservant la place et tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
+| 2 · Socle pédagogique et audio | **En cours — préparation de la matrice** | 29 objectifs définis, rattachement des 180 exercices, lacunes visibles et fiche pilote | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
+| 3 · Premiers apprentissages | **À démarrer dans ce plan** | Fonctions existantes conservées ; aucune nouvelle mécanique de ce lot livrée ici | Après le premier sous-ensemble relu de la phase 2 |
+| 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
+| 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
+| 6 · Validation publique | **À démarrer** | Tests techniques maintenus ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
+
+Une phase n’est pas déclarée terminée tant que ses critères d’acceptation ne sont pas satisfaits. Chaque incrément technique terminé est enregistré et poussé sur GitHub ; les phases terminées feront également l’objet d’un push. Les tâches dépendant d’une validation professionnelle ou d’un essai utilisateur restent explicitement ouvertes.
+
+Documents de suivi : [recette du parcours pilote](recette-parcours-syllabes.md), [première matrice de compétences](matrice-competences.md). Recalcul du rattachement : `npm run audit:coverage`.
+
 ## Résultat visé
 
 Proposer un compagnon d’entraînement à la lecture, du premier repérage des lettres à la compréhension de textes, avec un parcours enfant stable et simple. Les compétences remplacent les classes scolaires dans l’interface. L’efficacité pédagogique et l’utilisabilité pour les publics concernés devront être évaluées ; elles ne sont pas établies par la présence de réglages ou par les tests logiciels.
@@ -34,6 +49,8 @@ Les valeurs de taille, nombre de choix et présentation sont des décisions prod
 
 ## Lot 1 — Autonomie et clarté, avant tout ajout de mécanique
 
+**Statut : en cours.** Démonstration du choix de syllabes accessible depuis l’aide, sans passage obligatoire, et pause/reprise implémentées. Tests automatisés ajoutés ; rendu navigateur et essais avec enfants à faire. La demande d’aide est conservée comme accompagnement ; la démonstration n’ajoute pas de résultat.
+
 Objectif : vérifier que l’enfant comprend quoi faire et peut retrouver son chemin.
 
 Travaux :
@@ -50,6 +67,8 @@ Livrables : parcours de référence illustrés, scénarios de tests navigateur e
 Acceptation : aucune impasse connue sur les scénarios ; reprise conservée ; commandes utilisables au clavier et sur petit écran. Pour les essais, suivre les demandes d’aide et les erreurs de navigation séparément des erreurs de lecture. Un lancement en deux actions au maximum depuis l’accueil est une cible de conception, pas une condition imposée à l’enfant.
 
 ## Lot 2 — Fiabiliser le socle pédagogique et l’audio
+
+**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs, 180 exercices rattachés et fiche pilote créées. Aucune relecture professionnelle ni production d’audios validés réalisée.
 
 Objectif : rendre les contenus justes et cohérents avant de les multiplier.
 
@@ -68,6 +87,8 @@ Livrables : matrice de couverture, schéma de contenu, premier corpus révisé e
 Acceptation : chaque contenu pilote a un objectif, un prérequis, une correction et une prononciation relus ; aucun son pédagogique n’est remplacé par le nom d’une lettre à son insu. Les anciens profils et exercices sauvegardés restent compatibles. Le rendu audio est vérifié sur les appareils cibles, au-delà des tests de code.
 
 ## Lot 3 — Compléter les premiers apprentissages
+
+**Statut : à démarrer dans ce plan.**
 
 Objectif : aller au-delà du repérage visuel et des syllabes simples.
 
@@ -88,6 +109,8 @@ Acceptation : chaque mécanique possède une démonstration courte, un usage au 
 
 ## Lot 4 — Développer les parcours avancés
 
+**Statut : à démarrer dans ce plan.**
+
 Objectif : couvrir les axes demandés sans multiplier les types d’écrans.
 
 | Axe initial | À développer | Simplicité conservée |
@@ -105,6 +128,8 @@ Acceptation : chaque axe est relié à la matrice, avec plusieurs familles d’e
 
 ## Lot 5 — Personnaliser par besoins, sans compliquer le choix enfant
 
+**Statut : à démarrer dans ce plan.**
+
 Objectif : adapter l’expérience avec peu de commandes visibles.
 
 - Proposer côté adulte des réglages indépendants : nombre de choix, longueur des consignes, taille/espacement, mouvement, aide de lecture et quantité de contenu. Éviter un bouton générique « mode handicap » ou un profil rigide par diagnostic.
@@ -118,6 +143,8 @@ Objectif : adapter l’expérience avec peu de commandes visibles.
 Acceptation : les réglages persistent, se combinent sans casser les écrans et ne créent pas de réponses involontaires. Le prototype reste utilisable avec ses paramètres par défaut. Les critères de progression sont documentés et relus avant tout usage adaptatif.
 
 ## Lot 6 — Validation de la version publique et suivi adulte
+
+**Statut : à démarrer dans ce plan.**
 
 Objectif : une version testée et un positionnement honnête.
 
@@ -198,3 +225,8 @@ Les recommandations de repères familiers et cohérents s’appuient sur le [W3C
 Le choix de structurer les contenus par correspondances et prérequis est éclairé par le [CSEN — faciliter l’apprentissage de la lecture et de l’écriture](https://www.csen.education.gouv.fr/publications/faciliter-apprentissage-lecture-ecriture/). La distinction entre décodage et compréhension est explicitée par le [CSEN — enseigner la lecture](https://www.csen.education.gouv.fr/enseigner-la-lecture-pourquoi-et-comment-ca-marche/). Ces références n’attestent pas la validation de nos contenus.
 
 Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen.education.gouv.fr/evaluer-pour-mieux-aider/), qui relie l’identification des besoins à l’ajustement de l’intervention pédagogique. Il ne s’agit pas d’une validation d’Azyl.it.
+
+## Journal des incréments
+
+- 17 novembre 2026 — Phase 1 : démonstration facultative de la sélection de syllabes via l’ampoule ; exemple distinct de la question, sans résultat attribué. Ajout d’une pause qui conserve la place, tandis que la maison continue d’arrêter. Tests de l’aide, de la reprise après rechargement et de l’absence de double résultat. Vérification visuelle et observations externes encore à réaliser.
+- 17 novembre 2026 — Phase 2 : première matrice de compétences et prérequis, rapport reproductible de couverture et fiche pilote. Les tâches guidées sont distinguées de la lecture autonome ; les objectifs sans exercices restent visibles. Statuts professionnels et utilisateurs : en attente pour tous les objectifs.

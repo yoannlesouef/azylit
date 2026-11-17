@@ -6,16 +6,18 @@ import { freshProfile, STORAGE_KEY } from '../app/state.js';
 function fixture(profile) {
   const memory = new Map([[STORAGE_KEY, JSON.stringify(profile)]]), listeners = {}, spoken = [], utterances = [];
   const app = { innerHTML:'', addEventListener(name, handler) { listeners[name] = handler; } };
+  let dialogOpen=false;const dialogButtons=new Map();
+  const dialog={innerHTML:'',showModal(){dialogOpen=true;},close(){dialogOpen=false;},querySelector(selector){if(!dialogButtons.has(selector))dialogButtons.set(selector,{focus(){}});return dialogButtons.get(selector);},querySelectorAll(selector){if(selector==='[data-demo-answer]')return [...dialog.innerHTML.matchAll(/data-demo-answer="([0-9]+)"/g)].map(match=>{const button={dataset:{demoAnswer:match[1]},focus(){}};dialogButtons.set('answer-'+match[1],button);return button;});return [];}};
   globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
   globalThis.speechSynthesis = { cancel() {}, getVoices:() => [{ lang:'fr-FR' }], speak(utterance) { spoken.push(utterance.text); utterances.push(utterance); } };
   globalThis.window = { speechSynthesis, SpeechSynthesisUtterance };
   globalThis.localStorage = { getItem:key => memory.get(key), setItem:(key,value) => memory.set(key,value) };
   globalThis.document = {
     documentElement:{ style:{ setProperty() {} } }, body:{ dataset:{} }, addEventListener() {},
-    querySelector(selector) { if (selector === '#app') return app; if (selector === 'dialog[open]') return null; return { focus() {} }; }
+    querySelector(selector) { if (selector === '#app') return app; if (selector === '#confirm') return dialog; if (selector === 'dialog[open]') return dialogOpen?dialog:null; return { focus() {} }; }
   };
   return {
-    app, spoken, utterances, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
+    app, spoken, utterances, dialog, demoClick(selector){dialogButtons.get(selector)?.onclick();}, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
     click(action, card) { listeners.click({ target:{ closest:() => ({ dataset:{ action, card:String(card), answer:String(card), exerciseId:String(card), groupId:String(card) } }) }, preventDefault() {} }); }
   };
 }
@@ -145,4 +147,21 @@ test('le grand haut-parleur est commun aux sons, syllabes et mots à assembler',
   f.click('audio');assert.equal(f.saved().audio,false);
   f.click('repeat');assert.equal(f.saved().audio,true);
  }
+});
+
+test('pause et reprise conservent la place et l’aide sans attribuer de résultat',async()=>{
+ const f=fixture(profileAt(2));await import('../app/app.js?pause-and-demo');f.click('resume');
+ assert.match(f.app.innerHTML,/data-action="pause"/);
+ f.click('help');assert.match(f.dialog.innerHTML,/Un exemple/);
+ const target=f.dialog.innerHTML.match(/demo-target[^>]*[^]*?<span>([^<]+)<\/span>/)[1];
+ assert.notEqual(target,'ma');assert.notEqual(target,'mi');
+ f.demoClick('answer-0');assert.match(f.dialog.innerHTML,/demo-done/);
+ f.demoClick('#demo-done');
+ const session=f.saved().session;assert.equal(session.results.length,0);assert.equal(session.attempts,0);assert.equal(session.helpUsed,true);
+ f.click('pause');assert.match(f.app.innerHTML,/Continuer/);assert.deepEqual(f.saved().session,session);
+ await import('../app/app.js?pause-and-demo-reloaded');f.click('resume');
+ assert.equal(f.saved().session.index,0);assert.equal(f.saved().session.helpUsed,true);
+ f.click('answer',0);assert.equal(f.saved().session.results[0],'assisted');
+ f.click('pause');f.click('resume');assert.match(f.app.innerHTML,/data-action="next"/);
+ assert.ok(!f.app.innerHTML.includes('data-action="answer"'));
 });

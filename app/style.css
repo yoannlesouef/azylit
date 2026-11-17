@@ -2193,3 +2193,14 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 
 .exercise-stimulus.has-model.clear-audio-stimulus { grid-template-columns: minmax(0,1fr); gap: 18px; }
 .exercise-stimulus.has-model.clear-audio-stimulus .exercise-syllable-repeat { justify-self: center; }
+
+.syllable-demo { max-width: 460px; margin: auto; text-align: center; }
+.demo-choices { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; margin: 24px auto; }
+.demo-card { position: relative; display: grid; place-items: center; min-height: 110px; padding: 18px; border: 2px solid var(--line); border-radius: 24px; background: #fffefa; font-family: var(--reading-font,sans-serif); font-size: 34px; }
+.demo-card.demo-target { border: 3px solid var(--accent); background: var(--pale); }
+.demo-finger { position: absolute; right: 10px; bottom: 0; font-size: 34px; }
+.demo-card.rejected { opacity: .35; }
+.demo-success { display: flex; justify-content: center; gap: 24px; margin: 24px auto; color: var(--accent); font-size: 44px; }
+@media(max-width:360px) {
+  body[data-screen="mission"] .exercise-header { padding-inline: 8px; gap: 16px; }
+}
