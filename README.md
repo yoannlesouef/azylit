@@ -6,7 +6,7 @@ Projet d'application web éducative pour aider les enfants à apprendre à lire 
 
 ## État du projet
 
-Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. Le catalogue contient 112 questions de démonstration réparties entre les quatre parcours.
+Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. Le catalogue contient 156 questions de démonstration réparties entre les quatre parcours.
 
 ## Lancer le projet
 
@@ -73,7 +73,7 @@ Références : [déploiement HTML statique](https://developers.cloudflare.com/pa
 
 - La progression reste dans le navigateur utilisé, sans synchronisation distante ni code avatar.
 - La voix privilégie les voix françaises naturelles ou améliorées disponibles dans le navigateur, à un débit proche de la conversation. Leur disponibilité et leur qualité dépendent de l’appareil ; les fichiers audio validés et les phonèmes isolés restent à produire. Une alternative sans écoute est proposée si la voix est indisponible ou coupée.
-- Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices parmi seize au même palier, en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
+- Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices au même palier (soixante mots en Assemblage, seize exercices aux autres paliers), en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
 - Le positionnement propose un parcours indicatif selon une règle de démonstration non étalonnée.
 - Les exercices combinent choix de réponse, association de lettres par paires, fusion de lettres et assemblage de syllabes par clics successifs. La lecture flash, la fluence chronométrée et les interactions de segmentation et de remise en ordre décrites dans la spécification restent à implémenter.
 - Les réglages proposent les polices système, la taille, les espacements, l'interligne, la coloration des syllabes renseignées et un guide de lecture. Les polices Andika, Lexend et OpenDyslexic ainsi que les aides sur les lettres muettes et les graphèmes complexes restent à intégrer.
@@ -174,7 +174,7 @@ Les assemblages gardent leur début correct après une erreur. Une flèche de re
 
 ## Missions variées et historique local
 
-Le catalogue contient 112 activités, soit 16 pour chacune des sept positions de complexité. Une mission garde huit exercices et la répartition des mécaniques du palier choisi. Les exercices non réalisés sont prioritaires, puis les moins revus ; le dernier plan proposé est aussi pris en compte si une mission a été abandonnée. Une fois les exemples parcourus, ils reviennent en révision, avec un ordre et des positions de réponses ou de cartes variés.
+Le catalogue contient 156 activités, soit 60 au niveau Assemblage et 16 pour chacune des six autres positions. Une mission garde huit exercices et la répartition des mécaniques du palier choisi. Les exercices non réalisés sont prioritaires, puis les moins revus ; le dernier plan proposé est aussi pris en compte si une mission a été abandonnée. Une fois les exemples parcourus, ils reviennent en révision, avec un ordre et des positions de réponses ou de cartes variés.
 
 Le plan et ses mélanges sont sauvegardés avant de jouer : reprendre une mission conserve exactement les mêmes exercices, réponses et cartes. Une nouvelle mission fait une nouvelle sélection. La complexité ne change pas automatiquement.
 

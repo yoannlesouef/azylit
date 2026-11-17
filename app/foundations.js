@@ -90,3 +90,28 @@ for (const [index, parts] of [['po','lo'],['lo','to'],['po','li'],['ra','vi'],['
   const word = parts.join('');
   beginnerBanks[3].push({ id:`f3-${index + 9}`, type:'syllable_assembly', instruction:'Écoute le mot. Touche les syllabes dans l’ordre pour le construire.', text:'', options:[parts[1],parts[0]], answer:0, listen:word, hint:parts.join(', puis ') + '. Ensemble : ' + word + '.', modelParts:[...parts], parts:[...parts], tiles:[...parts].reverse(), unit:'syllables', mechanic:'build', visualAids:false, foundation:true });
 }
+
+// Keep f3-1…f3-16 stable so existing saved missions still resume exactly.
+// Two explicitly annotated spoken syllables, two cards and the same visible model.
+const extraAssemblyWords = [
+  ['bo','bo'], ['do','do'], ['tu','tu'], ['mé','mé'], ['pé','pé'],
+  ['ma','mie'], ['a','mie'], ['sa','lut'], ['me','nu'], ['te','nu'],
+  ['ve','nu'], ['ge','lé'], ['le','vé'], ['la','vé'], ['rô','ti'],
+  ['rou','lé'], ['do','ré'], ['ti','ré'], ['no','té'], ['vo','té'],
+  ['zé','ro'], ['ké','pi'], ['ki','wi'], ['ju','do'], ['ca','fé'],
+  ['dé','fi'], ['é','té'], ['é','pi'], ['é','pée'], ['a','vis'],
+  ['dé','jà'], ['bâ','ti'], ['pa','ri'], ['pa','ré'], ['ta','pi'],
+  ['ma','ri'], ['râ','pé'], ['ri','dé'], ['fa','né'], ['fu','mé'],
+  ['pa','vé'], ['tê','tu'], ['ta','tou'], ['hi','bou']
+];
+for (const [index,parts] of extraAssemblyWords.entries()) {
+  const word = parts.join('');
+  beginnerBanks[3].push({
+    id:`f3-${index + 17}`, type:'syllable_assembly',
+    instruction:'Écoute le mot. Touche les syllabes dans l’ordre pour le construire.',
+    text:'', options:[parts[1],parts[0]], answer:0, listen:word,
+    hint:parts.join(', puis ') + '. Ensemble : ' + word + '.',
+    modelParts:[...parts], parts:[...parts], tiles:[...parts].reverse(),
+    unit:'syllables', mechanic:'build', visualAids:false, foundation:true
+  });
+}

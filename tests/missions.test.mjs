@@ -129,3 +129,24 @@ test('les groupes complets peuvent être récupérés depuis l’ancien historiq
   assert.equal(restored.missionGroups[0].playCount,1);
   assert.equal(parseProfile(JSON.stringify(restored)).missionGroups.length,1);
 });
+
+
+test('Assemblage contient 60 mots uniques de deux syllabes et les parcourt avant de réviser',()=>{
+ const pool=questionsFor(0,3);
+ assert.equal(pool.length,60);assert.equal(new Set(pool.map(q=>q.listen)).size,60);
+ for(const question of pool){
+  assert.equal(question.parts.length,2);assert.equal(question.tiles.length,2);
+  assert.equal(question.parts.join(''),question.listen);
+  assert.deepEqual(question.modelParts,question.parts);assert.equal(question.mechanic,'build');
+ }
+ const profile=freshProfile();profile.beginnerStage=3;const seen=new Set();const random=randomSource();
+ for(let round=0;round<8;round++){
+  profile.session=createMission(profile,random);
+  const ids=profile.session.questionIds;
+  assert.equal(new Set(ids).size,8);
+  const fresh=ids.filter(id=>!seen.has(id));
+  assert.equal(fresh.length,round<7?8:4);
+  ids.forEach(id=>seen.add(id));finish(profile);
+ }
+ assert.equal(seen.size,60);assert.equal(profile.beginnerStage,3);
+});
