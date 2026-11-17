@@ -26,6 +26,42 @@ npm run preview  # Prévisualisation du site construit
 
 Le répertoire `dist/` peut être hébergé sur un service de fichiers statiques. Le serveur de développement reste réservé à l'usage local.
 
+## Déployer sur Cloudflare Pages
+
+Le code actuel peut être déployé directement sur Cloudflare Pages. La construction produit les fichiers statiques des jeux, les cinq pages parents, le sitemap, `robots.txt` et une page `404.html`. Aucun serveur Node.js en production, Pages Function ou secret d’API n’est nécessaire.
+
+Dans Cloudflare, créer un projet **Pages** connecté à GitHub, puis utiliser les paramètres suivants :
+
+| Paramètre | Valeur |
+| --- | --- |
+| Dépôt GitHub | `yoannlesouef/azylit` |
+| Branche de production | `main` |
+| Framework preset | `None` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | Laisser vide : racine du dépôt |
+| Variable de production `SITE_URL` | `https://www.azyl.it` |
+| Variable de production `INDEXABLE` | `true` (valeur par défaut) |
+
+Node.js sert uniquement à construire le site. Utiliser une version LTS maintenue compatible avec le projet, par exemple Node.js 22. Ne pas utiliser `npm run dev` comme commande de construction et ne pas publier directement le dossier `app/` : les pages parents et les métadonnées sont générées dans `dist/`.
+
+Après le premier déploiement, ouvrir l’adresse `<nom-du-projet>.pages.dev` fournie par Cloudflare et vérifier l’accueil, `/parents/`, les jeux et l’écoute des cartes.
+
+### Associer `www.azyl.it`
+
+1. Dans le projet Pages, ouvrir **Custom domains → Set up a domain**.
+2. Ajouter `www.azyl.it`, puis suivre les instructions DNS de Cloudflare.
+3. Si le DNS est géré ailleurs, créer un enregistrement **CNAME** nommé `www` vers `<nom-du-projet>.pages.dev`, en remplaçant le nom du projet par celui réellement attribué. Enregistrer d’abord le domaine dans Pages ; un CNAME seul ne suffit pas.
+4. Attendre que le domaine soit actif et que le certificat HTTPS soit prêt, puis vérifier `https://www.azyl.it` et `https://www.azyl.it/parents/`.
+
+Pour proposer aussi `azyl.it`, configurer une redirection permanente vers `https://www.azyl.it`, en conservant le chemin et les paramètres. L’ajout du domaine racine à Pages nécessite que la zone DNS soit gérée par Cloudflare ; le sous-domaine `www` peut utiliser un DNS externe.
+
+Les URL canoniques et le sitemap utilisent déjà `https://www.azyl.it`. Pour les déploiements de prévisualisation, définir `INDEXABLE=false` dans l’environnement **Preview** ; conserver l’origine canonique de production. Les prochains pushs sur `main` déclenchent un nouveau déploiement lorsque l’intégration Git est activée.
+
+La progression reste propre au navigateur et à l’origine du site : les données enregistrées sur localhost, sur `pages.dev` ou sur `azyl.it` ne sont pas automatiquement transférées à `www.azyl.it`. Les voix restent celles disponibles sur l’appareil de l’utilisateur.
+
+Références : [déploiement HTML statique](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/), [domaines personnalisés](https://developers.cloudflare.com/pages/configuration/custom-domains/), [gestion des routes et des erreurs 404](https://developers.cloudflare.com/pages/configuration/serving-pages/).
+
 ## Structure
 
 - `app/` : interface, styles, contenus et gestion du profil local.
