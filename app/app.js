@@ -1,6 +1,7 @@
+import { exerciseSpeech } from './exercise-speech.js';
 import { createNavigationHistory } from './navigation.js';
 import { createDiscoveryState, renderDiscovery, discoveryGuidance, updateDiscovery } from './discovery.js';
-import { createMission, createReplayMission, rememberGroup, missionQuestion, recordExercise, HISTORY_LIMIT } from './missions.js';
+import { createMission, rememberGroup, missionQuestion, recordExercise, HISTORY_LIMIT } from './missions.js';
 import { interactionFor, applyInteraction, completedText } from './interactions.js';
 import { frenchUtterance } from './speech.js';
 import { beginnerStages } from './foundations.js';
@@ -14,12 +15,11 @@ const hasVoice = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in wi
 let profile;
 let storageOK = true;
 try { profile = parseProfile(localStorage.getItem(STORAGE_KEY)); } catch { profile = freshProfile(); storageOK = false; }
-let groupPage = 0, olderGroups = false;
-let screen = 'home', step = 0, feedback = null, calibrationState = null, calibrationTimer, voiceWaitCleanup, lastResults = [], suggestedStage = null, difficultyReturn = null, groupsReturn = null, selectedGroupId = null;
+let screen = 'home', step = 0, feedback = null, calibrationState = null, calibrationTimer, voiceWaitCleanup, lastResults = [], suggestedStage = null, difficultyReturn = null;
 const navigation = createNavigationHistory(window, snapshot => {
   stopAudio(); clearTimeout(calibrationTimer);
   document.querySelector('dialog[open]')?.close();
-  ({screen,step,discoveryState,difficultyReturn,groupsReturn,selectedGroupId,groupPage,olderGroups} = snapshot);
+  ({screen,step,discoveryState,difficultyReturn} = snapshot);
   feedback = null;
   if (screen === 'mission') {
     if (!profile.session) screen = 'home';
@@ -63,7 +63,6 @@ function header(focus = false) { return `<header class="header child-header ${fo
 function navigationGuidance() {
   if (screen === 'discover') return speak(discoveryGuidance(discoveryState));
   if (screen === 'mission' || screen === 'calibrate') return actions.repeat();
-  if (screen === 'groups') return speak('Voici tes groupes de jeux. Touche le plus pour un nouveau groupe, ou une carte pour rejouer. Le triangle commence les huit petits jeux. La flèche à gauche permet de revenir.');
   if (screen === 'difficulty' || (screen === 'onboarding' && step === 1)) return speak('Choisis ton niveau. ' + complexityLabel() + '. ' + difficultyDescription() + ' Pour revenir, touche la flèche vers la gauche. Touche le moins pour plus facile. Le plus pour plus difficile. Pour revenir à l’accueil, touche la maison en bas.');
   if (screen === 'onboarding') return speak(step === 0 ? 'Choisis ton compagnon en touchant son image. Puis touche la maison pour revenir à l’accueil.' : 'On commence avec une seule lettre. Touche le grand bouton pour jouer. Pour choisir un autre chemin, touche son image.');
   if (screen === 'celebration') return actions['celebration-audio']();
@@ -82,9 +81,9 @@ function render(focus = false) {
   document.documentElement.style.setProperty('--pale', hero().pale);
   for (const [key, value] of Object.entries({ 'reading-font': profile.settings.font, 'reading-size': profile.settings.size + 'px', 'reading-spacing': profile.settings.spacing + 'em', 'reading-line': profile.settings.line })) document.documentElement.style.setProperty('--' + key, value);
   document.body.dataset.screen = screen;
-  const pages = { home, onboarding, mission, celebration, calibrate, calibrationResult, difficulty, groups, discover:discoveryView };
+  const pages = { home, onboarding, mission, celebration, calibrate, calibrationResult, difficulty, discover:discoveryView };
   app.innerHTML = header(screen === 'mission' || screen === 'calibrate' || screen === 'discover') + pages[screen]() + (!storageOK ? '<div class="storage-notice" role="status">La sauvegarde sur cet appareil est indisponible. Ta progression reste accessible pendant cette visite.</div>' : '');
-  navigation.sync(screen + (screen === 'discover' ? ':' + discoveryState.page : ''), {screen,step,discoveryState,difficultyReturn,groupsReturn,selectedGroupId,groupPage,olderGroups});
+  navigation.sync(screen + (screen === 'discover' ? ':' + discoveryState.page : ''), {screen,step,discoveryState,difficultyReturn});
   if (focus && !document.querySelector('dialog[open]')) document.querySelector('#main')?.focus();
 }
 function home() {
@@ -132,19 +131,7 @@ function difficultyPreview() {
 }
 function difficulty() {
   const position = difficultyPosition(profile);
-  return `<main id="main" tabindex="-1" class="difficulty-screen"><div class="complexity-heading"><button class="complexity-back" data-action="back-complexity" aria-label="Revenir à l’écran précédent"><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M85 50H19m24-24L17 50l26 26"/></svg></button><h1>Choisis ton niveau</h1><span aria-hidden="true"></span></div><p class="complexity-current" id="difficulty-state" role="status">${complexityLabel()}</p><div class="difficulty-picker"><button class="difficulty-step" data-action="easier" aria-label="Plus facile" ${position === 0 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50"/></svg><span>Plus facile</span></button><button class="difficulty-preview" data-action="difficulty-voice" aria-label="Écouter ce jeu" aria-describedby="difficulty-state"><span class="preview-art" aria-hidden="true">${difficultyPreview()}</span><span class="preview-speaker" aria-hidden="true">${icon('audio')}</span></button><button class="difficulty-step" data-action="harder" aria-label="Plus difficile" ${position === 6 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50M50 25v50"/></svg><span>Plus difficile</span></button></div><div class="difficulty-dots" aria-hidden="true">${Array.from({length:7},(_,i) => `<span class="${position === i ? 'selected' : ''}"></span>`).join('')}</div><span class="sr-only">${difficultyDescription()}</span><button class="choose-activity-link" data-action="groups" aria-label="Choisir ou rejouer un groupe de huit jeux">${picture('stories')}<span>Choisir un groupe</span></button><button class="next-picture" data-action="confirm-settings" aria-label="Valider mon niveau et revenir à l’accueil">${picture('home')}</button></main>`;
-}
-function groupNumber(id) { return id?.startsWith('g-') ? id.slice(2) : '—'; }
-function groups() {
-  const available = profile.missionGroups.filter(group => group.level === profile.level && (group.level !== 0 || group.beginnerStage === profile.beginnerStage));
-  if (selectedGroupId !== 'new' && !available.some(group => group.id === selectedGroupId)) selectedGroupId = 'new';
-  const recent = [...available].reverse();
-  const currentId = profile.session?.groupId;
-  const currentIndex = recent.findIndex(group => group.id === currentId);
-  if (currentIndex > 0) recent.unshift(recent.splice(currentIndex,1)[0]);
-  const visible = olderGroups ? recent.slice(5+groupPage*6,11+groupPage*6) : recent.slice(0,5);
-  const olderPages = Math.ceil(Math.max(0,recent.length-5)/6);
-  return `<main id="main" tabindex="-1" class="activity-library group-library"><div class="complexity-heading"><button class="complexity-back" data-action="back-groups" aria-label="Revenir à l’écran précédent"><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M85 50H19m24-24L17 50l26 26"/></svg></button><h1>Groupes de jeux</h1><span aria-hidden="true"></span></div><p class="complexity-current">${complexityLabel()}</p><div class="activity-grid"><button class="activity-card new-group ${selectedGroupId === 'new' ? 'selected' : ''}" data-action="select-group" data-group-id="new" aria-label="Choisir un nouveau groupe de huit jeux" aria-pressed="${selectedGroupId === 'new'}"><span class="new-group-plus" aria-hidden="true">+</span><span>Nouveau groupe</span></button>${visible.map(group => `<button class="activity-card ${selectedGroupId === group.id ? 'selected' : ''}" data-action="select-group" data-group-id="${group.id}" aria-label="Groupe ${groupNumber(group.id)}, huit jeux${group.completedAt ? ', déjà terminé' : ', à terminer'}" aria-pressed="${selectedGroupId === group.id}"><span class="group-card-number">${groupNumber(group.id)}</span><span class="group-eight-dots" aria-hidden="true">${Array.from({length:8},()=>'<i></i>').join('')}</span>${group.completedAt ? '<span class="activity-seen" aria-hidden="true">✓</span>' : ''}</button>`).join('')}</div>${olderGroups ? `<nav class="syllable-focus-pager" aria-label="Groupes anciens"><button class="syllable-page-arrow" data-action="group-page" data-direction="previous" aria-label="Groupes précédents" ${groupPage === 0 ? 'disabled' : ''}>←</button><span>${groupPage+1} / ${olderPages}</span><button class="syllable-page-arrow" data-action="group-page" data-direction="next" aria-label="Groupes suivants" ${groupPage >= olderPages-1 ? 'disabled' : ''}>→</button></nav>` : ''}${recent.length > 5 ? `<button class="choose-activity-link" data-action="toggle-older-groups">${olderGroups ? 'Groupes récents' : 'Groupes plus anciens'}</button>` : ''}<div class="activity-launch"><span role="status">${selectedGroupId === 'new' ? 'Nouveau groupe' : 'Groupe ' + groupNumber(selectedGroupId)}</span>${playButton('play-group','')}</div></main>`;
+  return `<main id="main" tabindex="-1" class="difficulty-screen"><div class="complexity-heading"><button class="complexity-back" data-action="back-complexity" aria-label="Revenir à l’écran précédent"><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M85 50H19m24-24L17 50l26 26"/></svg></button><h1>Choisis ton niveau</h1><span aria-hidden="true"></span></div><p class="complexity-current" id="difficulty-state" role="status">${complexityLabel()}</p><div class="difficulty-picker"><button class="difficulty-step" data-action="easier" aria-label="Plus facile" ${position === 0 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50"/></svg><span>Plus facile</span></button><button class="difficulty-preview" data-action="difficulty-voice" aria-label="Écouter ce jeu" aria-describedby="difficulty-state"><span class="preview-art" aria-hidden="true">${difficultyPreview()}</span><span class="preview-speaker" aria-hidden="true">${icon('audio')}</span></button><button class="difficulty-step" data-action="harder" aria-label="Plus difficile" ${position === 6 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50M50 25v50"/></svg><span>Plus difficile</span></button></div><div class="difficulty-dots" aria-hidden="true">${Array.from({length:7},(_,i) => `<span class="${position === i ? 'selected' : ''}"></span>`).join('')}</div><span class="sr-only">${difficultyDescription()}</span><button class="next-picture" data-action="confirm-settings" aria-label="Valider mon niveau et revenir à l’accueil">${picture('home')}</button></main>`;
 }
 function adjustDifficulty(direction) {
   const previous = difficultyPosition(profile);
@@ -154,7 +141,7 @@ function adjustDifficulty(direction) {
   const position = difficultyPosition(profile);
   const focusAction = direction > 0 ? position === 6 ? 'easier' : 'harder' : position === 0 ? 'harder' : 'easier';
   document.querySelector(`[data-action="${focusAction}"]`)?.focus();
-  speak(complexityLabel() + '. ' + difficultyDescription() + (profile.session && (profile.session.level !== profile.level || (profile.level === 0 && profile.session.beginnerStage !== profile.beginnerStage)) ? ' Avec ce niveau, tu commenceras un nouveau groupe.' : ''));
+  speak(complexityLabel() + '. ' + difficultyDescription() + (profile.session && (profile.session.level !== profile.level || (profile.level === 0 && profile.session.beginnerStage !== profile.beginnerStage)) ? ' Avec ce niveau, tu commenceras un nouveau jeu.' : ''));
 }
 function currentQuestion() {
   if (screen === 'calibrate') return calibration[calibrationState.index];
@@ -178,10 +165,10 @@ function exerciseContent(question, index, isCalibration = false) {
   const blocked = !!audioRequired && (!profile.audio || !hasVoice);
   const guided = !isCalibration && (profile.session.attempts >= 2 || profile.session.helpUsed);
   const total = isCalibration ? 5 : 8;
-  const progress = `${isCalibration ? '' : `<div class="exercise-activity-line"><button class="activity-number-link" data-action="groups" aria-label="Groupe ${groupNumber(profile.session.groupId)}, choisir un autre groupe">${icon('book')}<span>Groupe ${groupNumber(profile.session.groupId)}</span></button></div>`}<div class="stars exercise-progress" aria-label="${index + (solved ? 1 : 0)} étapes terminées sur ${total}">${Array.from({ length:total }, (_, i) => `<span class="${i < index || (solved && i === index) ? 'done' : i === index ? 'active' : ''}" aria-hidden="true">★</span>`).join('')}</div>`;
+  const progress = `<div class="stars exercise-progress" aria-label="${index + (solved ? 1 : 0)} étapes terminées sur ${total}">${Array.from({ length:total }, (_, i) => `<span class="${i < index || (solved && i === index) ? 'done' : i === index ? 'active' : ''}" aria-hidden="true">★</span>`).join('')}</div>`;
 
   if (solved) {
-    return `${progress.replace(/<button class="activity-number-link"[^>]*>([\s\S]*?)<\/button>/, '<div class="activity-number-static">$1</div>')}<section class="answer-complete" aria-label="Bonne réponse"><div class="completed-answer"><span>${escape(completedText(question))}</span><span class="completed-check" aria-hidden="true">✓</span></div>${question.modelParts ? reading(question.modelParts.join(' + '), question) : ''}<div class="visual-feedback visual-feedback--success" role="status"><span class="sr-only">Bonne réponse. La flèche permet de continuer.</span><div class="feedback-companion cheering-companion" aria-hidden="true">${avatar(hero(), true, 'cheer')}</div></div><button class="next-picture exercise-next" data-action="next" aria-label="Passer au jeu suivant">${picture('arrow')}</button></section>`;
+    return `${progress}<section class="answer-complete" aria-label="Bonne réponse"><div class="completed-answer"><span>${escape(completedText(question))}</span><span class="completed-check" aria-hidden="true">✓</span></div>${question.modelParts ? reading(question.modelParts.join(' + '), question) : ''}<div class="visual-feedback visual-feedback--success" role="status"><span class="sr-only">Bonne réponse. La flèche permet de continuer.</span><div class="feedback-companion cheering-companion" aria-hidden="true">${avatar(hero(), true, 'cheer')}</div></div><button class="next-picture exercise-next" data-action="next" aria-label="Passer au jeu suivant">${picture('arrow')}</button></section>`;
   }
   return `${progress}<section class="question-workspace" aria-labelledby="exercise-instruction"><h1 id="exercise-instruction" class="sr-only">${question.instruction}</h1><div class="exercise-stimulus ${question.text ? 'has-model' : 'audio-stimulus'}">${question.text ? reading(question.text, question) : ''}<button class="exercise-companion-guide ${feedback && !feedback.correct ? 'companion-supporting' : ''}" data-action="repeat" aria-label="${feedback ? 'Réécouter l’aide avec ' : 'Écouter la consigne avec '}${hero().name}">${avatar(hero(), false, feedback ? 'support' : 'neutral')}<span class="companion-voice-badge" aria-hidden="true">${icon('audio')}</span></button></div>${blocked ? `<div class="audio-required">${hasVoice ? `<button class="sound-enable" data-action="audio" aria-label="Activer le son">${picture('sound')}</button>` : '<p role="status">La voix n’est pas disponible dans ce navigateur.</p>'}<button class="picture-option" data-action="alternative" aria-label="Choisir un autre exercice sans écoute">${picture('arrow')}</button></div>` : choiceControls(question, rejected, guided, isCalibration)}${feedback ? `<div class="visual-feedback visual-feedback--retry" role="status"><span class="sr-only">Tu peux réessayer. Le compagnon est là pour t’aider.</span></div>` : ''}<div class="exercise-secondary"><button class="help-picture" data-action="${isCalibration ? 'skip-calibration' : 'help'}" aria-label="${isCalibration ? 'Je ne sais pas encore, passer cette question' : 'Demander de l’aide à mon compagnon'}">${picture('help')}</button><button class="exercise-difficulty" data-action="difficulty" aria-label="Mon niveau. ${complexityLabel()}">${picture('game-choice')}</button></div>${guided ? '<p class="sr-only">La réponse entourée t’aide à terminer cette découverte.</p>' : ''}</section>`;
 }
@@ -203,7 +190,7 @@ function startMission() {
   profile.session = createMission(profile);
   screen = 'mission'; feedback = null; save(); render(true); readQuestion();
 }
-function readQuestion() { stopAudio(); const question = currentQuestion(); speak(question.instruction + (question.listen ? ' ' + question.listen : '')); }
+function readQuestion() { stopAudio(); speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); }
 function endMission() {
   rememberGroup(profile,profile.session,true);
   if (profile.session.mode !== 'replay') recordBeginnerMission(profile, profile.session);
@@ -226,12 +213,12 @@ function completeExercise(question) {
   session.results.push(assisted ? 'assisted' : 'independent');
   feedback = { correct: true, assisted }; save();
   if (session.index === 7) return endMission();
-  speak(['Bien joué !', 'Oui, c’est ça !', 'Tu as trouvé !'][session.index % 3] + (question.mechanic === 'build' ? ' ' + completedText(question) + '.' : question.type === 'letter_match' && !question.mechanic ? ' C’est la lettre ' + question.text + '.' : '') + ' On continue ? Touche la flèche.');
+  speak(question.foundation ? exerciseSpeech(question,session.interaction) : ['Bien joué !', 'Oui, c’est ça !', 'Tu as trouvé !'][session.index % 3] + (question.mechanic === 'build' ? ' ' + completedText(question) + '.' : question.type === 'letter_match' && !question.mechanic ? ' C’est la lettre ' + question.text + '.' : '') + ' On continue ? Touche la flèche.');
   render(); document.querySelector('[data-action="next"]')?.focus();
 }
 function incorrectExercise(question) {
   profile.session.attempts++; feedback = { correct: false };
-  speak('Ce n’est pas grave, on essaie ensemble. ' + question.hint);
+  speak(question.foundation ? exerciseSpeech(question,profile.session.interaction) : 'Ce n’est pas grave, on essaie ensemble. ' + question.hint);
   save(); render();
   document.querySelector('[data-action="pair-target"], [data-action="build-tile"], .answer:not(:disabled)')?.focus();
 }
@@ -255,13 +242,13 @@ function interact(action, index) {
   if (result.event === 'incorrect') return incorrectExercise(question);
   feedback = null; save(); render();
   if (result.event === 'selected') {
-    speak('Maintenant, retrouve la même lettre à droite.');
+    speak(exerciseSpeech(question,profile.session.interaction));
     document.querySelector('[data-action="pair-target"]')?.focus();
   } else if (question.mechanic === 'pairs') {
-    speak('Oui ! À toi de retrouver l’autre paire.');
+    speak(exerciseSpeech(question,profile.session.interaction));
     document.querySelector('[data-action="pair-source"]')?.focus();
   } else {
-    speak(result.event === 'undo' ? 'Tu peux replacer ta carte.' : 'Encore une carte.');
+    speak(question.foundation ? exerciseSpeech(question,profile.session.interaction) : result.event === 'undo' ? 'Tu peux replacer ta carte.' : 'Encore une carte.');
     document.querySelector('[data-action="build-tile"]')?.focus();
   }
 }
@@ -339,35 +326,6 @@ const actions = {
     if (screen === 'mission' && !profile.session) { screen = 'home'; feedback = null; }
     render(true); navigationGuidance();
   },
-  groups() {
-    if (screen !== 'groups') groupsReturn = { screen, step, feedback };
-    stopAudio(); clearTimeout(calibrationTimer);
-    groupPage = 0; olderGroups = false;
-    selectedGroupId = screen === 'mission' ? profile.session.groupId : 'new';
-    screen = 'groups'; feedback = null; render(true); navigationGuidance();
-  },
-  'toggle-older-groups'() { olderGroups = !olderGroups; groupPage = 0; render(true); speak(olderGroups ? 'Voici les groupes plus anciens.' : 'Voici tes groupes récents.'); },
-  'group-page'(button) {
-    const count = profile.missionGroups.filter(group => group.level === profile.level && (group.level !== 0 || group.beginnerStage === profile.beginnerStage)).length;
-    groupPage = Math.max(0,Math.min(Math.ceil(Math.max(0,count-5)/6)-1,groupPage + (button.dataset.direction === 'next' ? 1 : -1))); render(true);
-  },
-  'select-group'(button) {
-    const id = button.dataset.groupId;
-    if (id !== 'new' && !profile.missionGroups.some(group => group.id === id && group.level === profile.level && (group.level !== 0 || group.beginnerStage === profile.beginnerStage))) return;
-    selectedGroupId = id; render(); document.querySelector(`[data-group-id="${id}"]`)?.focus();
-    speak(id === 'new' ? 'Un nouveau groupe de huit jeux. Touche le triangle pour commencer.' : 'On rejoue ces huit petits jeux. Touche le triangle quand tu es prêt.');
-  },
-  'play-group'() {
-    const session = selectedGroupId === 'new' ? createMission(profile) : createReplayMission(profile,selectedGroupId);
-    if (!session) return;
-    stopAudio(); profile.session = session; profile.onboarded = true; feedback = null; save(); screen = 'mission'; render(true); readQuestion();
-  },
-  'back-groups'() {
-    stopAudio(); const previous = groupsReturn; groupsReturn = null;
-    screen = previous?.screen || 'home'; step = previous?.step || 0; feedback = previous?.feedback || null;
-    if (screen === 'mission' && !profile.session) { screen = 'home'; feedback = null; }
-    render(true); navigationGuidance();
-  },
   easier() { adjustDifficulty(-1); },
   harder() { adjustDifficulty(1); },
   'difficulty-voice'() { profile.audio = true; save(); navigationGuidance(); },
@@ -379,7 +337,7 @@ const actions = {
   guide() { profile.audio = true; save(); render(); navigationGuidance(); },
   settings,
   privacy,
-  repeat() { const q = currentQuestion(); speak(feedback?.correct ? 'Tu as trouvé ! Touche la grande flèche pour continuer.' : q.instruction + (q.listen ? ' ' + q.listen : '') + (feedback ? ' ' + q.hint : '')); },
+  repeat() { speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); },
   'listen-word'() { speak(currentQuestion().listen); },
   'option-audio'(button) { speak(currentQuestion().options[Number(button.dataset.option)]); },
   answer(button) { answer(Number(button.dataset.answer)); },
@@ -387,8 +345,8 @@ const actions = {
   'pair-target'(button) { interact('target', Number(button.dataset.card)); },
   'build-tile'(button) { interact('tile', Number(button.dataset.card)); },
   'build-undo'() { interact('undo'); },
-  help() { profile.session.helpUsed = true; feedback = { correct: false }; save(); render(); speak(currentQuestion().hint); },
-  'feedback-audio'() { speak(feedback.correct ? 'Bravo ! Touche la grande flèche pour continuer.' : 'Tu as essayé, cherchons ensemble. ' + currentQuestion().hint); },
+  help() { profile.session.helpUsed = true; feedback = { correct: false }; save(); render(); speak(currentQuestion().foundation ? exerciseSpeech(currentQuestion(),profile.session.interaction) : currentQuestion().hint); },
+  'feedback-audio'() { speak(currentQuestion().foundation ? exerciseSpeech(currentQuestion(),profile.session?.interaction) : feedback.correct ? 'Bravo ! Touche la grande flèche pour continuer.' : 'Tu as essayé, cherchons ensemble. ' + currentQuestion().hint); },
   next() { if (!feedback?.correct) return; stopAudio(); profile.session.index++; profile.session.attempts = 0; profile.session.helpUsed = false; profile.session.rejected = []; profile.session.interaction = null; feedback = null; save(); render(true); readQuestion(); },
   quit() {
     stopAudio();
@@ -407,7 +365,7 @@ const actions = {
   'celebration-audio'() { speak('Bravo ! Tu as terminé ta mission. Pour rejouer, touche le triangle. Pour faire une pause, touche la maison.'); }
 };
 app.addEventListener('click', event => { const button = event.target.closest('[data-action]'); if (!button || button.disabled) return; event.preventDefault(); const action = button.dataset.action;
-  const isBack = ['back-complexity','back-groups'].includes(action) || (action === 'discover-action' && button.dataset.command === 'back');
+  const isBack = ['back-complexity'].includes(action) || (action === 'discover-action' && button.dataset.command === 'back');
   if (isBack && navigation.back()) return;
   actions[action]?.(button); });
 document.addEventListener('keydown', event => {

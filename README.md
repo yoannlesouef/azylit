@@ -183,14 +183,11 @@ Chaque exercice terminé ajoute un résultat daté (autonome ou accompagné, nom
 Les anciens compteurs sont préservés, mais les anciens résultats détaillés qui n’avaient pas été enregistrés ne peuvent pas être reconstitués. L’effacement du profil supprime aussi cet historique. Il reste propre à ce navigateur, sans synchronisation distante.
 
 
-## Retrouver un groupe de jeux
+## Jouer sans choisir de groupe
 
-Le choix porte sur un groupe complet de huit exercices. « Groupe N » reste affiché pendant toute la séquence ; la voix donne directement les consignes, sans dire « activité » ni annoncer de numéro avant chaque exercice.
+L’enfant choisit son niveau puis touche Jouer, ou Continuer si une mission est en cours. Aucun numéro ni sélecteur de groupe n’apparaît. Les huit étapes restent visibles avec les étoiles et les exercices varient grâce à l’historique local.
 
-Depuis **Mon niveau → Choisir un groupe**, sélectionner **Nouveau groupe** ou la carte d’un groupe déjà proposé, puis toucher le triangle. Une coche indique les groupes terminés. Rejouer conserve le numéro, les huit exercices, leur ordre et les mélanges sauvegardés. Les groupes rejoués comptent comme des missions terminées, mais ne déclenchent pas de proposition de montée de niveau.
-
-Les 200 derniers groupes sont conservés localement, en plus de l’historique détaillé des 2 000 derniers exercices. Les anciens groupes complets peuvent être récupérés à partir des huit résultats conservés, sans inventer leurs anciennes positions de réponses. Le sélecteur ne propose plus de révision d’un seul exercice.
-
+Dans les premiers exercices, l’audio prononce uniquement la cible : nom de la lettre, voyelle, syllabe ou mot à assembler. Le lancement, la réécoute et le retour après erreur n’ajoutent aucune phrase autour de cette cible. Les aides visuelles et le compagnon restent disponibles. Les exercices avancés conservent leurs consignes nécessaires.
 
 ## Découvrir les lettres, les syllabes et les mots
 
@@ -207,6 +204,6 @@ L’[audit de navigation enfant](docs/audit-navigation-enfant.md) détaille les 
 
 ### Navigation simplifiée
 
-L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. La bibliothèque montre le groupe en cours et les plus récents ; les anciens restent accessibles par séries de six. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
+L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. Aucun groupe n’est proposé à l’enfant. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
 
 Le bouton Retour du navigateur et les flèches internes retrouvent les écrans précédents pendant la visite, avec leurs pages de cartes et sélections. Les résultats ne sont jamais annulés par ce retour, et une mission terminée ou abandonnée n’est pas restaurée. Le rechargement revient à l’accueil avec la progression locale conservée. La validation auprès d’enfants et les vérifications visuelles sur appareils restent nécessaires.

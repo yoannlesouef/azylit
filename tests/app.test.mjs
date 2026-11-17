@@ -59,7 +59,7 @@ test('une mission complète sauvegarde les réussites accompagnées et attribue 
   const click = (action, data = {}) => listeners.click({ target: { closest: () => ({ dataset: { action, ...data } }) }, preventDefault() {} });
   assert.match(app.innerHTML, /À toi de jouer/);
   click('onboard'); click('confirm-settings'); click('finish-setup');
-  assert.match(app.innerHTML, /Regarde la lettre/);
+  assert.match(app.innerHTML, /exercise-progress/);
   assert.match(app.innerHTML, /exercise-companion-guide/);
   assert.match(app.innerHTML, /companion-neutral/);
   assert.ok(!app.innerHTML.includes('class="stimulus-audio'));
@@ -192,7 +192,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   click('easier'); assert.match(spoken.at(-1), /une seule lettre/);
   click('confirm-settings'); assert.match(app.innerHTML,/À toi de jouer/);
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session,null);
-  click('start'); assert.match(spoken.at(-1), /Regarde la lettre/);
+  click('start'); assert.equal(spoken.at(-1), (await import('../app/exercise-speech.js')).exerciseSpeech((await import('../app/missions.js')).missionQuestion(JSON.parse(memory.get(STORAGE_KEY)).session),JSON.parse(memory.get(STORAGE_KEY)).session.interaction));
   assert.ok(!app.innerHTML.includes('class="parents-top-link"'));
   click('quit');
   assert.equal(dialogOpen, false);
@@ -200,13 +200,13 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session, null);
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).completed, 0);
   assert.ok(!app.innerHTML.includes('data-action="resume"'));
-  click('start'); assert.match(spoken.at(-1), /Regarde la lettre/);
+  click('start'); assert.equal(spoken.at(-1), (await import('../app/exercise-speech.js')).exerciseSpeech((await import('../app/missions.js')).missionQuestion(JSON.parse(memory.get(STORAGE_KEY)).session),JSON.parse(memory.get(STORAGE_KEY)).session.interaction));
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.index, 0);
   click('audio'); assert.equal(JSON.parse(memory.get(STORAGE_KEY)).audio, false);
   assert.match(app.innerHTML,/Activer le son/);
   assert.match(app.innerHTML,/M16 9l5 6/);
   click('guide'); assert.equal(JSON.parse(memory.get(STORAGE_KEY)).audio, true);
-  assert.match(spoken.at(-1), /Regarde la lettre/);
+  assert.equal(spoken.at(-1), (await import('../app/exercise-speech.js')).exerciseSpeech((await import('../app/missions.js')).missionQuestion(JSON.parse(memory.get(STORAGE_KEY)).session),JSON.parse(memory.get(STORAGE_KEY)).session.interaction));
   // Changer de compagnon revient au jeu et conserve la mission en cours.
   click('change-hero'); click('hero', { hero: 'knight' }); click('confirm-settings');
   assert.match(app.innerHTML, /À toi de jouer/);
@@ -239,7 +239,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   const easierSession = JSON.parse(memory.get(STORAGE_KEY)).session;
   assert.equal(easierSession.level, 0);
   assert.equal(easierSession.beginnerStage, 0);
-  assert.match(app.innerHTML, /Regarde la lettre/);
+  assert.match(app.innerHTML, /exercise-progress/);
 });
 
 

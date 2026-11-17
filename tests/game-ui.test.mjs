@@ -91,56 +91,20 @@ test('une mission d’assemblage de mots se termine avec huit constructions rée
 });
 
 
-test('un groupe complet peut être rejoué avec son numéro et sans annonce d’activité', async () => {
-  const profile = profileAt(0); profile.completed = 2;
-  const f = fixture(profile);
-  await import('../app/app.js?group-picker-game');
-  f.click('resume');
-  assert.match(f.app.innerHTML,/Groupe 1/);
-  const originalGroup = f.saved().missionGroups[0];
-  f.click('groups');
-  assert.match(f.app.innerHTML,/Groupes de jeux/);
-  assert.ok(!f.app.innerHTML.includes('data-action="select-activity"'));
-  f.click('back-groups');
-  assert.match(f.app.innerHTML,/Regarde la lettre/);
-  assert.equal(f.saved().session.index,0);
-  f.click('groups'); f.click('select-group','g-1'); f.click('play-group');
-  assert.equal(f.saved().session.mode,'replay');
-  assert.deepEqual(f.saved().session.questionIds,originalGroup.questionIds);
-  assert.equal(f.saved().session.questionIds.length,8);
-  const { missionQuestion } = await import('../app/missions.js');
-  for (let index = 0; index < 8; index++) {
-    const question = missionQuestion(f.saved().session);
-    assert.match(f.app.innerHTML,/Groupe 1/);
-    if (question.mechanic === 'pairs') {
-      for (let source = 0; source < question.pairs.length; source++) {
-        f.click('pair-source',source); f.click('pair-target',question.pairOrder.indexOf(source));
-      }
-    } else f.click('answer',question.answer);
-    if (index < 7) f.click('next');
-  }
-  assert.equal(f.saved().completed,3);
-  assert.equal(f.saved().exerciseHistory.length,8);
-  assert.ok(f.saved().beginnerWins.every(value => value === 0));
-  assert.equal(f.saved().missionGroups[0].playCount,1);
-  assert.ok(f.saved().missionGroups[0].completedAt);
-  assert.equal(f.saved().session,null);
-  f.click('groups');
-  assert.match(f.app.innerHTML,/Groupe 1, huit jeux, déjà terminé/);
-  assert.ok(f.spoken.every(text => !/activit/i.test(text)));
+test('les jeux n’exposent plus de groupes et gardent un audio limité à la cible',async()=>{
+ const f=fixture(profileAt(0));await import('../app/app.js?simple-games');
+ f.click('difficulty');assert.ok(!/Choisir un groupe|data-action="groups"/.test(f.app.innerHTML));
+ f.click('confirm-settings');f.click('resume');
+ assert.ok(!/Groupe|data-action="groups"/.test(f.app.innerHTML));
+ assert.equal(f.spoken.at(-1),'a');
+ f.click('repeat');assert.equal(f.spoken.at(-1),'a');
+ f.click('answer',1);assert.equal(f.spoken.at(-1),'a');
+ f.click('help');assert.equal(f.spoken.at(-1),'a');
 });
 
-test('la bibliothèque garde le groupe en cours et donne accès aux anciens par six',async()=>{
- const {createMission}=await import('../app/missions.js');
- const profile=freshProfile();profile.onboarded=true;
- for(let i=0;i<20;i++) {const session=createMission(profile);if(i===0)profile.session=session;}
- const f=fixture(profile);await import('../app/app.js?recent-groups');f.click('groups');
- const ids=()=>[...f.app.innerHTML.matchAll(/data-action="select-group" data-group-id="([^"]+)"/g)].map(m=>m[1]);
- assert.deepEqual(ids(),['new','g-1','g-20','g-19','g-18','g-17']);
- const all=new Set(ids());f.click('toggle-older-groups');
- assert.equal(ids().length,7);
- const html=f.app.innerHTML;assert.match(html,/data-action="group-page"/);
- assert.ok(!html.includes('data-group-id="g-20"'));
- f.click('toggle-older-groups');assert.deepEqual(ids(),['new','g-1','g-20','g-19','g-18','g-17']);
- assert.equal(f.saved().missionGroups.length,20);
+test('la syllabe est prononcée seule au lancement, après erreur et en réécoute',async()=>{
+ const f=fixture(profileAt(2));await import('../app/app.js?simple-syllable-audio');f.click('resume');
+ assert.equal(f.spoken.at(-1),'ma');f.click('answer',1);assert.equal(f.spoken.at(-1),'ma');
+ f.click('repeat');assert.equal(f.spoken.at(-1),'ma');
+ f.click('answer',0);assert.equal(f.spoken.at(-1),'ma');
 });

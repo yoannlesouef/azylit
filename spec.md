@@ -119,17 +119,11 @@ L'application doit offrir une expérience fluide, bienveillante et non stigmatis
 - Préserver les compteurs et les sauvegardes existants. Les résultats détaillés antérieurs à cette fonctionnalité ne peuvent pas être reconstitués s'ils n'avaient pas été enregistrés.
 - Une fois le catalogue parcouru, proposer des révisions variées ; ne pas promettre des contenus nouveaux sans limite ni confondre variation et montée de niveau.
 
-### Choix et rejeu des groupes de huit exercices
-- Le choix porte sur un groupe complet de huit exercices, jamais sur un exercice individuel. Chaque groupe créé reçoit un numéro stable (`groupSequence`, identifiant `g-N`), distinct des identifiants techniques des exercices et des tentatives de mission.
-- Afficher « Groupe N » pendant les huit exercices, à côté de la progression. Ne pas prononcer « activité », ni annoncer un numéro avant chaque consigne : la voix commence directement par l'instruction utile.
-- Le repère de groupe ouvre le choix avant la réussite ; il reste statique après une bonne réponse pour conserver une seule grande flèche au centre.
-- Dans la page « Choisis ton niveau », « Choisir un groupe » présente une carte Nouveau groupe et les groupes conservés du palier courant. Une coche indique un groupe déjà terminé. Sélectionner une carte ne lance pas le jeu ; le triangle commence les huit exercices.
-- Nouveau groupe conserve la sélection évolutive. Rejouer un groupe restaure ses huit exercices, dans le même ordre, avec les mêmes mélanges de réponses et de cartes conservés. Le numéro du groupe ne change pas à chaque tentative.
-- La flèche de retour du sélecteur préserve la session en cours. Démarrer explicitement un autre groupe la remplace, mais conserve tous les résultats déjà enregistrés.
-- Un groupe rejoué (`session.mode = replay`) donne lieu à huit résultats et compte comme une mission terminée après les huit réussites. Il ne contribue pas à la suggestion de montée de palier ; une révision volontaire ne constitue pas une nouvelle preuve de maîtrise.
-- Conserver localement les 200 derniers groupes : identifiant, palier, liste des huit exercices, mélanges, date de fin éventuelle et nombre de passages complets. L'historique détaillé des 2 000 derniers exercices reste distinct et conservé.
-- Récupérer, lorsque les huit positions sont présentes, les groupes complets de l'ancien historique. Leurs anciennes positions de réponses ne peuvent pas être reconstituées si elles n'avaient pas été enregistrées. Ne pas fabriquer de groupes à partir de résultats incomplets.
-- Retirer le choix individuel et l'ancien mode de révision d'un seul exercice. Une ancienne session individuelle n'est pas reprise, mais ses résultats déjà enregistrés restent conservés.
+### Navigation sans groupes
+
+L’interface ne présente ni numéro, ni bibliothèque, ni choix de groupe. Jouer crée automatiquement une mission variée de huit exercices ; Continuer reprend la mission conservée. Les étoiles restent le repère de progression. Les plans techniques et les résultats locaux existants sont conservés pour la compatibilité des profils, sans accès enfant au rejeu de groupes.
+
+Pour les exercices de fondation, prononcer uniquement la cible au lancement, à la réécoute, après une erreur et lors de l’aide : nom de lettre, voyelle, syllabe ou mot. En association de lettres, prononcer la lettre sélectionnée ou la prochaine lettre non associée. Les consignes des exercices avancés restent disponibles. Les retours visuels et le compagnon accompagnent la réponse sans ajouter de phrase à la cible audio.
 
 ### 3.2 Déroulement d'une Mission (Session de travail)
 - **Structure fixe :** `1 Mission = 8 micro-exercices` (durée cible : **4 à 6 minutes**).
@@ -396,6 +390,6 @@ Dans « Écoute et trouve », le compagnon choisi apparaît après une réponse 
 
 ### Navigation simplifiée
 
-L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. La bibliothèque montre le groupe en cours et les plus récents ; les anciens restent accessibles par séries de six. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
+L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. Aucun groupe n’est proposé à l’enfant. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
 
 Le bouton Retour du navigateur et les flèches internes retrouvent les écrans précédents pendant la visite, avec leurs pages de cartes et sélections. Les résultats ne sont jamais annulés par ce retour, et une mission terminée ou abandonnée n’est pas restaurée. Le rechargement revient à l’accueil avec la progression locale conservée. La validation auprès d’enfants et les vérifications visuelles sur appareils restent nécessaires.
