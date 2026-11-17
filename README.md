@@ -6,7 +6,7 @@ Projet d'application web éducative pour aider les enfants à apprendre à lire 
 
 ## État du projet
 
-Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. Le catalogue contient 56 questions de démonstration réparties entre les quatre parcours.
+Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. Le catalogue contient 112 questions de démonstration réparties entre les quatre parcours.
 
 ## Lancer le projet
 
@@ -37,9 +37,9 @@ Le répertoire `dist/` peut être hébergé sur un service de fichiers statiques
 
 - La progression reste dans le navigateur utilisé, sans synchronisation distante ni code avatar.
 - La voix privilégie les voix françaises naturelles ou améliorées disponibles dans le navigateur, à un débit proche de la conversation. Leur disponibilité et leur qualité dépendent de l’appareil ; les fichiers audio validés et les phonèmes isolés restent à produire. Une alternative sans écoute est proposée si la voix est indisponible ou coupée.
-- Les questions sont des démonstrations à valider pédagogiquement. Les missions réutilisent le même jeu de questions par parcours ; la sélection adaptative et le catalogue complet restent à développer.
+- Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices parmi seize au même palier, en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
 - Le positionnement propose un parcours indicatif selon une règle de démonstration non étalonnée.
-- Les exercices sont actuellement des choix multiples. La lecture flash, la fluence chronométrée et les interactions de segmentation et de remise en ordre décrites dans la spécification restent à implémenter.
+- Les exercices combinent choix de réponse, association de lettres par paires, fusion de lettres et assemblage de syllabes par clics successifs. La lecture flash, la fluence chronométrée et les interactions de segmentation et de remise en ordre décrites dans la spécification restent à implémenter.
 - Les réglages proposent les polices système, la taille, les espacements, l'interligne, la coloration des syllabes renseignées et un guide de lecture. Les polices Andika, Lexend et OpenDyslexic ainsi que les aides sur les lettres muettes et les graphèmes complexes restent à intégrer.
 - Le site ne charge aucun service tiers ni police distante.
 
@@ -102,3 +102,66 @@ La persistance prévue repose sur une sauvegarde locale immédiate et une synchr
 - [spec.md](spec.md) : spécification fonctionnelle et technique, parcours, accessibilité, catalogue d'exercices et critères de couverture pédagogique.
 
 Avant toute implémentation, consulter ces deux documents. Les technologies présentées dans la spécification sont des recommandations ; la stack finale reste à arrêter lors du développement.
+
+
+## Informations pour les parents et référencement
+
+L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Le lien est accessible dans l’en-tête près du son et de l’accessibilité ; la phrase près du logo ouvre aussi cet espace. Ces accès restent absents des écrans d’exercice.
+
+Les pages sont générées en HTML complet, sans JavaScript nécessaire, à partir de `content/parents.mjs`. La construction ajoute titres et descriptions distincts, URL canoniques, métadonnées de partage, données structurées cohérentes avec la FAQ visible, sitemap et robots.txt. Le serveur de développement expose les mêmes pages.
+
+L’origine canonique vaut `https://www.azyl.it` par défaut. Pour une autre origine publique :
+
+```bash
+SITE_URL=https://exemple.fr npm run build
+```
+
+Pour un aperçu à ne pas indexer :
+
+```bash
+SITE_URL=https://preview.exemple.fr INDEXABLE=false npm run build
+```
+
+Les tests de référencement vérifient les pages, les liens, les métadonnées et le JSON-LD. La publication sur le domaine, le contrôle des réponses de l’hébergeur, la validation visuelle, la configuration des outils propriétaires des moteurs et le suivi d’indexation restent nécessaires. Le GEO repose sur des contenus accessibles, clairs et vérifiables ; aucune indexation, citation IA ou position n’est garantie.
+
+Le bouton « Choisir la complexité » indique le niveau sélectionné. La page Complexité affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon et le grand bouton Jouer restent prioritaires sur l’accueil.
+
+
+## Jeux de cartes débutants
+
+- Lettres : deux activités d’association par paires complètent les choix de réponse dans la mission de huit exercices.
+- Syllabes : quatre activités permettent de poser deux lettres dans l’ordre pour former une syllabe, avec un modèle visible.
+- Assemblage : huit activités construisent de vrais mots avec deux cartes syllabes, sans glisser-déposer. Les cartes identiques restent distinctes, par exemple les deux « pa » de « papa ».
+
+Les assemblages gardent leur début correct après une erreur. Une flèche de retour retire la dernière carte avant de terminer. Les cartes posées, les associations trouvées et le recours à une aide sont conservés lors de la reprise d’une mission. Une activité entière compte pour une seule étoile, même si plusieurs cartes sont nécessaires. Les audios restent ceux du navigateur ; les enregistrements de phonèmes validés ne sont pas encore intégrés.
+
+
+## Missions variées et historique local
+
+Le catalogue contient 112 activités, soit 16 pour chacune des sept positions de complexité. Une mission garde huit exercices et la répartition des mécaniques du palier choisi. Les exercices non réalisés sont prioritaires, puis les moins revus ; le dernier plan proposé est aussi pris en compte si une mission a été abandonnée. Une fois les exemples parcourus, ils reviennent en révision, avec un ordre et des positions de réponses ou de cartes variés.
+
+Le plan et ses mélanges sont sauvegardés avant de jouer : reprendre une mission conserve exactement les mêmes exercices, réponses et cartes. Une nouvelle mission fait une nouvelle sélection. La complexité ne change pas automatiquement.
+
+Chaque exercice terminé ajoute un résultat daté (autonome ou accompagné, nombre d’erreurs ou recours à l’aide) à l’historique local, même si la mission est ensuite abandonnée. Aucun résultat n’est ajouté au simple lancement. Les 2 000 derniers résultats sont conservés ; les 40 plus récents sont visibles dans **Réglages → Pour les adultes → Historique des exercices**, avec un export JSON de l’historique conservé.
+
+Les anciens compteurs sont préservés, mais les anciens résultats détaillés qui n’avaient pas été enregistrés ne peuvent pas être reconstitués. L’effacement du profil supprime aussi cet historique. Il reste propre à ce navigateur, sans synchronisation distante.
+
+
+## Retrouver un groupe de jeux
+
+Le choix porte sur un groupe complet de huit exercices. « Groupe N » reste affiché pendant toute la séquence ; la voix donne directement les consignes, sans dire « activité » ni annoncer de numéro avant chaque exercice.
+
+Depuis **Choisir la complexité → Choisir un groupe**, sélectionner **Nouveau groupe** ou la carte d’un groupe déjà proposé, puis toucher le triangle. Une coche indique les groupes terminés. Rejouer conserve le numéro, les huit exercices, leur ordre et les mélanges sauvegardés. Les groupes rejoués comptent comme des missions terminées, mais ne déclenchent pas de proposition de montée de niveau.
+
+Les 200 derniers groupes sont conservés localement, en plus de l’historique détaillé des 2 000 derniers exercices. Les anciens groupes complets peuvent être récupérés à partir des huit résultats conservés, sans inventer leurs anciennes positions de réponses. Le sélecteur ne propose plus de révision d’un seul exercice.
+
+
+## Découvrir les lettres, les syllabes et les mots
+
+Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes présentées six par six, avec trois chemins de complexité et des mots à écouter. Les 272 entrées de syllabes renvoient à 218 mots ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
+
+**Écoute et trouve** propose un mot à entendre et trois mots écrits parmi lesquels le retrouver. Réécoute, essais sans pénalité, coche et nouveau mot sont disponibles. Cette exploration ne change ni la mission conservée ni l’historique des exercices.
+
+Le catalogue est extensible et ne couvre pas toutes les syllabes du français. Les découpages et prononciations nécessitent une validation pédagogique et des essais avec les voix des appareils cibles. Les cartes de l’alphabet prononcent les noms des lettres, distincts de leurs sons dans les mots. La voix française dépend du navigateur ; une panne audio empêche de répondre au quiz jusqu’à une nouvelle écoute.
+
+Dans « Écoute et trouve », le compagnon choisi apparaît après une réponse : cœur d’encouragement après une erreur, sourire et étoiles après réussite. Il reste petit et sans animation, puis disparaît au mot suivant pour laisser la place à l’écoute et aux choix.

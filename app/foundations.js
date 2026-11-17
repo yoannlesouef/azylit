@@ -22,13 +22,13 @@ export const beginnerBanks = [
   [['ma','mi'],['mi','ma'],['la','li'],['li','la'],['mo','ma'],['lo','la'],['mu','mi'],['lu','li']].map(([a,b],i) => listen(2,a,b,i)),
   [
     { parts: ['pa','pa'], word: 'papa', other: 'pi' },
-    { parts: ['pa','pa'], word: 'papa', other: 'ma' },
-    { parts: ['pi','le'], word: 'pile', other: 'la' },
-    { parts: ['lu','ne'], word: 'lune', other: 'mi' },
-    { parts: ['mo','to'], word: 'moto', other: 'ta' },
+    { parts: ['pa','pi'], word: 'papi', other: 'ma' },
+    { parts: ['a','mi'], word: 'ami', other: 'la' },
     { parts: ['la','ma'], word: 'lama', other: 'mi' },
-    { parts: ['sa','le'], word: 'sale', other: 'li' },
-    { parts: ['mi','me'], word: 'mime', other: 'mo' }
+    { parts: ['mo','to'], word: 'moto', other: 'ta' },
+    { parts: ['mi','di'], word: 'midi', other: 'mi' },
+    { parts: ['vé','lo'], word: 'vélo', other: 'li' },
+    { parts: ['bé','bé'], word: 'bébé', other: 'mo' }
   ].map((item, index) => ({
     id: `f3-${index + 1}`, type: 'syllable_assembly', instruction: 'Écoute le mot. Ajoute la syllabe qui manque.',
     text: `${item.parts[0]} + …`, options: index % 2 ? [item.other,item.parts[1]] : [item.parts[1],item.other], answer: index % 2,
@@ -36,3 +36,57 @@ export const beginnerBanks = [
     modelParts: item.parts, visualAids: false, foundation: true
   }))
 ];
+
+
+// Vary the gesture while keeping the same letters and the same difficulty.
+for (const index of [2, 5]) {
+  const question = beginnerBanks[0][index];
+  question.mechanic = 'pairs';
+  question.pairs = [...question.options];
+  question.pairOrder = [1, 0];
+  question.text = '';
+  question.instruction = 'Touche une lettre à gauche. Puis touche la même à droite.';
+  question.hint = 'Regarde la lettre choisie à gauche. Retrouve la même forme à droite.';
+}
+for (const index of [2, 3, 6, 7]) {
+  const question = beginnerBanks[2][index];
+  question.mechanic = 'build';
+  question.unit = 'letters';
+  question.parts = [...question.listen];
+  question.tiles = [...question.parts].reverse();
+  question.text = question.parts.join(' + ');
+  question.instruction = 'Écoute la syllabe. Touche les lettres dans le même ordre que le modèle.';
+  question.hint = 'Commence par la première lettre du modèle. Puis ajoute la deuxième.';
+  question.requiresAudio = false;
+}
+for (const question of beginnerBanks[3]) {
+  question.mechanic = 'build';
+  question.unit = 'syllables';
+  question.parts = [...question.modelParts];
+  question.tiles = [...question.parts].reverse();
+  question.text = '';
+  question.instruction = 'Écoute le mot. Touche les syllabes dans l’ordre pour le construire.';
+  question.hint = question.parts.join(', puis ') + '. Ensemble : ' + question.listen + '.';
+}
+
+
+// A second set at the same structural difficulty keeps later missions fresh.
+const letterVariants = [['a','u'],['i','s'],['o','m'],['u','l'],['m','a'],['l','s'],['s','i'],['f','o']];
+for (const [index, [letter, distractor]] of letterVariants.entries()) {
+  const question = visual(letter, distractor, index);
+  question.id = `f0-${index + 9}`;
+  if ([2,5].includes(index)) Object.assign(question, { mechanic:'pairs', pairs:[...question.options], pairOrder:[1,0], text:'', instruction:'Touche une lettre à gauche. Puis touche la même à droite.', hint:'Regarde la lettre choisie à gauche. Retrouve la même forme à droite.' });
+  beginnerBanks[0].push(question);
+}
+for (const [index, [target,distractor]] of [['a','u'],['i','a'],['o','i'],['u','o'],['a','i'],['i','o'],['o','u'],['u','a']].entries()) {
+  beginnerBanks[1].push({ ...listen(1,target,distractor,index), id:`f1-${index + 9}` });
+}
+for (const [index, [target,distractor]] of [['ma','la'],['mi','li'],['la','ma'],['li','mi'],['mo','lo'],['lo','mo'],['mu','lu'],['lu','mu']].entries()) {
+  const question = { ...listen(2,target,distractor,index), id:`f2-${index + 9}` };
+  if ([2,3,6,7].includes(index)) Object.assign(question, { mechanic:'build', unit:'letters', parts:[...target], tiles:[...target].reverse(), text:[...target].join(' + '), instruction:'Écoute la syllabe. Touche les lettres dans le même ordre que le modèle.', hint:'Commence par la première lettre du modèle. Puis ajoute la deuxième.', requiresAudio:false });
+  beginnerBanks[2].push(question);
+}
+for (const [index, parts] of [['po','lo'],['lo','to'],['po','li'],['ra','vi'],['jo','li'],['sa','li'],['pu','ni'],['fi','ni']].entries()) {
+  const word = parts.join('');
+  beginnerBanks[3].push({ id:`f3-${index + 9}`, type:'syllable_assembly', instruction:'Écoute le mot. Touche les syllabes dans l’ordre pour le construire.', text:'', options:[parts[1],parts[0]], answer:0, listen:word, hint:parts.join(', puis ') + '. Ensemble : ' + word + '.', modelParts:[...parts], parts:[...parts], tiles:[...parts].reverse(), unit:'syllables', mechanic:'build', visualAids:false, foundation:true });
+}

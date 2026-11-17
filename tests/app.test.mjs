@@ -1,3 +1,4 @@
+import { missionQuestion } from '../app/missions.js';
 import { beginnerBanks } from '../app/foundations.js';
 import { preferredFrenchVoice, frenchUtterance } from '../app/speech.js';
 import test from 'node:test';
@@ -32,7 +33,7 @@ test('chaque mission possède huit questions cohérentes et une alternative sans
   assert.equal(calibration.length, 5);
   const ids = new Set();
   for (const bank of banks) {
-    assert.equal(bank.length, 8);
+    assert.equal(bank.length, 16);
     assert.ok(bank.some(q => !q.listen && !q.optionAudio));
     for (const question of bank) {
       assert.ok(!ids.has(question.id)); ids.add(question.id);
@@ -59,12 +60,16 @@ test('une mission complète sauvegarde les réussites accompagnées et attribue 
   assert.match(app.innerHTML, /À toi de jouer/);
   click('onboard'); click('setup-next'); click('finish-setup');
   assert.match(app.innerHTML, /Regarde la lettre/);
+  assert.match(app.innerHTML, /exercise-companion-guide/);
+  assert.match(app.innerHTML, /companion-neutral/);
+  assert.ok(!app.innerHTML.includes('class="stimulus-audio'));
   assert.ok(!app.innerHTML.includes('La voix n’est pas disponible'));
   click('alternative');
   const firstSaved = JSON.parse(memory.get(STORAGE_KEY));
   const firstQuestion = banks.flat().find(q => q.id === firstSaved.session.overrides[0]);
   click('answer', { answer: String(1 - firstQuestion.answer) });
   assert.match(app.innerHTML, /visual-feedback--retry/);
+  assert.match(app.innerHTML, /companion-support/);
   assert.ok(!app.innerHTML.includes(firstQuestion.hint));
   click('help');
   assert.match(app.innerHTML, /visual-feedback--retry/);
@@ -72,12 +77,14 @@ test('une mission complète sauvegarde les réussites accompagnées et attribue 
   assert.ok(!app.innerHTML.includes('On essaie ensemble'));
   assert.ok(!app.innerHTML.includes('Regarde la forme de la lettre en grand. Cherche exactement la même forme.'));
   let profile = JSON.parse(memory.get(STORAGE_KEY));
-  assert.equal(profile.session.attempts, 2);
+  assert.equal(profile.session.attempts, 1);
+  assert.equal(profile.session.helpUsed, true);
   const alternate = banks.flat().find(q => q.id === profile.session.overrides[0]);
   click('answer', { answer: String(alternate.answer) });
   profile = JSON.parse(memory.get(STORAGE_KEY));
   assert.deepEqual(profile.session.results, ['assisted']);
   assert.match(app.innerHTML, /visual-feedback--success/);
+  assert.match(app.innerHTML, /companion-cheer/);
   assert.match(app.innerHTML, /data-action="next"/);
   const completed = app.innerHTML.split('<main')[1];
   assert.equal((completed.match(/<button/g) || []).length, 1);
@@ -90,13 +97,18 @@ test('une mission complète sauvegarde les réussites accompagnées et attribue 
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.results.length, 1);
   click('next');
   for (let index = 1; index < 8; index++) {
-    let question = banks[0][index];
+    let question = missionQuestion(JSON.parse(memory.get(STORAGE_KEY)).session);
     if (question.listen || question.optionAudio) {
       click('alternative');
       profile = JSON.parse(memory.get(STORAGE_KEY));
-      question = banks.flat().find(q => q.id === profile.session.overrides[index]);
+      question = missionQuestion(profile.session);
     }
-    click('answer', { answer: String(question.answer) });
+    if (question.mechanic === 'pairs') {
+      for (let pair = 0; pair < question.pairs.length; pair++) {
+        click('pair-source', { card: String(pair) });
+        click('pair-target', { card: String(question.pairOrder.indexOf(pair)) });
+      }
+    } else click('answer', { answer: String(question.answer) });
     if (index < 7) click('next');
   }
   profile = JSON.parse(memory.get(STORAGE_KEY));
@@ -158,6 +170,9 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   const click = (action, data = {}) => listeners.click({ target: { closest: () => ({ dataset: { action, ...data } }) }, preventDefault() {} });
   assert.equal((app.innerHTML.match(/class="play-button"/g) || []).length, 1);
   assert.ok(!app.innerHTML.includes('LE MONDE DES POSSIBLES'));
+  assert.match(app.innerHTML, /Choisir la complexité/);
+  assert.match(app.innerHTML, /Niveau 1 sur 7/);
+  assert.match(app.innerHTML, /class="parents-top-link"/);
   click('guide'); assert.match(spoken.at(-1), /grand triangle/);
   assert.equal(utterances.at(-1).lang, 'fr-FR');
   assert.equal(utterances.at(-1).voice.lang, 'fr-FR');
@@ -166,9 +181,15 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   click('hero', { hero: 'pirate' }); assert.match(spoken.at(-1), /Malo, le pirate/);
   click('setup-next'); assert.match(spoken.at(-1), /une seule lettre/);
   assert.match(app.innerHTML, /difficulty-picker/);
+  assert.match(app.innerHTML, /<h1>Complexité<\/h1>/);
+  assert.match(app.innerHTML, /data-action="back-complexity"/);
+  click('back-complexity');
+  assert.match(app.innerHTML, /Ton compagnon/);
+  click('setup-next');
   click('harder'); assert.match(spoken.at(-1), /écoute un son/);
   click('easier'); assert.match(spoken.at(-1), /une seule lettre/);
   click('finish-setup'); assert.match(spoken.at(-1), /Regarde la lettre/);
+  assert.ok(!app.innerHTML.includes('class="parents-top-link"'));
   click('quit');
   assert.equal(dialogOpen, false);
   assert.match(app.innerHTML, /À toi de jouer/);
@@ -198,6 +219,11 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.index, 0);
   assert.match(app.innerHTML, /Lina/);
   click('difficulty');
+  assert.match(app.innerHTML, /Niveau 7 sur 7/);
+  click('back-complexity');
+  assert.match(app.innerHTML, /Lina/);
+  assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.index, 0);
+  click('difficulty');
   for (let position = 5; position >= 0; position--) click('easier');
   click('start-selected');
   const easierSession = JSON.parse(memory.get(STORAGE_KEY)).session;
@@ -211,12 +237,12 @@ test('les premiers exercices ne demandent ni mot entier ni connaissance du nom d
   for (const question of beginnerBanks[0]) {
     assert.equal(question.type, 'letter_match');
     assert.equal(question.options.length, 2);
-    assert.equal(question.text.length, 1);
+    if (question.mechanic === 'pairs') assert.ok(question.pairs.every(letter => letter.length === 1));
+    else { assert.equal(question.text.length, 1); assert.equal(question.options[question.answer], question.text); }
     assert.ok(!question.listen);
-    assert.equal(question.options[question.answer], question.text);
   }
   for (const bank of beginnerBanks) {
-    assert.equal(bank.length, 8);
+    assert.equal(bank.length, 16);
     for (const question of bank) {
       assert.equal(question.options.length, 2);
       assert.equal(question.visualAids, false);
