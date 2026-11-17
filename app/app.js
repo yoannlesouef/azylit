@@ -3,7 +3,7 @@ import { createNavigationHistory } from './navigation.js';
 import { createDiscoveryState, renderDiscovery, discoveryGuidance, updateDiscovery } from './discovery.js';
 import { createMission, rememberGroup, missionQuestion, recordExercise, HISTORY_LIMIT } from './missions.js';
 import { interactionFor, applyInteraction, completedText } from './interactions.js';
-import { frenchUtterance } from './speech.js';
+import { frenchUtterance, createPraiseVariation } from './speech.js';
 import { beginnerStages } from './foundations.js';
 import { companionArt, navigationPicture as picture } from './companions.js';
 import { heroes, levels, banks, calibration, questionsFor, questionById } from './data.js';
@@ -34,12 +34,14 @@ const escape = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;'
 const icon = (name) => ({ audio: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15 8c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/></svg>', mute: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM16 9l5 6m0-6-5 6"/></svg>', settings: '<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="18" r="2"/></svg>', arrow: '<svg viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>', book: '<svg viewBox="0 0 24 24"><path d="M12 6v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2z"/></svg>' })[name] || '';
 function avatar(h = hero(), big = false, mood = 'neutral') { return companionArt(h, big, mood); }
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); storageOK = true; } catch { storageOK = false; } }
+const nextPraiseVariation = createPraiseVariation();
 function speak(text, after = null) {
   if (!profile.audio || !hasVoice) return;
   stopAudio();
   const request = speechRequest;
   const play = () => {
     const utterance = frenchUtterance(text, SpeechSynthesisUtterance, speechSynthesis.getVoices());
+    if (/^Bravo(?:\s|[!,])/.test(text)) Object.assign(utterance,nextPraiseVariation());
     if (after) utterance.onend = () => {
       if (request !== speechRequest) return;
       praiseTimer = setTimeout(() => {

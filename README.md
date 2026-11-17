@@ -217,3 +217,5 @@ Dans Découvrir, les cartes composées d’une seule lettre sont réservées à 
 Après une réussite dans les exercices de fondation, la voix répète la cible (lettre, syllabe ou mot), attend 450 ms après la fin de sa prononciation, puis dit « Bravo ! ». Cela vaut aussi pour la dernière réponse de la mission. Une navigation, une nouvelle écoute ou la coupure du son annule la félicitation en attente. Les consignes de lancement et de réessai restent limitées à la cible seule.
 
 Dans les exercices de choix d’une syllabe, la réécoute utilise un grand pictogramme haut-parleur au côté du compagnon discret. L’ensemble forme un seul bouton, sans dépendre de la lecture d’un libellé et sans ajouter une seconde commande au même niveau.
+
+Les « Bravo ! » utilisent quatre variations légères de hauteur et de débit, sans répétition immédiate de la même combinaison. La voix française et son volume restent identiques ; la prononciation des lettres, syllabes et mots conserve ses réglages habituels. La pause de 450 ms avant la félicitation et son annulation lors d’une navigation sont conservées. Le rendu émotionnel dépend des capacités de la voix du navigateur.

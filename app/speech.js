@@ -23,3 +23,19 @@ export function frenchUtterance(text, Utterance, voices) {
   if (voice) utterance.voice = voice;
   return utterance;
 }
+
+// Small changes keep praise lively without changing the voice used to teach sounds.
+export function createPraiseVariation(random = Math.random) {
+  const variations = [
+    {pitch:1.08,rate:1.02},
+    {pitch:1.14,rate:1.06},
+    {pitch:1.10,rate:0.99},
+    {pitch:1.06,rate:1.08}
+  ];
+  let previous = -1;
+  return () => {
+    const choices = variations.map((_,index)=>index).filter(index=>index!==previous);
+    previous = choices[Math.min(choices.length-1,Math.max(0,Math.floor(random()*choices.length)))];
+    return {...variations[previous]};
+  };
+}
