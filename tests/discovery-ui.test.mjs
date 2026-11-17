@@ -18,7 +18,7 @@ test('Découvrir écoute les cartes et conserve la mission ; une panne audio dé
  assert.match(f.app.innerHTML,/data-action="discover"/);
  f.click('discover');f.click('discover-action','letters');f.click('discover-action','letter','b');
  assert.equal(f.spoken.at(-1).text,'bé');
- f.click('discover-action','families');f.click('discover-action','syllable','ma');f.click('discover-action','word','w-maman');
+ f.click('discover-action','families');f.click('discover-action','syllable-initial','m');f.click('discover-action','syllable','ma');f.click('discover-action','word','w-maman');
  assert.equal(f.spoken.at(-1).text,'maman');
  f.click('discover-action','quiz');f.spoken.at(-1).onerror({error:'language-unavailable'});
  assert.match(f.app.innerHTML,/voix n’est pas disponible/);assert.match(f.app.innerHTML,/disabled/);
@@ -48,7 +48,7 @@ test('le compagnon choisi encourage puis félicite et disparaît au mot suivant'
 
 test('les six mots de la syllabe ma sont tous écoutables, y compris les nouveaux exemples',async()=>{
  const f=fixture();await import('../app/app.js?discovery-six-words');
- f.click('discover');f.click('discover-action','families');f.click('discover-action','syllable','ma');
+ f.click('discover');f.click('discover-action','families');f.click('discover-action','syllable-initial','m');f.click('discover-action','syllable','ma');
  const {wordsForSyllable}=await import('../app/discovery-data.js');
  assert.equal((f.app.innerHTML.match(/data-command="word"/g)||[]).length,6);
  for(const word of wordsForSyllable('ma')) {

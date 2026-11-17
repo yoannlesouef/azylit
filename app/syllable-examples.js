@@ -115,6 +115,23 @@ tri|[tri]angle [tri]cot [tri]cher [tri]bune [tri]cycle [tri]er
 tro|[tro]ttinette [tro]tter [tro]gnon [tro]phée [tro]quer [tro]ttinement
 four|[four]mi [four]gon [four]neau [four]chette [four]naise [four]
 jar|[jar]din [jar]diner [jar]dinière [jar]dinet [jar]gon [jar]dinerie
+on|[on] [on]duler [on]dulation [on]duleux [on]glet [on]zième
+in|[in]viter [in]secte [in]dice [in]térieur [in]stant [in]venter
+au|[au]to [au]tobus [au]toroute [au]tomobile [au]tocar [au]tographe
+oi|[oi]seau [oi]sillon [oi]sif [oi]selet [oi]siveté [oi]seux
+chi|[chi]mie [chi]nois [chi]pie [chi]gnon [chi]corée [chi]ffon
+gui|[gui]tare [gui]der [gui]don [gui]mauve [gui]rlande [gui]née
+gé|[gé]ant [gé]ographie [gé]ométrie [gé]lule [gé]nie [gé]néral
+ju|[ju]do [ju]ment [ju]pon [ju]biler [ju]bilation [ju]ron
+le|[le]ver [le]çon [le]vier [le]vure [le]vée [le]vé
+me|[me]nu [me]lon [me]sure [me]nace [me]ner [me]nuet
+pe|[pe]tit [pe]lote [pe]lage [pe]ser [pe]sant [pe]luche
+re|[re]tour [re]nard [re]pas [re]pos [re]gard [re]voir
+se|[se]maine [se]melle [se]cret [se]mer [se]courir [se]cours
+te|[te]nir [te]nu [te]nace [te]naille [te]nailler [te]non
+ve|[ve]nir [ve]lours [ve]lu [ve]nin [ve]louté [ve]louter
+ge|[ge]nou [ge]lée [ge]ler [ge]lure [ge]nêt [ge]nette
+son|chan[son] [son] [son]ger [son]geur [son]deur [son]dage
 `.trim().split('\n').map(line => {
   const [syllable,examples] = line.split('|');
   return {syllable, examples:examples.split(' ')};

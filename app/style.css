@@ -2175,3 +2175,18 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .syllable-repeat-speaker .nav-picture { width: 64px; height: 64px; }
 .exercise-companion-guide.exercise-syllable-repeat:hover { background: var(--pale); border-color: var(--accent); }
 .exercise-syllable-repeat:focus-visible { outline: 4px solid var(--accent); outline-offset: 5px; }
+
+/* Direct lookup: stable alphabet and a compact index, no repeated page arrows. */
+.discovery-letter-grid { grid-template-columns: repeat(6,minmax(0,1fr)); max-width: 760px; gap: 16px; }
+.syllable-initial-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; max-width: 760px; margin: auto; }
+.syllable-initial { display: grid; place-items: center; min-height: 76px; padding: 12px 8px; border: 2px solid var(--line); border-radius: 20px; background: #fffefa; color: var(--ink); font-family: var(--reading-font,sans-serif); font-size: 27px; }
+.syllable-initial[aria-pressed="true"] { border-color: var(--accent); background: var(--pale); }
+.syllable-initial:first-child { grid-column: span 2; }
+.syllable-initial:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media(max-width:600px) {
+  .discovery-letter-grid, .syllable-initial-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+  .discovery-letter { flex-direction: column; gap: 0; min-height: 94px; }
+  .discovery-letter > span:first-child { font-size: 30px; }
+  .discovery-letter > span:last-child { font-size: 24px; }
+  .syllable-initial { min-height: 68px; font-size: 24px; }
+}

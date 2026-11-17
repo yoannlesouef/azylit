@@ -1,20 +1,17 @@
-import { alphabet, extraLetters, syllablesInFamily, wordsForSyllable, wordById, syllableById, makeListeningRound } from './discovery-data.js';
+import { alphabet, extraLetters, discoverySyllables, wordsForSyllable, wordById, syllableById, makeListeningRound } from './discovery-data.js';
 import { companionArt, navigationPicture as picture } from './companions.js';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
-const syllableLevels = [
-  { title:'1 · Pour commencer', families:['vowels','simple'] },
-  { title:'2 · Un peu plus loin', families:['complex','nasal'] },
-  { title:'3 · Pour aller plus loin', families:['clusters','closed'] }
-];
-const SYLLABLE_PAGE_SIZE = 6;
-const levelSyllables = index => syllableLevels[index].families.flatMap(syllablesInFamily);
-export function createDiscoveryState() { return { page:'hub', syllableLevel:0, syllablePage:0, alphabetSet:'base', letterPage:0, wordPage:0, syllableId:null, lastLetter:null, lastWord:null, quiz:null, quizReturn:'hub' }; }
+const initialFor = syllable => syllable.text.match(/^[^aàâäeéèêëiîïoôöuùûüyœæ]+/i)?.[0] || '*';
+export const syllableInitials = ['*', ...new Set(discoverySyllables.map(initialFor).filter(key=>key!=='*'))].sort((a,b)=>a==='*'?-1:b==='*'?1:a.localeCompare(b,'fr'));
+const initialSyllables = initial => discoverySyllables.filter(syllable=>initialFor(syllable)===initial);
+export function createDiscoveryState() { return { page:'hub', syllableInitial:'*', alphabetSet:'base', wordPage:0, syllableId:null, lastLetter:null, lastWord:null, quiz:null, quizReturn:'hub' }; }
 export function discoveryGuidance(state) {
   return ({
     hub:'Choisis une image pour découvrir et écouter.',
     letters:'Touche une lettre pour entendre son nom. Les cartes é et ç ouvrent les autres lettres.',
-    syllables:'Touche une syllabe pour écouter. La flèche montre les suivantes.',
-    'syllable-levels':'Choisis un chemin. Un point pour commencer. Deux points pour aller un peu plus loin. Trois points pour aller plus loin.',
+    'syllable-index':'Choisis le début de ta syllabe. La carte on et ou ouvre les sons sans consonne au début.',
+    syllables:'Touche une syllabe pour écouter et découvrir des mots.',
+
     words:'Touche la grande syllabe pour la réécouter. Touche un mot pour l’entendre.',
     quiz:'Écoute le mot avec le haut-parleur. Puis touche le mot que tu as entendu.'
   })[state.page];
@@ -26,29 +23,23 @@ export function updateDiscovery(current, command, value, random = Math.random, a
   if (command === 'guide') { speech = discoveryGuidance(state); listen = true; }
   else if (command === 'back') {
     if (state.page === 'hub') exit = true;
-    else state.page = ({ words:'syllables', 'syllable-levels':'syllables', quiz:state.quizReturn })[state.page] || 'hub';
+    else state.page = ({ words:'syllables', syllables:'syllable-index', quiz:state.quizReturn })[state.page] || 'hub';
     if (previousPage === 'words') focusCommand = 'selected-syllable';
     speech = discoveryGuidance(state);
   } else if (command === 'letters') { state.page = 'letters'; speech = discoveryGuidance(state); }
-  else if (command === 'alphabet-set' && ['base','extra'].includes(value)) { state.alphabetSet = value; state.letterPage = 0; speech = value === 'base' ? 'Voici les lettres de l’alphabet.' : 'Voici les lettres accentuées et les autres signes.'; }
-  else if (['letter-page','word-page'].includes(command) && ['previous','next'].includes(value)) {
-    const key = command === 'letter-page' ? 'letterPage' : 'wordPage';
-    const all = command === 'letter-page' ? (state.alphabetSet === 'extra' ? extraLetters : alphabet) : wordsForSyllable(state.syllableId);
-    state[key] = Math.max(0,Math.min(Math.ceil(all.length/6)-1,state[key] + (value === 'next' ? 1 : -1)));
-    focusCommand = command === 'letter-page' ? 'letter' : 'word';
+  else if (command === 'alphabet-set' && ['base','extra'].includes(value)) { state.alphabetSet = value; speech = value === 'base' ? 'Voici les lettres de l’alphabet.' : 'Voici les lettres accentuées et les autres signes.'; }
+  else if (command === 'word-page' && ['previous','next'].includes(value)) {
+    const all = wordsForSyllable(state.syllableId);
+    state.wordPage = Math.max(0,Math.min(Math.ceil(all.length/6)-1,state.wordPage + (value === 'next' ? 1 : -1)));
+    focusCommand = 'word';
   }
   else if (command === 'letter') {
     const letter = [...alphabet,...extraLetters].find(item => item.id === value);
     if (letter) { state.lastLetter = value; speech = letter.speech; listen = true; }
-  } else if (command === 'families') { state.page = 'syllables'; speech = discoveryGuidance(state);
-  } else if (command === 'syllable-levels') { state.page = 'syllable-levels'; speech = discoveryGuidance(state);
-  } else if (command === 'syllable-level' && ['0','1','2'].includes(value)) {
-    state.syllableLevel = Number(value); state.syllablePage = 0; state.page = 'syllables';
-    speech = syllableLevels[state.syllableLevel].title + '. Touche une syllabe pour écouter.';
-  } else if (command === 'syllable-page' && ['previous','next'].includes(value)) {
-    const last = Math.ceil(levelSyllables(state.syllableLevel).length/SYLLABLE_PAGE_SIZE)-1;
-    state.syllablePage = Math.max(0,Math.min(last,state.syllablePage + (value === 'next' ? 1 : -1)));
-    focusCommand = 'syllable';
+  } else if (command === 'families') { state.page = 'syllable-index'; speech = discoveryGuidance(state);
+  } else if (command === 'syllable-initial' && syllableInitials.includes(value)) {
+    state.syllableInitial = value; state.page = 'syllables';
+    speech = value === '*' ? 'Touche un son pour écouter.' : 'Voici les syllabes comme ' + initialSyllables(value)[0].speech + '. Touche une carte pour écouter.';
   } else if (command === 'syllable') {
     const syllable = syllableById(value);
     if (syllable) { state.syllableId = value; state.wordPage = 0; state.lastWord = null; state.page = 'words'; speech = syllable.speech; listen = true; }
@@ -87,13 +78,12 @@ export function renderDiscovery(state, voiceAvailable = true, companion = null) 
   if (state.page === 'hub') content = `${title('Découvrir')}<div class="discovery-modes">${button('letters','','Écouter toutes les lettres','<span class="mode-letters" aria-hidden="true">A a</span><span>Lettres</span>','discovery-mode')}${button('families','','Écouter les syllabes et les mots','<span class="mode-letters" aria-hidden="true">ma</span><span>Syllabes</span>','discovery-mode')}${button('quiz','','Écouter un mot et le retrouver',`${picture('sound')}<span>Écoute et trouve</span>`,'discovery-mode')}</div>`;
   if (state.page === 'letters') {
     const letters = state.alphabetSet === 'extra' ? extraLetters : alphabet;
-    content = `${title('Les lettres')}<div class="discovery-tabs">${button('alphabet-set','base','Les vingt-six lettres de l’alphabet','A → Z','discovery-tab',`aria-pressed="${state.alphabetSet === 'base'}"`)}${button('alphabet-set','extra','Les lettres accentuées et les autres signes','é · ç · œ','discovery-tab',`aria-pressed="${state.alphabetSet === 'extra'}"`)}</div><div class="discovery-letter-grid">${letters.slice(state.letterPage*6,(state.letterPage+1)*6).map(letter => button('letter',letter.id,`Écouter le nom de la lettre ${letter.lower}`,`<span>${letter.upper}</span><span>${letter.lower}</span>`,`discovery-letter ${state.lastLetter === letter.id ? 'listened' : ''}`,`aria-pressed="${state.lastLetter === letter.id}"`)).join('')}</div>${pager('letter-page',state.letterPage,letters.length)}`;
+    content = `${title('Les lettres')}<div class="discovery-tabs">${button('alphabet-set','base','Les vingt-six lettres de l’alphabet','A → Z','discovery-tab',`aria-pressed="${state.alphabetSet === 'base'}"`)}${button('alphabet-set','extra','Les lettres accentuées et les autres signes','é · ç · œ','discovery-tab',`aria-pressed="${state.alphabetSet === 'extra'}"`)}</div><div class="discovery-letter-grid">${letters.map(letter => button('letter',letter.id,`Écouter le nom de la lettre ${letter.lower}`,`<span>${letter.upper}</span><span>${letter.lower}</span>`,`discovery-letter ${state.lastLetter === letter.id ? 'listened' : ''}`,`aria-pressed="${state.lastLetter === letter.id}"`)).join('')}</div>`;
   }
-  if (state.page === 'syllable-levels') content = `${title('Choisir le chemin')}<div class="discovery-level-choices">${syllableLevels.map((level,index) => button('syllable-level',String(index),level.title,`<span aria-hidden="true">${'● '.repeat(index+1)}</span><span>${level.title}</span>`,'discovery-level-choice',`aria-pressed="${state.syllableLevel === index}"`)).join('')}</div>`;
+  if (state.page === 'syllable-index') content = `${title('Les syllabes')}<div class="syllable-initial-grid">${syllableInitials.map(initial=>button('syllable-initial',initial,initial === '*' ? 'Les sons on, ou, an et les autres' : 'Les syllabes qui commencent par ' + initial,initial === '*' ? 'on · ou' : escape(initial),'syllable-initial',`aria-pressed="${state.syllableInitial===initial}"`)).join('')}</div>`;
   if (state.page === 'syllables') {
-    const all = levelSyllables(state.syllableLevel), pages = Math.ceil(all.length/SYLLABLE_PAGE_SIZE);
-    const visible = all.slice(state.syllablePage*SYLLABLE_PAGE_SIZE,(state.syllablePage+1)*SYLLABLE_PAGE_SIZE);
-    content = `${title('Les syllabes')}<div class="syllable-focus-grid">${visible.map(syllable => button('syllable',syllable.id,`Écouter ${syllable.text} et découvrir des mots`,`<span>${escape(syllable.text)}</span>`,`discovery-syllable ${state.syllableId === syllable.id ? 'listened' : ''}`)).join('')}</div><nav class="syllable-focus-pager" aria-label="Parcourir les syllabes">${button('syllable-page','previous','Voir les syllabes précédentes','←','syllable-page-arrow',state.syllablePage === 0 ? 'disabled' : '')}<span class="syllable-page-count" aria-label="Page ${state.syllablePage+1} sur ${pages}">${state.syllablePage+1} / ${pages}</span>${button('syllable-page','next','Voir les syllabes suivantes','→','syllable-page-arrow',state.syllablePage === pages-1 ? 'disabled' : '')}</nav>${button('syllable-levels','','Choisir le chemin. ' + syllableLevels[state.syllableLevel].title,`${picture('challenge')}<span>${'● '.repeat(state.syllableLevel+1)}</span>`,'syllable-path-button')}`;
+    const visible = initialSyllables(state.syllableInitial);
+    content = `${title(state.syllableInitial === '*' ? 'on · ou · an…' : state.syllableInitial + '…')}<div class="syllable-focus-grid">${visible.map(syllable=>button('syllable',syllable.id,`Écouter ${syllable.text} et découvrir des mots`,`<span>${escape(syllable.text)}</span>`,`discovery-syllable ${state.syllableId === syllable.id ? 'listened' : ''}`)).join('')}</div>`;
   }
   if (state.page === 'words') {
     const syllable = syllableById(state.syllableId), words = wordsForSyllable(state.syllableId);

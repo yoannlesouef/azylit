@@ -892,7 +892,7 @@ export const discoveryWords = entries.flatMap(([notation,emoji]) => {
   seenWords.add(text);
   return [{ id:'w-' + text, text, emoji, parts }];
 });
-const soundOverrides = { lis:'lit', til:'ti', let:'lait', vet:'vais', rêt:'raie', mat:'ma', can:'quand', bam:'banc', chan:'champ', gan:'gant', ter:'té', ler:'lé', mer:'mé', noi:'noix', tion:'sion', man:'m’en', pin:'pain', tin:'tain', din:'daim', sin:'saint', lon:'l’on', pis:'pi', bot:'bo', lot:'lo', lat:'la', gat:'ga', ssin:'saint', gi:'ji', ge:'je', xy:'gzi', lli:'li', quai:'ké', che:'cheu', teau:'tôt', reau:'rot', deau:'dos', meau:'mot', phar:'far', zage:'zage', zine:'zine', zette:'zette', qua:'ka', zé:'zé' };
+const soundOverrides = { chi:'chie', lis:'lit', til:'ti', let:'lait', vet:'vais', rêt:'raie', mat:'ma', can:'quand', bam:'banc', chan:'champ', gan:'gant', ter:'té', ler:'lé', mer:'mé', noi:'noix', tion:'sion', man:'m’en', pin:'pain', tin:'tain', din:'daim', sin:'saint', lon:'l’on', pis:'pi', bot:'bo', lot:'lo', lat:'la', gat:'ga', ssin:'saint', gi:'ji', ge:'je', xy:'gzi', lli:'li', quai:'ké', che:'cheu', teau:'tôt', reau:'rot', deau:'dos', meau:'mot', phar:'far', zage:'zage', zine:'zine', zette:'zette', qua:'ka', zé:'zé' };
 const syllables = new Map();
 const associatedWords = new Map();
 for (const {syllable,examples} of syllableExamples) {
