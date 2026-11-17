@@ -123,3 +123,26 @@ test('la syllabe précède Bravo, avec une pause après sa fin et annulation au 
  const success=f.utterances.at(-1);assert.equal(success.text,'mi');success.onend();f.click('next');
  const before=f.spoken.length;await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.length,before);
 });
+
+test('une panne audio ne laisse pas répondre sans cible et la réécoute ne compte pas comme une erreur',async()=>{
+ const f=fixture(profileAt(2));await import('../app/app.js?voice-failure-recovery');f.click('resume');
+ const before=f.saved();f.utterances.at(-1).onerror({error:'language-unavailable'});
+ assert.match(f.app.innerHTML,/retry-exercise-audio/);
+ assert.ok(!f.app.innerHTML.includes('data-action="answer"'));
+ f.click('answer',0);assert.equal(f.saved().session.results.length,0);
+ f.click('retry-exercise-audio');assert.equal(f.spoken.at(-1),'ma');
+ assert.match(f.app.innerHTML,/data-action="answer"/);
+ assert.equal(f.saved().session.attempts,before.session.attempts);
+ assert.equal(f.saved().session.helpUsed,before.session.helpUsed);
+ f.click('answer',0);assert.equal(f.saved().session.results[0],'independent');
+});
+
+test('le grand haut-parleur est commun aux sons, syllabes et mots à assembler',async()=>{
+ for (const stage of [1,2,3]) {
+  const f=fixture(profileAt(stage));await import('../app/app.js?clear-listening-'+stage);f.click('resume');
+  assert.match(f.app.innerHTML,/syllable-repeat-speaker/);
+  assert.equal((f.app.innerHTML.match(/data-action="repeat"/g)||[]).length,1);
+  f.click('audio');assert.equal(f.saved().audio,false);
+  f.click('repeat');assert.equal(f.saved().audio,true);
+ }
+});

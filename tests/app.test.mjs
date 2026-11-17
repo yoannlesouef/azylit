@@ -255,7 +255,7 @@ test('les premiers exercices ne demandent ni mot entier ni connaissance du nom d
     assert.ok(!question.listen);
   }
   for (const [stage,bank] of beginnerBanks.entries()) {
-    assert.equal(bank.length, stage === 3 ? 60 : 16);
+    assert.equal(bank.length, stage === 3 ? 60 : stage === 2 ? 40 : 16);
     for (const question of bank) {
       assert.equal(question.options.length, 2);
       assert.equal(question.visualAids, false);

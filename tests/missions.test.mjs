@@ -150,3 +150,22 @@ test('Assemblage contient 60 mots uniques de deux syllabes et les parcourt avant
  }
  assert.equal(seen.size,60);assert.equal(profile.beginnerStage,3);
 });
+
+
+test('les nouvelles syllabes gardent le format et la répartition de chaque mission',()=>{
+ const pool=questionsFor(0,2);assert.equal(pool.length,40);
+ assert.equal(new Set(pool.map(q=>q.listen)).size,32);
+ for(const question of pool.slice(16)){
+  assert.match(question.listen,/^[bprstvf][aiou]$/);
+  if(question.mechanic==='build')assert.equal(question.parts.join(''),question.listen);
+  else assert.equal(question.options[question.answer],question.listen);
+ }
+ const profile=freshProfile();profile.beginnerStage=2;const seen=new Set();const random=randomSource();
+ for(let round=0;round<5;round++){
+  profile.session=createMission(profile,random);
+  assert.equal(profile.session.questionIds.filter(id=>questionById(id).mechanic==='build').length,4);
+  assert.ok(profile.session.questionIds.every(id=>!seen.has(id)));
+  profile.session.questionIds.forEach(id=>seen.add(id));finish(profile);
+ }
+ assert.equal(seen.size,40);
+});

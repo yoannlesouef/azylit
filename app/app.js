@@ -10,7 +10,7 @@ import { heroes, levels, banks, calibration, questionsFor, questionById } from '
 import { STORAGE_KEY, freshProfile, parseProfile, recommendedLevel, recommendedBeginnerStage, recordBeginnerMission, difficultyPosition, setDifficultyPosition } from './state.js';
 const app = document.querySelector('#app');
 let discoveryState = createDiscoveryState();
-let discoveryAudioError = false, speechRequest = 0, praiseTimer;
+let discoveryAudioError = false, speechRequest = 0, praiseTimer, exerciseAudioError = false;
 const hasVoice = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 let profile;
 let storageOK = true;
@@ -36,7 +36,7 @@ function avatar(h = hero(), big = false, mood = 'neutral') { return companionArt
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); storageOK = true; } catch { storageOK = false; } }
 const nextPraiseVariation = createPraiseVariation();
 function speak(text, after = null) {
-  if (!profile.audio || !hasVoice) return;
+  if (!profile.audio || !hasVoice || exerciseAudioError) return;
   stopAudio();
   const request = speechRequest;
   const play = () => {
@@ -49,10 +49,14 @@ function speak(text, after = null) {
       }, 450);
     };
     utterance.onerror = event => {
-      if (request !== speechRequest || ['canceled','interrupted'].includes(event.error) || screen !== 'discover') return;
-      discoveryAudioError = true;
-      if (discoveryState.quiz) discoveryState.quiz.heard = false;
-      render(); announce('La voix n’est pas disponible pour le moment.');
+      if (request !== speechRequest || ['canceled','interrupted'].includes(event.error)) return;
+      if (screen === 'discover') {
+        discoveryAudioError = true;
+        if (discoveryState.quiz) discoveryState.quiz.heard = false;
+      } else if (['mission','calibrate'].includes(screen) && !feedback?.correct) exerciseAudioError = true;
+      else return;
+      clearTimeout(praiseTimer);
+      render(); announce('La voix n’est pas disponible pour le moment. Touche le haut-parleur pour réessayer.');
     };
     speechSynthesis.speak(utterance);
   };
@@ -171,16 +175,17 @@ function exerciseContent(question, index, isCalibration = false) {
   const rejected = isCalibration ? [] : profile.session.rejected;
   const solved = feedback?.correct === true;
   const audioRequired = question.requiresAudio !== false && (question.listen || question.optionAudio);
-  const blocked = !!audioRequired && (!profile.audio || !hasVoice);
+  const blocked = !!audioRequired && (!profile.audio || !hasVoice || exerciseAudioError);
   const guided = !isCalibration && (profile.session.attempts >= 2 || profile.session.helpUsed);
   const total = isCalibration ? 5 : 8;
-  const syllableChoice = question.type === 'simple_syllable' && !question.mechanic;
+  const syllableChoice = question.foundation && Boolean(question.listen);
+  const repeatLabel = question.type === 'simple_syllable' ? 'la syllabe' : question.type === 'vowel_sound' ? 'le son' : 'le mot';
   const progress = `<div class="stars exercise-progress" aria-label="${index + (solved ? 1 : 0)} étapes terminées sur ${total}">${Array.from({ length:total }, (_, i) => `<span class="${i < index || (solved && i === index) ? 'done' : i === index ? 'active' : ''}" aria-hidden="true">★</span>`).join('')}</div>`;
 
   if (solved) {
     return `${progress}<section class="answer-complete" aria-label="Bonne réponse"><div class="completed-answer"><span>${escape(completedText(question))}</span><span class="completed-check" aria-hidden="true">✓</span></div>${question.modelParts ? reading(question.modelParts.join(' + '), question) : ''}<div class="visual-feedback visual-feedback--success" role="status"><span class="sr-only">Bonne réponse. La flèche permet de continuer.</span><div class="feedback-companion cheering-companion" aria-hidden="true">${avatar(hero(), true, 'cheer')}</div></div><button class="next-picture exercise-next" data-action="next" aria-label="Passer au jeu suivant">${picture('arrow')}</button></section>`;
   }
-  return `${progress}<section class="question-workspace" aria-labelledby="exercise-instruction"><h1 id="exercise-instruction" class="sr-only">${question.instruction}</h1><div class="exercise-stimulus ${question.text ? 'has-model' : 'audio-stimulus'}">${question.text ? reading(question.text, question) : ''}<button class="exercise-companion-guide ${syllableChoice ? 'exercise-syllable-repeat' : ''} ${feedback && !feedback.correct ? 'companion-supporting' : ''}" data-action="repeat" aria-label="${syllableChoice ? 'Réécouter la syllabe avec ' : feedback ? 'Réécouter l’aide avec ' : 'Écouter la consigne avec '}${hero().name}"><span ${syllableChoice ? 'aria-hidden="true"' : ''}>${avatar(hero(), false, feedback ? 'support' : 'neutral')}</span>${syllableChoice ? `<span class="syllable-repeat-speaker" aria-hidden="true">${picture('sound')}</span>` : `<span class="companion-voice-badge" aria-hidden="true">${icon('audio')}</span>`}</button></div>${blocked ? `<div class="audio-required">${hasVoice ? `<button class="sound-enable" data-action="audio" aria-label="Activer le son">${picture('sound')}</button>` : '<p role="status">La voix n’est pas disponible dans ce navigateur.</p>'}<button class="picture-option" data-action="alternative" aria-label="Choisir un autre exercice sans écoute">${picture('arrow')}</button></div>` : choiceControls(question, rejected, guided, isCalibration)}${feedback ? `<div class="visual-feedback visual-feedback--retry" role="status"><span class="sr-only">Tu peux réessayer. Le compagnon est là pour t’aider.</span></div>` : ''}<div class="exercise-secondary"><button class="help-picture" data-action="${isCalibration ? 'skip-calibration' : 'help'}" aria-label="${isCalibration ? 'Je ne sais pas encore, passer cette question' : 'Demander de l’aide à mon compagnon'}">${picture('help')}</button><button class="exercise-difficulty" data-action="difficulty" aria-label="Mon niveau. ${complexityLabel()}">${picture('game-choice')}</button></div>${guided ? '<p class="sr-only">La réponse entourée t’aide à terminer cette découverte.</p>' : ''}</section>`;
+  return `${progress}<section class="question-workspace" aria-labelledby="exercise-instruction"><h1 id="exercise-instruction" class="sr-only">${question.instruction}</h1><div class="exercise-stimulus ${question.text ? 'has-model' : 'audio-stimulus'} ${syllableChoice ? 'clear-audio-stimulus' : ''}">${question.text ? reading(question.text, question) : ''}<button class="exercise-companion-guide ${syllableChoice ? 'exercise-syllable-repeat' : ''} ${feedback && !feedback.correct ? 'companion-supporting' : ''}" data-action="repeat" aria-label="${syllableChoice ? 'Réécouter ' + repeatLabel + ' avec ' : feedback ? 'Réécouter l’aide avec ' : 'Écouter la consigne avec '}${hero().name}"><span ${syllableChoice ? 'aria-hidden="true"' : ''}>${avatar(hero(), false, feedback ? 'support' : 'neutral')}</span>${syllableChoice ? `<span class="syllable-repeat-speaker" aria-hidden="true">${picture('sound')}</span>` : `<span class="companion-voice-badge" aria-hidden="true">${icon('audio')}</span>`}</button></div>${blocked ? `<div class="audio-required">${hasVoice ? `<button class="sound-enable" data-action="retry-exercise-audio" aria-label="${exerciseAudioError ? 'Réessayer l’écoute' : 'Activer le son et écouter'}">${picture('sound')}</button>` : '<p role="status">La voix n’est pas disponible dans ce navigateur.</p>'}<button class="picture-option" data-action="alternative" aria-label="Choisir un autre exercice sans écoute">${picture('arrow')}</button></div>` : choiceControls(question, rejected, guided, isCalibration)}${feedback ? `<div class="visual-feedback visual-feedback--retry" role="status"><span class="sr-only">Tu peux réessayer. Le compagnon est là pour t’aider.</span></div>` : ''}<div class="exercise-secondary"><button class="help-picture" data-action="${isCalibration ? 'skip-calibration' : 'help'}" aria-label="${isCalibration ? 'Je ne sais pas encore, passer cette question' : 'Demander de l’aide à mon compagnon'}">${picture('help')}</button><button class="exercise-difficulty" data-action="difficulty" aria-label="Mon niveau. ${complexityLabel()}">${picture('game-choice')}</button></div>${guided ? '<p class="sr-only">La réponse entourée t’aide à terminer cette découverte.</p>' : ''}</section>`;
 }
 function mission() { return `<main id="main" tabindex="-1" class="exercise">${exerciseContent(currentQuestion(), profile.session.index)}</main>`; }
 function calibrate() { return `<main id="main" tabindex="-1" class="exercise">${exerciseContent(currentQuestion(), calibrationState.index, true)}</main>`; }
@@ -200,7 +205,7 @@ function startMission() {
   profile.session = createMission(profile);
   screen = 'mission'; feedback = null; save(); render(true); readQuestion();
 }
-function readQuestion() { stopAudio(); speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); }
+function readQuestion() { stopAudio(); exerciseAudioError = false; render(); speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); }
 function endMission(successTarget = null) {
   rememberGroup(profile,profile.session,true);
   if (profile.session.mode !== 'replay') recordBeginnerMission(profile, profile.session);
@@ -238,14 +243,14 @@ function answer(index) {
   if (!Number.isInteger(index) || index < 0 || index >= question.options.length) return;
   if (screen === 'calibrate') return calibrationAnswer(index === question.answer);
   const session = profile.session;
-  if (question.mechanic || feedback?.correct || session.rejected.includes(index) || (question.requiresAudio !== false && (question.listen || question.optionAudio) && (!profile.audio || !hasVoice))) return;
+  if (question.mechanic || feedback?.correct || session.rejected.includes(index) || (question.requiresAudio !== false && (question.listen || question.optionAudio) && (!profile.audio || !hasVoice || exerciseAudioError))) return;
   if (index === question.answer) completeExercise(question);
   else { session.rejected.push(index); incorrectExercise(question); }
 }
 function interact(action, index) {
   if (screen !== 'mission' || feedback?.correct) return;
   const question = currentQuestion();
-  if (!question.mechanic || (question.requiresAudio !== false && question.listen && (!profile.audio || !hasVoice))) return;
+  if (!question.mechanic || (question.requiresAudio !== false && question.listen && (!profile.audio || !hasVoice || exerciseAudioError))) return;
   const result = applyInteraction(question, profile.session.interaction, action, index);
   if (result.event === 'idle') return;
   profile.session.interaction = result.state;
@@ -355,7 +360,8 @@ const actions = {
   guide() { profile.audio = true; save(); render(); navigationGuidance(); },
   settings,
   privacy,
-  repeat() { speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); },
+  repeat() { if (!profile.audio && hasVoice) { profile.audio = true; save(); } readQuestion(); },
+  'retry-exercise-audio'() { actions.repeat(); },
   'listen-word'() { speak(currentQuestion().listen); },
   'option-audio'(button) { speak(currentQuestion().options[Number(button.dataset.option)]); },
   answer(button) { answer(Number(button.dataset.answer)); },

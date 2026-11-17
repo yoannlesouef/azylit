@@ -16,7 +16,7 @@ Cette version intègre les retours sur les compagnons, l'autonomie des non-lecte
 | Information des parents | Espace HTML dédié en cinq pages et phrase cliquable près du logo : « Apprendre à lire, chacun à son rythme. » ; sous le logo sur petit écran ; absente des exercices | Vérification visuelle sur les appareils cibles |
 | Difficulté | Sélecteur unique avec aperçu, moins, plus et triangle, accompagné oralement ; sept positions | Validation de la compréhension des pictogrammes et de la progression |
 | Premiers apprentissages | Quatre sous-paliers de huit questions : lettres, sons des voyelles, syllabes simples et assemblage | Contenus supplémentaires, enseignement explicite de la fusion lettre-son et validation pédagogique |
-| Catalogue | 156 activités de démonstration : choix de réponse, quatre associations de cartes lettres, huit fusions de lettres et soixante constructions de mots | Étendre les autres mécaniques et valider la couverture CP–CM2 |
+| Catalogue | 180 activités de démonstration : choix de réponse, quatre associations de cartes lettres, huit fusions de lettres et soixante constructions de mots | Étendre les autres mécaniques et valider la couverture CP–CM2 |
 | Retours | Compagnon et symboles, sans félicitations ni indices écrits visibles ; voix rejouable avant la réussite | Tests de compréhension des retours sans lecture |
 | Page d'exercice | Réponses prioritaires, une réécoute centrale, outils secondaires ; après réussite, réponse statique et une grande flèche | Vérification en navigateur et essais utilisateurs |
 | Audio | Français `fr-FR`, préférence pour les voix naturelles disponibles, débit `0.97`, intonation native, encouragements courts | Enregistrements humains ou synthèse naturelle validée, notamment pour les phonèmes isolés |
@@ -233,7 +233,7 @@ Les types d'exercices ci-dessous constituent la suite du catalogue, à introduir
 
 ### Diversification des mécaniques : exigence prioritaire
 
-Le prototype comporte désormais quatre familles d'interactions : choix de réponse, association de cartes, fusion de lettres en syllabe et assemblage de syllabes en mot. Le catalogue contient 156 activités : soixante au niveau Assemblage et seize pour chacun des six autres paliers. Chaque mission sélectionne huit activités sans changer automatiquement de sous-palier. Les répartitions ci-dessous concernent une mission, et non la taille du catalogue.
+Le prototype comporte désormais quatre familles d'interactions : choix de réponse, association de cartes, fusion de lettres en syllabe et assemblage de syllabes en mot. Le catalogue contient 180 activités : soixante au niveau Assemblage, quarante au niveau Syllabes et seize pour chacun des cinq autres paliers. Chaque mission sélectionne huit activités sans changer automatiquement de sous-palier. Les répartitions ci-dessous concernent une mission, et non la taille du catalogue.
 
 | Sous-palier | Mécaniques réalisées | Répartition dans la mission |
 | --- | --- | --- |
@@ -407,3 +407,5 @@ Dans les exercices de choix d’une syllabe, la réécoute utilise un grand pict
 Les « Bravo ! » utilisent quatre variations légères de hauteur et de débit, sans répétition immédiate de la même combinaison. La voix française et son volume restent identiques ; la prononciation des lettres, syllabes et mots conserve ses réglages habituels. La pause de 450 ms avant la félicitation et son annulation lors d’une navigation sont conservées. Le rendu émotionnel dépend des capacités de la voix du navigateur.
 
 La navigation directe remplace les anciennes pages de lettres et de syllabes. Le catalogue inclut désormais on, in, au, oi, chi, gui, gé, ju, le, me, pe, re, se, te, ve, ge et son. Il reste non exhaustif ; voir le [suivi de couverture](docs/catalogue-syllabes.md). Les tests garantissent six mots distincts pour chaque entrée proposée et l’accès à toutes les entrées par l’index.
+
+Le grand haut-parleur est commun aux exercices de sons, de syllabes et d’assemblage. En cas d’erreur de synthèse vocale signalée par le navigateur, les réponses nécessitant l’écoute sont retirées jusqu’à une réécoute, avec accès à un exercice alternatif sans écoute. Réessayer le son ne compte ni comme erreur ni comme aide pédagogique. Le niveau Syllabes contient 40 exercices couvrant 32 syllabes simples, dont 24 nouvelles syllabes consonne-voyelle. Chaque mission conserve quatre choix de réponse et quatre constructions de lettres.

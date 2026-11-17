@@ -115,3 +115,18 @@ for (const [index,parts] of extraAssemblyWords.entries()) {
     unit:'syllables', mechanic:'build', visualAids:false, foundation:true
   });
 }
+
+// More simple consonant-vowel syllables, retaining four choices and four builds per mission.
+const extraSimpleSyllables = ['ba','bi','bo','bu','pa','pi','po','pu','ta','ti','to','tu','ra','ri','ro','ru','sa','si','so','su','va','vi','fa','fu'];
+for (const [index,target] of extraSimpleSyllables.entries()) {
+  const vowels = 'aiou';
+  const distractor = target[0] + vowels[(vowels.indexOf(target[1])+1)%vowels.length];
+  const question = {...listen(2,target,distractor,index),id:`f2-${index+17}`};
+  if ([2,3,6,7].includes(index%8)) Object.assign(question,{
+    mechanic:'build',unit:'letters',parts:[...target],tiles:[...target].reverse(),
+    text:[...target].join(' + '),
+    instruction:'Écoute la syllabe. Touche les lettres dans le même ordre que le modèle.',
+    hint:'Commence par la première lettre du modèle. Puis ajoute la deuxième.',requiresAudio:false
+  });
+  beginnerBanks[2].push(question);
+}
