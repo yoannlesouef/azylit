@@ -78,3 +78,24 @@ test('les lettres et les mots restent accessibles par petites séries',()=>{
  s=updateDiscovery(s,'quiz').state;s=updateDiscovery(s,'back').state;
  assert.equal(s.page,'words');assert.equal(s.letterPage,savedPage);
 });
+
+test('chaque syllabe proposée possède au moins six vrais mots distincts et un segment explicite',()=>{
+  assert.ok(discoverySyllables.length >= 100);
+  for (const syllable of discoverySyllables) {
+    const words=wordsForSyllable(syllable.id);
+    assert.ok(words.length >= 6,syllable.id);
+    assert.equal(new Set(words.map(word=>word.text)).size,words.length,syllable.id);
+    assert.deepEqual(syllable.words,words.map(word=>word.id));
+    for (const word of words) {
+      assert.equal(word.parts.map(part=>part.text).join(''),word.text);
+      assert.equal(word.parts.filter(part=>part.syllable===syllable.id).length,1);
+      assert.ok(!/[\[\]~]/.test(word.text));
+    }
+    const state={...createDiscoveryState(),page:'words',syllableId:syllable.id};
+    assert.equal((renderDiscovery(state).match(/data-command="word"/g)||[]).length,6);
+  }
+  assert.ok(wordsForSyllable('ma').some(word=>word.text==='maçon'));
+  assert.ok(!wordsForSyllable('cho').some(word=>word.text==='chorale'));
+  assert.ok(!wordsForSyllable('pou').some(word=>word.text==='poule'));
+  assert.ok(wordsForSyllable('noi').find(word=>word.text==='noyau').parts.some(part=>part.text==='noy' && part.syllable==='noi'));
+});

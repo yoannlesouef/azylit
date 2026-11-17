@@ -45,3 +45,13 @@ test('le compagnon choisi encourage puis félicite et disparaît au mot suivant'
  assert.match(f.app.innerHTML,/Malo, le pirate/);
  f.click('discover-action','quiz-next');assert.ok(!f.app.innerHTML.includes('discovery-companion-feedback'));
 });
+
+test('les six mots de la syllabe ma sont tous écoutables, y compris les nouveaux exemples',async()=>{
+ const f=fixture();await import('../app/app.js?discovery-six-words');
+ f.click('discover');f.click('discover-action','families');f.click('discover-action','syllable','ma');
+ const {wordsForSyllable}=await import('../app/discovery-data.js');
+ assert.equal((f.app.innerHTML.match(/data-command="word"/g)||[]).length,6);
+ for(const word of wordsForSyllable('ma')) {
+   f.click('discover-action','word',word.id);assert.equal(f.spoken.at(-1).text,word.text);
+ }
+});
