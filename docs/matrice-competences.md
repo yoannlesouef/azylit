@@ -53,3 +53,5 @@ La commande `npm run audit:coverage` recalcule les effectifs. Les tests vérifie
 ## Prochaine étape
 
 Faire relire cette classification, les correspondances travaillées et le premier sous-ensemble de mots/sons. Préparer ensuite les enregistrements et renseigner leur provenance, leur validation et les appareils sur lesquels ils ont été écoutés. Aucun enregistrement validé n’est livré dans cet incrément.
+
+La [préparation du niveau Premiers sons](parcours-premiers-sons.md) précise désormais le sous-parcours et ses dépendances audio. Ses essais de conception ne sont pas comptés dans les 180 exercices du jeu et ne changent pas les effectifs ci-dessus.

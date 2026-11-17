@@ -421,3 +421,9 @@ La navigation adulte commence par Parents et Enseignants, puis Notre démarche, 
 Le palier « Premiers sons » couvre actuellement uniquement a, i, o et u (16 exercices). Il ne doit pas être présenté comme couvrant toutes les lettres : les autres correspondances nécessitent des contenus et des prononciations vérifiés, distincts du nom des lettres proposé dans Découvrir.
 
 Référencement : titres visibles explicites, sources et sommaires adultes, entité WebApplication descriptive, image de partage locale, questions structurées reliées aux réponses visibles et dates éditoriales cohérentes. Les branches Cloudflare autres que PRODUCTION_BRANCH (main par défaut) sont désindexées automatiquement, sans bloquer leur exploration, et ne publient pas d’URL dans leur sitemap. Les corrections et limites sont détaillées dans docs/audit-seo-geo-aeo.md.
+
+### Préparation de l’extension Premiers sons — phase 2
+
+Le schéma éditorial sépare graphème, valeur phonétique, contexte, mot exemple et référence audio. L’inventaire préparatoire comporte 31 unités orales (oi est une séquence, pas un phonème unique), six étapes éditoriales et un suivi des 26 lettres. Huit essais de conception sur l/r/f/j proposent deux choix, sans graphèmes homophones dans une même question. Ils restent désactivés et ne modifient ni les exercices actuels ni leurs identifiants. Les étapes éditoriales ne créent pas de niveaux supplémentaires à choisir par l’enfant.
+
+Les nouveaux exercices n’ont aucun repli TTS vers un nom de consonne ou une notation phonétique. L’audio prévu doit avoir un fichier présent, une provenance et des droits documentés, une relecture du contenu et de la prononciation et une écoute sur appareils. Le contrôle des métadonnées ne valide pas la prononciation. L’intégration en phase 3 commencera par un sous-ensemble relu et enregistré ; aucun nouveau phonème n’est déclaré livré dans cette préparation. Voir docs/parcours-premiers-sons.md.

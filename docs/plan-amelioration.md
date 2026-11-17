@@ -7,7 +7,7 @@ Document de travail du 17 novembre 2026. Référence : [objectifs initiaux](../d
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
 | 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
-| 2 · Socle pédagogique et audio | **En cours — préparation de la matrice** | 29 objectifs définis, rattachement des 180 exercices, lacunes visibles et fiche pilote ; couverture limitée des Premiers sons explicitée | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
+| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 31 unités sonores proposées, 26 lettres documentées, huit essais de conception sur l/r/f/j et contrat audio préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
 | 3 · Premiers apprentissages | **À démarrer dans ce plan** | Fonctions existantes conservées ; aucune nouvelle mécanique de ce lot livrée ici | Après le premier sous-ensemble relu de la phase 2 |
 | 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
 | 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
@@ -15,7 +15,7 @@ Document de travail du 17 novembre 2026. Référence : [objectifs initiaux](../d
 
 Une phase n’est pas déclarée terminée tant que ses critères d’acceptation ne sont pas satisfaits. Chaque incrément technique terminé est enregistré et poussé sur GitHub ; les phases terminées feront également l’objet d’un push. Les tâches dépendant d’une validation professionnelle ou d’un essai utilisateur restent explicitement ouvertes.
 
-Documents de suivi : [recette du parcours pilote](recette-parcours-syllabes.md), [première matrice de compétences](matrice-competences.md). Recalcul du rattachement : `npm run audit:coverage`.
+Documents de suivi : [recette du parcours pilote](recette-parcours-syllabes.md), [première matrice de compétences](matrice-competences.md), [préparation du niveau Premiers sons](parcours-premiers-sons.md). Recalcul du rattachement : `npm run audit:coverage`.
 
 ## Résultat visé
 
@@ -68,7 +68,7 @@ Acceptation : aucune impasse connue sur les scénarios ; reprise conservée ; co
 
 ## Lot 2 — Fiabiliser le socle pédagogique et l’audio
 
-**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs, 180 exercices rattachés et fiche pilote créées. Aucune relecture professionnelle ni production d’audios validés réalisée.
+**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs et 180 exercices rattachés. Parcours Premiers sons préparé avec 31 unités sonores, 26 lettres documentées, huit essais de conception sur l/r/f/j, prérequis, aides et contrat audio. Tests de cohérence et audit des métadonnées disponibles. Aucune relecture professionnelle ni production d’audios validés réalisée ; le jeu conserve ses quatre voyelles actuelles.
 
 Objectif : rendre les contenus justes et cohérents avant de les multiplier.
 
@@ -235,3 +235,5 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 
 - 17 novembre 2026 — Phase 6, audit SEO/GEO/AEO : titres et résumés précisés, sommaires et sources visibles, métadonnées de partage avec image, dates éditoriales et FAQ liées à leurs réponses. Prévisualisations Cloudflare en noindex automatique avec en-tête et sitemap cohérents. Contrôles techniques locaux réussis ; accès au domaine public, indexation et visibilité dans les moteurs non vérifiés. Voir audit-seo-geo-aeo.md.
 - 17 novembre 2026 — Phase 2 : intitulé « Premiers sons » et FAQ explicitant la couverture a/i/o/u. Les consonnes et autres correspondances restent à développer avec des audios vérifiés ; aucun remplacement du phonème par le nom de lettre n’a été introduit.
+
+- 17 novembre 2026 — Phase 2, niveau Premiers sons : progression proposée en six étapes éditoriales (sans ajouter de menu enfant), distinctions entre noms/phonèmes/contextes, inventaire de 31 unités et suivi des 26 lettres. Huit essais de conception de deux choix sur l/r/f/j préparés mais non activés. Contrat audio et commande audit:sounds vérifiant métadonnées puis présence des fichiers. Tous les nouveaux audios restent absents et non validés. Prochaine étape : relecture professionnelle du premier pilote, production des fichiers et écoutes sur appareils avant intégration en phase 3.
