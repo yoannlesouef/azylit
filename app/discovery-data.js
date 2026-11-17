@@ -896,6 +896,8 @@ const soundOverrides = { lis:'lit', til:'ti', let:'lait', vet:'vais', rêt:'raie
 const syllables = new Map();
 const associatedWords = new Map();
 for (const {syllable,examples} of syllableExamples) {
+  // Single-letter cards belong to the alphabet in this child-facing navigation.
+  if (Array.from(syllable).length < 2) continue;
   const words = examples.map(example => {
     const match = /^([^\[\]]*)\[([^\[\]]+)\]([^\[\]]*)$/.exec(example);
     if (!match) throw new Error('Exemple de syllabe invalide : ' + example);
@@ -919,7 +921,7 @@ for (const {syllable,examples} of syllableExamples) {
 }
 export const discoverySyllables = [...syllables.values()].sort((a,b) => a.text.localeCompare(b.text,'fr'));
 export const syllableFamilies = [
-  { id:'vowels', label:'a · é · ou', icon:'a', speech:'Les voyelles et leurs groupes de lettres.' },
+  { id:'vowels', label:'ou · an · en', icon:'ou', speech:'Les sons écrits avec plusieurs lettres.' },
   { id:'simple', label:'ma · li · to', icon:'ma', speech:'Les petites syllabes simples.' },
   { id:'complex', label:'cha · mou', icon:'cha', speech:'Les syllabes avec plusieurs lettres pour un son.' },
   { id:'nasal', label:'man · pin', icon:'on', speech:'Les syllabes avec les sons de maman et de lapin.' },

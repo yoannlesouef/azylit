@@ -99,3 +99,15 @@ test('chaque syllabe proposée possède au moins six vrais mots distincts et un 
   assert.ok(!wordsForSyllable('pou').some(word=>word.text==='poule'));
   assert.ok(wordsForSyllable('noi').find(word=>word.text==='noyau').parts.some(part=>part.text==='noy' && part.syllable==='noi'));
 });
+
+
+test('les cartes d’une seule lettre restent dans l’alphabet, pas dans les syllabes',()=>{
+  for (const syllable of discoverySyllables) assert.ok(Array.from(syllable.text).length>=2,syllable.text);
+  for (const letter of ['a','i','é','o','u']) {
+    assert.ok(!discoverySyllables.some(syllable=>syllable.id===letter));
+    assert.deepEqual(wordsForSyllable(letter),[]);
+    assert.ok([...alphabet,...extraLetters].some(item=>item.id===letter));
+  }
+  assert.ok(discoverySyllables.some(syllable=>syllable.id==='ma'));
+  assert.ok(discoverySyllables.some(syllable=>syllable.id==='ou'));
+});

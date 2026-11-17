@@ -191,7 +191,7 @@ Dans les premiers exercices, l’audio prononce uniquement la cible : nom de la 
 
 ## Découvrir les lettres, les syllabes et les mots
 
-Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes présentées six par six, avec trois chemins de complexité et des mots à écouter. Les 112 entrées de syllabes proposées renvoient à 624 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
+Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes présentées six par six, avec trois chemins de complexité et des mots à écouter. Les 107 entrées de syllabes proposées renvoient à 597 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
 
 **Écoute et trouve** propose un mot à entendre et trois mots écrits parmi lesquels le retrouver. Réécoute, essais sans pénalité, coche et nouveau mot sont disponibles. Cette exploration ne change ni la mission conservée ni l’historique des exercices.
 
@@ -211,3 +211,5 @@ Le bouton Retour du navigateur et les flèches internes retrouvent les écrans p
 Depuis un exercice, le bouton inférieur de « Choisis ton niveau » affiche un triangle et revient directement au jeu : le même niveau conserve la mission et sa position ; un niveau différent lance une nouvelle mission au niveau choisi. Depuis l’accueil, ce bouton conserve la maison et revient à l’accueil.
 
 Le catalogue proposé dans Découvrir est limité aux syllabes disposant d’au moins six exemples distincts et explicitement associés. Les anciennes entrées sans suffisamment d’exemples ont été retirées de la liste enfant. Les mots restent affichés six par six ; certains sons ont plusieurs graphies, par exemple « noi » et « noy » dans « noyau », avec le segment réellement écrit surligné. Les exemples restent à valider pédagogiquement.
+
+Dans Découvrir, les cartes composées d’une seule lettre sont réservées à la rubrique Lettres. La liste Syllabes présente uniquement des cartes d’au moins deux lettres, chacune accompagnée d’au moins six mots. Ce choix organise la navigation enfant ; il ne constitue pas une définition linguistique de la syllabe.
