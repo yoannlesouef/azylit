@@ -38,3 +38,9 @@ test('une page inconnue ne retourne pas la page de jeu avec un statut 200', asyn
   assert.equal(response.status, 404);
   assert.ok(response.body.includes('noindex,follow'));
 });
+
+test('la page enseignants est accessible directement et sans barre finale',async()=>{
+ assert.equal((await request('/enseignants/')).status,200);
+ const redirect=await request('/enseignants');assert.equal(redirect.status,308);
+ assert.equal(redirect.headers.Location,'/enseignants/');
+});

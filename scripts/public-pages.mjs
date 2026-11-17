@@ -14,7 +14,8 @@ export function metadata({ title, description, path = '/', heading, faq: questio
   const graph = [website, page];
   if (path !== '/') {
     const trail = [{ '@type':'ListItem', position:1, name:'Accueil', item:config.origin + '/' }, { '@type':'ListItem', position:2, name:'Pour les parents', item:config.origin + '/parents/' }];
-    if (path !== '/parents/') trail.push({ '@type':'ListItem', position:3, name:heading, item:url });
+    if (!path.startsWith('/parents/')) trail.splice(1,1);
+    if (path !== '/parents/') trail.push({ '@type':'ListItem', position:trail.length+1, name:heading, item:url });
     graph.push({ '@type':'BreadcrumbList', '@id':url + '#breadcrumb', itemListElement:trail });
     page.breadcrumb = { '@id': url + '#breadcrumb' };
   }
@@ -33,17 +34,17 @@ export function metadata({ title, description, path = '/', heading, faq: questio
   <meta name="twitter:description" content="${escape(description)}">
   <script type="application/ld+json">${serialize({ '@context':'https://schema.org', '@graph':graph })}</script>`;
 }
-const labels = ['Pour les parents','Notre démarche','Accessibilité','Données','Questions'];
+const labels = ['Pour les parents','Notre démarche','Accessibilité','Données','Questions','Enseignants'];
 function parentHTML(page, config) {
   const navigation = pages.map((item, i) => `<a href="${item.path}" ${item.path === page.path ? 'aria-current="page"' : ''}>${labels[i]}</a>`).join('');
-  const sections = page.sections.map((section, index) => `<section id="section-${index + 1}" aria-labelledby="heading-${index + 1}"><h2 id="heading-${index + 1}">${escape(section.heading)}</h2>${(section.paragraphs || []).map(p => `<p>${escape(p)}</p>`).join('')}${section.list ? `<ul>${section.list.map(item => `<li>${escape(item)}</li>`).join('')}</ul>` : ''}</section>`).join('\n');
-  const answers = page.faq ? `<div class="parent-answers">${faq.map((item, index) => `<section id="question-${index + 1}"><h2>${escape(item.question)}</h2><p>${escape(item.answer)}</p></section>`).join('')}</div>` : '';
+  const sections = page.sections.map((section, index) => `<section id="section-${index + 1}" aria-labelledby="heading-${index + 1}"><h2 id="heading-${index + 1}">${escape(section.heading)}</h2>${(section.paragraphs || []).map(p => `<p>${escape(p)}</p>`).join('')}${section.list ? `<ul>${section.list.map(item => `<li>${escape(item)}</li>`).join('')}</ul>` : ''}${section.links ? `<ul>${section.links.map(link=>`<li><a href="${escape(link.href)}">${escape(link.label)}</a></li>`).join('')}</ul>` : ''}</section>`).join('\n');
+  const answers = page.faq ? `<div class="parent-answers">${page.faq.map((item, index) => `<section id="question-${index + 1}"><h2>${escape(item.question)}</h2><p>${escape(item.answer)}</p></section>`).join('')}</div>` : '';
   return `<!doctype html>
 <html lang="fr-FR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#17685b">
 ${metadata(page, config)}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/parents.css"></head>
 <body><a class="skip" href="#main">Aller au contenu</a><header class="parent-header"><a class="parent-brand" href="/" aria-label="Azyl.it, retourner au jeu">azyl<span>.it</span></a><a class="parent-play" href="/">Retour au jeu <span aria-hidden="true">▶</span></a></header><nav class="parent-nav" aria-label="Informations pour les parents">${navigation}</nav>
-<main id="main"><div class="parent-eyebrow">POUR LES PARENTS</div><h1>${escape(page.heading)}</h1><p class="parent-lead">${escape(page.intro)}</p><p class="parent-updated">Projet Azyl.it · Mise à jour le <time datetime="${updated}">17 novembre 2026</time></p>${sections}${answers}<aside class="parent-more" aria-label="À lire aussi"><h2>Pour aller plus loin</h2><div>${pages.filter(item => item.path !== page.path).map(item => `<a href="${item.path}">${labels[pages.indexOf(item)]}<span aria-hidden="true">↗</span></a>`).join('')}</div></aside></main><footer class="parent-footer"><a href="/">Ouvrir les jeux de lecture</a><span>Azyl.it · Apprendre à lire, chacun à son rythme.</span></footer></body></html>`;
+<main id="main"><div class="parent-eyebrow">${escape(page.audience || 'POUR LES PARENTS')}</div><h1>${escape(page.heading)}</h1><p class="parent-lead">${escape(page.intro)}</p><p class="parent-updated">Projet Azyl.it · Mise à jour le <time datetime="${updated}">17 novembre 2026</time></p>${sections}${answers}<aside class="parent-more" aria-label="À lire aussi"><h2>Pour aller plus loin</h2><div>${pages.filter(item => item.path !== page.path).map(item => `<a href="${item.path}">${labels[pages.indexOf(item)]}<span aria-hidden="true">↗</span></a>`).join('')}</div></aside></main><footer class="parent-footer"><a href="/">Ouvrir les jeux de lecture</a><span>Azyl.it · Apprendre à lire, chacun à son rythme.</span></footer></body></html>`;
 }
 export function publicFiles(homeTemplate, config = publicConfig()) {
   const files = new Map();

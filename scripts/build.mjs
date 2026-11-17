@@ -8,4 +8,4 @@ for (const [path, contents] of generated) {
   await mkdir(dirname(`dist/${path}`), { recursive: true });
   await writeFile(`dist/${path}`, contents);
 }
-console.log(`Application et ${generated.size - 4} pages parents construites dans dist/.`);
+console.log(`Application et ${generated.size - 4} pages d’information construites dans dist/.`);

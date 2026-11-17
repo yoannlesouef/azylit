@@ -28,7 +28,7 @@ Le répertoire `dist/` peut être hébergé sur un service de fichiers statiques
 
 ## Déployer sur Cloudflare Pages
 
-Le code actuel peut être déployé directement sur Cloudflare Pages. La construction produit les fichiers statiques des jeux, les cinq pages parents, le sitemap, `robots.txt` et une page `404.html`. Aucun serveur Node.js en production, Pages Function ou secret d’API n’est nécessaire.
+Le code actuel peut être déployé directement sur Cloudflare Pages. La construction produit les fichiers statiques des jeux, les six pages d’information pour les parents et enseignants, le sitemap, `robots.txt` et une page `404.html`. Aucun serveur Node.js en production, Pages Function ou secret d’API n’est nécessaire.
 
 Dans Cloudflare, créer un projet **Pages** connecté à GitHub, puis utiliser les paramètres suivants :
 
@@ -134,6 +134,8 @@ La persistance prévue repose sur une sauvegarde locale immédiate et une synchr
 
 ## Documents de référence
 
+- [Plan d’amélioration](docs/plan-amelioration.md) : lots prioritaires, simplicité du parcours enfant, couverture des objectifs et critères de validation.
+
 - [description.md](description.md) : vision du projet, besoins et exigences initiales.
 - [spec.md](spec.md) : spécification fonctionnelle et technique, parcours, accessibilité, catalogue d'exercices et critères de couverture pédagogique.
 
@@ -223,3 +225,5 @@ Les « Bravo ! » utilisent quatre variations légères de hauteur et de débit,
 La navigation directe remplace les anciennes pages de lettres et de syllabes. Le catalogue inclut désormais on, in, au, oi, chi, gui, gé, ju, le, me, pe, re, se, te, ve, ge et son. Il reste non exhaustif ; voir le [suivi de couverture](docs/catalogue-syllabes.md). Les tests garantissent six mots distincts pour chaque entrée proposée et l’accès à toutes les entrées par l’index.
 
 Le grand haut-parleur est commun aux exercices de sons, de syllabes et d’assemblage. En cas d’erreur de synthèse vocale signalée par le navigateur, les réponses nécessitant l’écoute sont retirées jusqu’à une réécoute, avec accès à un exercice alternatif sans écoute. Réessayer le son ne compte ni comme erreur ni comme aide pédagogique. Le niveau Syllabes contient 40 exercices couvrant 32 syllabes simples, dont 24 nouvelles syllabes consonne-voyelle. Chaque mission conserve quatre choix de réponse et quatre constructions de lettres.
+
+La page publique `/enseignants/` présente les usages d’entraînement en classe, une proposition de séance, les limites de l’historique local et les fonctions prévues dans le plan. Elle est liée depuis la navigation adulte, incluse au sitemap et dispose de métadonnées et d’une FAQ spécifiques. Le volet enseignant reste facultatif : aucun compte, choix de séance ou accord adulte n’est requis pour jouer et progresser.

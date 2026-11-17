@@ -13,7 +13,7 @@ Cette version intègre les retours sur les compagnons, l'autonomie des non-lecte
 | --- | --- | --- |
 | Compagnons | Licorne Lumi, chevalier Arthur, princesse Alma et pirate Malo, avec illustrations vectorielles distinctes et thème associé | Animations et variantes d'expression plus riches |
 | Accueil | Action principale de jeu, choix du compagnon et accès illustré à la difficulté | Essais avec des enfants non lecteurs |
-| Information des parents | Espace HTML dédié en cinq pages et phrase cliquable près du logo : « Apprendre à lire, chacun à son rythme. » ; sous le logo sur petit écran ; absente des exercices | Vérification visuelle sur les appareils cibles |
+| Information des parents | Espace HTML dédié en six pages d’information et phrase cliquable près du logo : « Apprendre à lire, chacun à son rythme. » ; sous le logo sur petit écran ; absente des exercices | Vérification visuelle sur les appareils cibles |
 | Difficulté | Sélecteur unique avec aperçu, moins, plus et triangle, accompagné oralement ; sept positions | Validation de la compréhension des pictogrammes et de la progression |
 | Premiers apprentissages | Quatre sous-paliers de huit questions : lettres, sons des voyelles, syllabes simples et assemblage | Contenus supplémentaires, enseignement explicite de la fusion lettre-son et validation pédagogique |
 | Catalogue | 180 activités de démonstration : choix de réponse, quatre associations de cartes lettres, huit fusions de lettres et soixante constructions de mots | Étendre les autres mécaniques et valider la couverture CP–CM2 |
@@ -409,3 +409,7 @@ Les « Bravo ! » utilisent quatre variations légères de hauteur et de débit,
 La navigation directe remplace les anciennes pages de lettres et de syllabes. Le catalogue inclut désormais on, in, au, oi, chi, gui, gé, ju, le, me, pe, re, se, te, ve, ge et son. Il reste non exhaustif ; voir le [suivi de couverture](docs/catalogue-syllabes.md). Les tests garantissent six mots distincts pour chaque entrée proposée et l’accès à toutes les entrées par l’index.
 
 Le grand haut-parleur est commun aux exercices de sons, de syllabes et d’assemblage. En cas d’erreur de synthèse vocale signalée par le navigateur, les réponses nécessitant l’écoute sont retirées jusqu’à une réécoute, avec accès à un exercice alternatif sans écoute. Réessayer le son ne compte ni comme erreur ni comme aide pédagogique. Le niveau Syllabes contient 40 exercices couvrant 32 syllabes simples, dont 24 nouvelles syllabes consonne-voyelle. Chaque mission conserve quatre choix de réponse et quatre constructions de lettres.
+
+### Information des enseignants et autonomie enfant
+
+La page statique `/enseignants/` complète les pages adultes et expose les usages disponibles, les limites du profil unique local et les futures fiches et bilans par compétence. Elle ne constitue pas un tableau de bord déjà implémenté. Ses métadonnées, FAQ structurée, liens et sitemap décrivent les fonctions réelles. Aucun outil enseignant ne conditionne Jouer, Continuer, Découvrir, l’aide ou le choix du niveau à un compte, une affectation ou une validation adulte. Les futures propositions d’entraînement ne verrouillent pas le parcours enfant.

@@ -9,7 +9,7 @@ export function createRequestHandler(rootDirectory, generated = new Map()) {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
   catch { res.writeHead(400).end('Adresse invalide'); return; }
-  if (/^\/parents(?:\/(?:demarche|accessibilite|donnees|questions))?$/.test(pathname)) {
+  if (pathname === '/enseignants' || /^\/parents(?:\/(?:demarche|accessibilite|donnees|questions))?$/.test(pathname)) {
     res.writeHead(308, { Location: pathname + '/' }).end(); return;
   }
   try {

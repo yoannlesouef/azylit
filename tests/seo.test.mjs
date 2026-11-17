@@ -73,3 +73,23 @@ test('l’accueil expose un vrai lien parents sans placer leurs contenus dans le
   assert.ok(!html.includes('Pourquoi les exercices se ressemblent-ils ?'));
   assert.equal(schema(html)['@graph'][0]['@type'], 'WebSite');
 });
+
+test('la page enseignants est indexable, distingue le prévu du livré et préserve le parcours enfant', async()=>{
+ const html=files.get('enseignants/index.html');assert.ok(html);
+ assert.ok(html.includes('POUR LES ENSEIGNANTS'));
+ assert.ok(html.includes('pas encore disponibles'));
+ assert.ok(html.includes('Un seul profil est actuellement stocké par navigateur'));
+ assert.ok(html.includes('sans compte enseignant'));
+ assert.ok(html.includes('sans attendre une validation adulte'));
+ assert.ok(files.get('sitemap.xml').includes('https://www.azyl.it/enseignants/'));
+ for(const page of pages) assert.ok(files.get(page.path.slice(1)+'index.html').includes('href="/enseignants/"'));
+ const graph=schema(html)['@graph'];
+ const crumbs=graph.find(item=>item['@type']==='BreadcrumbList').itemListElement;
+ assert.deepEqual(crumbs.map(item=>item.item),['https://www.azyl.it/','https://www.azyl.it/enseignants/']);
+ const questions=graph.find(item=>item['@type']==='FAQPage').mainEntity;
+ assert.equal(questions.length,3);
+ for(const item of questions){assert.ok(html.includes(item.name));assert.ok(html.includes(item.acceptedAnswer.text));}
+ const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
+ assert.ok(!files.get('index.html').includes('href="/enseignants/"'));
+ assert.ok(!app.includes('href="/enseignants/"'));
+});
