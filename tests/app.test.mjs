@@ -232,10 +232,13 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.match(app.innerHTML, /Lina/);
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.index, 0);
   click('difficulty');
+  assert.match(app.innerHTML,/Valider mon niveau et jouer/);
+  click('confirm-settings');
+  assert.match(app.innerHTML,/Lina/);
+  assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session.index,0);
+  click('difficulty');
   for (let position = 5; position >= 0; position--) click('easier');
   click('confirm-settings');
-  assert.match(app.innerHTML,/À toi de jouer/);
-  click('start');
   const easierSession = JSON.parse(memory.get(STORAGE_KEY)).session;
   assert.equal(easierSession.level, 0);
   assert.equal(easierSession.beginnerStage, 0);

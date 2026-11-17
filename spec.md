@@ -393,3 +393,5 @@ Dans « Écoute et trouve », le compagnon choisi apparaît après une réponse 
 L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. Aucun groupe n’est proposé à l’enfant. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
 
 Le bouton Retour du navigateur et les flèches internes retrouvent les écrans précédents pendant la visite, avec leurs pages de cartes et sélections. Les résultats ne sont jamais annulés par ce retour, et une mission terminée ou abandonnée n’est pas restaurée. Le rechargement revient à l’accueil avec la progression locale conservée. La validation auprès d’enfants et les vérifications visuelles sur appareils restent nécessaires.
+
+Depuis un exercice, le bouton inférieur de « Choisis ton niveau » affiche un triangle et revient directement au jeu : le même niveau conserve la mission et sa position ; un niveau différent lance une nouvelle mission au niveau choisi. Depuis l’accueil, ce bouton conserve la maison et revient à l’accueil.

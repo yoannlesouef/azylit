@@ -63,7 +63,7 @@ function header(focus = false) { return `<header class="header child-header ${fo
 function navigationGuidance() {
   if (screen === 'discover') return speak(discoveryGuidance(discoveryState));
   if (screen === 'mission' || screen === 'calibrate') return actions.repeat();
-  if (screen === 'difficulty' || (screen === 'onboarding' && step === 1)) return speak('Choisis ton niveau. ' + complexityLabel() + '. ' + difficultyDescription() + ' Pour revenir, touche la flèche vers la gauche. Touche le moins pour plus facile. Le plus pour plus difficile. Pour revenir à l’accueil, touche la maison en bas.');
+  if (screen === 'difficulty' || (screen === 'onboarding' && step === 1)) return speak('Choisis ton niveau. ' + complexityLabel() + '. ' + difficultyDescription() + ' Pour revenir, touche la flèche vers la gauche. Touche le moins pour plus facile. Le plus pour plus difficile. ' + (difficultyReturn?.screen === 'mission' ? 'Pour jouer, touche le triangle en bas.' : 'Pour revenir à l’accueil, touche la maison en bas.') + '');
   if (screen === 'onboarding') return speak(step === 0 ? 'Choisis ton compagnon en touchant son image. Puis touche la maison pour revenir à l’accueil.' : 'On commence avec une seule lettre. Touche le grand bouton pour jouer. Pour choisir un autre chemin, touche son image.');
   if (screen === 'celebration') return actions['celebration-audio']();
   if (screen === 'calibrationResult') return actions['calibration-audio']();
@@ -131,7 +131,8 @@ function difficultyPreview() {
 }
 function difficulty() {
   const position = difficultyPosition(profile);
-  return `<main id="main" tabindex="-1" class="difficulty-screen"><div class="complexity-heading"><button class="complexity-back" data-action="back-complexity" aria-label="Revenir à l’écran précédent"><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M85 50H19m24-24L17 50l26 26"/></svg></button><h1>Choisis ton niveau</h1><span aria-hidden="true"></span></div><p class="complexity-current" id="difficulty-state" role="status">${complexityLabel()}</p><div class="difficulty-picker"><button class="difficulty-step" data-action="easier" aria-label="Plus facile" ${position === 0 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50"/></svg><span>Plus facile</span></button><button class="difficulty-preview" data-action="difficulty-voice" aria-label="Écouter ce jeu" aria-describedby="difficulty-state"><span class="preview-art" aria-hidden="true">${difficultyPreview()}</span><span class="preview-speaker" aria-hidden="true">${icon('audio')}</span></button><button class="difficulty-step" data-action="harder" aria-label="Plus difficile" ${position === 6 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50M50 25v50"/></svg><span>Plus difficile</span></button></div><div class="difficulty-dots" aria-hidden="true">${Array.from({length:7},(_,i) => `<span class="${position === i ? 'selected' : ''}"></span>`).join('')}</div><span class="sr-only">${difficultyDescription()}</span><button class="next-picture" data-action="confirm-settings" aria-label="Valider mon niveau et revenir à l’accueil">${picture('home')}</button></main>`;
+  const returnToGame = difficultyReturn?.screen === 'mission';
+  return `<main id="main" tabindex="-1" class="difficulty-screen"><div class="complexity-heading"><button class="complexity-back" data-action="back-complexity" aria-label="Revenir à l’écran précédent"><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M85 50H19m24-24L17 50l26 26"/></svg></button><h1>Choisis ton niveau</h1><span aria-hidden="true"></span></div><p class="complexity-current" id="difficulty-state" role="status">${complexityLabel()}</p><div class="difficulty-picker"><button class="difficulty-step" data-action="easier" aria-label="Plus facile" ${position === 0 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50"/></svg><span>Plus facile</span></button><button class="difficulty-preview" data-action="difficulty-voice" aria-label="Écouter ce jeu" aria-describedby="difficulty-state"><span class="preview-art" aria-hidden="true">${difficultyPreview()}</span><span class="preview-speaker" aria-hidden="true">${icon('audio')}</span></button><button class="difficulty-step" data-action="harder" aria-label="Plus difficile" ${position === 6 ? 'disabled' : ''}><svg class="nav-picture" viewBox="0 0 100 100" aria-hidden="true"><path d="M25 50h50M50 25v50"/></svg><span>Plus difficile</span></button></div><div class="difficulty-dots" aria-hidden="true">${Array.from({length:7},(_,i) => `<span class="${position === i ? 'selected' : ''}"></span>`).join('')}</div><span class="sr-only">${difficultyDescription()}</span><button class="next-picture" data-action="confirm-settings" aria-label="${returnToGame ? 'Valider mon niveau et jouer' : 'Valider mon niveau et revenir à l’accueil'}">${picture(returnToGame ? 'play' : 'home')}</button></main>`;
 }
 function adjustDifficulty(direction) {
   const previous = difficultyPosition(profile);
@@ -307,8 +308,15 @@ const actions = {
   'change-hero'() { actions.onboard(); },
   hero(button) { profile.hero = button.dataset.hero; save(); render(); document.querySelector(`[data-hero="${profile.hero}"]`)?.focus(); speak('Voici ' + hero().name + ', ' + hero().title.toLowerCase() + '. Touche la maison pour revenir à l’accueil.'); },
   'confirm-settings'() {
+    const returnToGame = screen === 'difficulty' && difficultyReturn?.screen === 'mission';
     if (screen === 'difficulty' && profile.session && (profile.session.level !== profile.level || (profile.level === 0 && profile.session.beginnerStage !== profile.beginnerStage))) profile.session = null;
-    const firstChoice = !profile.onboarded; profile.onboarded = true; save(); actions.home();
+    const firstChoice = !profile.onboarded; profile.onboarded = true; save();
+    if (returnToGame) {
+      if (!profile.session) { difficultyReturn = null; startMission(); }
+      else actions['back-complexity']();
+      return;
+    }
+    actions.home();
     if (firstChoice) speak('Ton compagnon est prêt. Touche le grand triangle pour jouer.');
   },
 
