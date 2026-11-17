@@ -2,7 +2,7 @@ import { questionsFor, questionById } from './data.js';
 export const HISTORY_LIMIT = 2000;
 export const GROUP_LIMIT = 200;
 const poolKey = (level, stage) => `${level}:${level === 0 ? stage : 0}`;
-const kind = question => question.mechanic || question.type;
+const kind = question => question.mechanic || (['vowel_sound','phoneme_sound'].includes(question.type)?'sound-choice':question.type);
 function shuffledIndices(length, random) {
   const order = Array.from({length}, (_,index) => index);
   for (let index = length - 1; index > 0; index--) {

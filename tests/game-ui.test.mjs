@@ -3,21 +3,22 @@ import assert from 'node:assert/strict';
 import { beginnerBanks } from '../app/foundations.js';
 import { freshProfile, STORAGE_KEY } from '../app/state.js';
 
-function fixture(profile) {
-  const memory = new Map([[STORAGE_KEY, JSON.stringify(profile)]]), listeners = {}, spoken = [], utterances = [];
+function fixture(profile,withRecordings=false,withVoice=true) {
+  const memory = new Map([[STORAGE_KEY, JSON.stringify(profile)]]), listeners = {}, spoken = [], utterances = [], recordings = [];
   const app = { innerHTML:'', addEventListener(name, handler) { listeners[name] = handler; } };
   let dialogOpen=false;const dialogButtons=new Map();
   const dialog={innerHTML:'',showModal(){dialogOpen=true;},close(){dialogOpen=false;},querySelector(selector){if(!dialogButtons.has(selector))dialogButtons.set(selector,{focus(){}});return dialogButtons.get(selector);},querySelectorAll(selector){if(selector==='[data-demo-answer]')return [...dialog.innerHTML.matchAll(/data-demo-answer="([0-9]+)"/g)].map(match=>{const button={dataset:{demoAnswer:match[1]},focus(){}};dialogButtons.set('answer-'+match[1],button);return button;});return [];}};
   globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
   globalThis.speechSynthesis = { cancel() {}, getVoices:() => [{ lang:'fr-FR' }], speak(utterance) { spoken.push(utterance.text); utterances.push(utterance); } };
-  globalThis.window = { speechSynthesis, SpeechSynthesisUtterance };
+  globalThis.window = withVoice ? { speechSynthesis, SpeechSynthesisUtterance } : {};
+  if(withRecordings)window.Audio=class {constructor(){recordings.push(this);}play(){return Promise.resolve();}pause(){this.paused=true;}removeAttribute(){this.src='';}};
   globalThis.localStorage = { getItem:key => memory.get(key), setItem:(key,value) => memory.set(key,value) };
   globalThis.document = {
     documentElement:{ style:{ setProperty() {} } }, body:{ dataset:{} }, addEventListener() {},
     querySelector(selector) { if (selector === '#app') return app; if (selector === '#confirm') return dialog; if (selector === 'dialog[open]') return dialogOpen?dialog:null; return { focus() {} }; }
   };
   return {
-    app, spoken, utterances, dialog, demoClick(selector){dialogButtons.get(selector)?.onclick();}, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
+    app, spoken, utterances, recordings, dialog, demoClick(selector){dialogButtons.get(selector)?.onclick();}, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
     click(action, card) { listeners.click({ target:{ closest:() => ({ dataset:{ action, card:String(card), answer:String(card), exerciseId:String(card), groupId:String(card) } }) }, preventDefault() {} }); }
   };
 }
@@ -164,4 +165,33 @@ test('pause et reprise conservent la place et l’aide sans attribuer de résult
  f.click('answer',0);assert.equal(f.saved().session.results[0],'assisted');
  f.click('pause');f.click('resume');assert.match(f.app.innerHTML,/data-action="next"/);
  assert.ok(!f.app.innerHTML.includes('data-action="answer"'));
+});
+
+test('un phonème enregistré n’est jamais remplacé par son nom et attend un démarrage audio',async()=>{
+ const original=beginnerBanks[1][0];
+ beginnerBanks[1][0]={...original,type:'phoneme_sound',listen:'',recordedAudio:'/audio/sounds/fr-fr/l-v1.mp3',options:['l','a'],answer:0};
+ try{
+  const f=fixture(profileAt(1),true);await import('../app/app.js?recorded-phoneme');f.click('resume');
+  assert.equal(f.recordings.at(-1).src,'/audio/sounds/fr-fr/l-v1.mp3');
+  assert.ok(!f.app.innerHTML.includes('data-action="answer"'));f.click('answer',0);assert.equal(f.saved().session.results.length,0);
+  f.recordings.at(-1).onplaying();assert.match(f.app.innerHTML,/data-action="answer"/);
+  f.click('answer',0);assert.equal(f.saved().session.results[0],'independent');
+  const repeated=f.recordings.at(-1);repeated.onplaying();repeated.onended();
+  await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.at(-1),'Bravo !');
+  assert.ok(!f.spoken.includes('l'));assert.ok(!f.spoken.includes('elle'));
+ }finally{beginnerBanks[1][0]=original;}
+});
+test('le fichier fonctionne sans TTS, et une panne offre une nouvelle écoute sans pénalité',async()=>{
+ const original=beginnerBanks[1][0];
+ beginnerBanks[1][0]={...original,type:'phoneme_sound',listen:'',recordedAudio:'/audio/sounds/fr-fr/f-v1.mp3',options:['f','a'],answer:0};
+ try{
+  const f=fixture(profileAt(1),true,false);await import('../app/app.js?recording-without-tts');f.click('resume');
+  f.recordings.at(-1).onerror();assert.match(f.app.innerHTML,/Réessayer l’écoute/);
+  assert.equal(f.saved().session.attempts,0);assert.equal(f.saved().session.helpUsed,false);
+  f.click('retry-exercise-audio');f.recordings.at(-1).onplaying();assert.match(f.app.innerHTML,/data-action="answer"/);
+  f.click('pause');assert.equal(f.recordings.at(-1).paused,true);
+  f.click('resume');f.recordings.at(-1).onplaying();f.click('answer',0);
+  assert.equal(f.saved().session.results[0],'independent');assert.deepEqual(f.spoken,[]);
+  f.click('pause');
+ }finally{beginnerBanks[1][0]=original;}
 });

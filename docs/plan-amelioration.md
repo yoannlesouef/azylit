@@ -1,14 +1,14 @@
 # Plan d’amélioration — Azyl.it
 
-Document de travail du 17 novembre 2026. Référence : [objectifs initiaux](../description.md), [spécification actuelle](../spec.md), [audit de navigation](audit-navigation-enfant.md) et [couverture du catalogue](catalogue-syllabes.md).
+Document de travail mis à jour le 18 novembre 2026. Référence : [objectifs initiaux](../description.md), [spécification actuelle](../spec.md), [audit de navigation](audit-navigation-enfant.md) et [couverture du catalogue](catalogue-syllabes.md).
 
-## Statut des phases — suivi du 17 novembre 2026
+## Statut des phases — suivi du 18 novembre 2026
 
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
 | 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
-| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 31 unités sonores proposées, 26 lettres documentées, huit essais de conception sur l/r/f/j et contrat audio préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
-| 3 · Premiers apprentissages | **À démarrer dans ce plan** | Fonctions existantes conservées ; aucune nouvelle mécanique de ce lot livrée ici | Après le premier sous-ensemble relu de la phase 2 |
+| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 31 unités sonores proposées, 26 lettres documentées, huit essais sur l/r/f/j, contrat audio, contrôle des fichiers/empreintes et kit de production préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
+| 3 · Premiers apprentissages | **En cours — intégration technique du pilote** | Lecteur de fichiers locaux intégré, erreurs et interruptions testées, réponses après démarrage audio ; aucun nouveau phonème activé | Fichiers et relectures de la phase 2, écoutes réelles puis observation enfant |
 | 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
 | 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
 | 6 · Validation publique | **En cours — contrôles techniques uniquement** | Navigation publique, nouvelles URL racine, redirections 301, sitemap et liens testés ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
@@ -88,7 +88,7 @@ Acceptation : chaque contenu pilote a un objectif, un prérequis, une correction
 
 ## Lot 3 — Compléter les premiers apprentissages
 
-**Statut : à démarrer dans ce plan.**
+**Statut : en cours, intégration technique du premier pilote.** Le lecteur local et la gestion de ses erreurs sont intégrés et testés par simulations. Le son enregistré est séparé de la synthèse des consignes et de Bravo ; aucun nom de consonne ne lui sert de repli. Les nouveaux phonèmes restent désactivés, sans fichiers ni relecture disponibles.
 
 Objectif : aller au-delà du repérage visuel et des syllabes simples.
 
@@ -237,3 +237,5 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 - 17 novembre 2026 — Phase 2 : intitulé « Premiers sons » et FAQ explicitant la couverture a/i/o/u. Les consonnes et autres correspondances restent à développer avec des audios vérifiés ; aucun remplacement du phonème par le nom de lettre n’a été introduit.
 
 - 17 novembre 2026 — Phase 2, niveau Premiers sons : progression proposée en six étapes éditoriales (sans ajouter de menu enfant), distinctions entre noms/phonèmes/contextes, inventaire de 31 unités et suivi des 26 lettres. Huit essais de conception de deux choix sur l/r/f/j préparés mais non activés. Contrat audio et commande audit:sounds vérifiant métadonnées puis présence des fichiers. Tous les nouveaux audios restent absents et non validés. Prochaine étape : relecture professionnelle du premier pilote, production des fichiers et écoutes sur appareils avant intégration en phase 3.
+
+- 18 novembre 2026 — Phases 2 et 3 : lecteur MP3 local branché au contrôleur, attente du démarrage du son avant les réponses, réécoute, gestion des erreurs/autoplay, temporisation et annulation avant Bravo testées. Un son enregistré peut être lu sans TTS. Ajout du contrôle du pilote (fichiers, empreinte de la version relue, relectures des huit essais) et du kit de production. Aucune nouvelle correspondance activée : les quatre enregistrements et les relectures restent à produire.

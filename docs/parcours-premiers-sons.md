@@ -128,3 +128,7 @@ Obtenir la relecture du pilote et ses enregistrements, corriger le contenu, puis
 ## Références
 
 Le [CSEN sur l’apprentissage de la lecture](https://www.csen.education.gouv.fr/publications/faciliter-apprentissage-lecture-ecriture/) distingue lettres et phonèmes et souligne la prise en compte de la fréquence et de la régularité des correspondances. La [ressource Éduscol sur la relation graphème-phonème](https://eduscol.education.gouv.fr/sites/default/files/document/ev22-cp-frc-relation-grapheme-phonemepdf-95490.pdf) propose des repères pour analyser les difficultés et renvoie à une progression explicite. Ces références éclairent le travail ; elles ne valident pas nos listes, audios ou choix d’exercices.
+
+## Avancement du 18 novembre 2026
+
+Le lecteur de fichiers locaux est désormais intégré au jeu, sans activer de nouvelle question. Les tests vérifient notamment l’absence de substitution par un nom de lettre, l’attente du démarrage audio, la lecture sans TTS, les pannes, la reprise et l’annulation de Bravo. Le [kit de production](kit-enregistrement-pilote.md) décrit les quatre fichiers et les huit essais à relire. `npm run audit:sound-pilot` contrôle les métadonnées, les fichiers réels et leur empreinte ; `--export` est refusé si un élément manque. L’export prêt est un document de revue, pas une activation automatique. Les validations professionnelles et les écoutes réelles restent ouvertes.

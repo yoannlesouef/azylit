@@ -10,7 +10,8 @@
     "preview": "node scripts/serve.mjs dist",
     "test": "node --test tests/*.test.mjs",
     "audit:coverage": "node scripts/coverage.mjs",
-    "audit:sounds": "node scripts/audit-sounds.mjs"
+    "audit:sounds": "node scripts/audit-sounds.mjs",
+    "audit:sound-pilot": "node scripts/check-sound-pilot.mjs"
   },
   "engines": { "node": ">=18" }
 }

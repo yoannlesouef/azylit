@@ -1,6 +1,6 @@
 // Editorial draft for level 2. Not imported by the child game or used to score learners.
 // Phonetic notation is metadata for review, never a text-to-speech input.
-const sound=(id,value,graphemes,examples,block,note='',kind='phoneme')=>({id,phoneticValue:value,graphemes,examples,block,note,kind,contentReview:'pending',audio:{file:null,source:null,rights:null,reviewer:null,reviewedAt:null,locale:'fr-FR',pronunciationReview:'pending',deviceCheck:'pending'},ttsFallback:null});
+const sound=(id,value,graphemes,examples,block,note='',kind='phoneme')=>({id,phoneticValue:value,graphemes,examples,block,note,kind,contentReview:'pending',audio:{file:null,sha256:null,source:null,rights:null,reviewer:null,reviewedAt:null,locale:'fr-FR',pronunciationReview:'pending',deviceCheck:'pending'},ttsFallback:null});
 export const soundBlocks=[
  {id:'vowels-current',label:'Consolider a, i, o et u',prerequisites:[],status:'prototype-partial'},
  {id:'vowels-next',label:'Préparer é, è et e',prerequisites:['vowels-current'],status:'draft'},

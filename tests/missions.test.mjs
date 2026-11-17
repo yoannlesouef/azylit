@@ -169,3 +169,19 @@ test('les nouvelles syllabes gardent le format et la répartition de chaque miss
  }
  assert.equal(seen.size,40);
 });
+
+test('les choix enregistrés peuvent être sélectionnés sans modifier la mécanique ni la reprise',async()=>{
+ const {beginnerBanks}=await import('../app/foundations.js');
+ const originalLength=beginnerBanks[1].length;
+ try{
+  const profile=freshProfile();profile.beginnerStage=1;const random=randomSource();
+  profile.session=createMission(profile,random);finish(profile);profile.session=createMission(profile,random);finish(profile);
+  const template=beginnerBanks[1][0];
+  beginnerBanks[1].push({...template,id:'f1-17',type:'phoneme_sound',listen:'',recordedAudio:'/audio/sounds/fr-fr/f-v1.mp3',options:['f','a'],answer:0});
+  profile.session=createMission(profile,random);assert.ok(profile.session.questionIds.includes('f1-17'));
+  const restored=parseProfile(JSON.stringify(profile));assert.deepEqual(restored.session.questionIds,profile.session.questionIds);
+  const question=missionQuestion(restored.session,restored.session.questionIds.indexOf('f1-17'));
+  assert.equal(question.recordedAudio,'/audio/sounds/fr-fr/f-v1.mp3');
+  assert.equal(question.options[question.answer],'f');
+ }finally{beginnerBanks[1].splice(originalLength);}
+});

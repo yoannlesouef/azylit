@@ -35,6 +35,7 @@ export const competencies=[
 export function primaryCompetency(question){
  if(question.foundation){
   if(question.type==='letter_match')return 'letter-shape';
+  if(question.type==='phoneme_sound')return 'consonant-sound';
   if(question.type==='vowel_sound')return 'vowel-sound';
   if(question.type==='simple_syllable')return question.mechanic==='build'?'guided-letter-build':'syllable-listen';
   if(question.type==='syllable_assembly')return 'guided-word-build';
