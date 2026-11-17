@@ -10,7 +10,7 @@ import { heroes, levels, banks, calibration, questionsFor, questionById } from '
 import { STORAGE_KEY, freshProfile, parseProfile, recommendedLevel, recommendedBeginnerStage, recordBeginnerMission, difficultyPosition, setDifficultyPosition } from './state.js';
 const app = document.querySelector('#app');
 let discoveryState = createDiscoveryState();
-let discoveryAudioError = false, speechRequest = 0;
+let discoveryAudioError = false, speechRequest = 0, praiseTimer;
 const hasVoice = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 let profile;
 let storageOK = true;
@@ -34,12 +34,18 @@ const escape = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;'
 const icon = (name) => ({ audio: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM15 8c3 2 3 6 0 8m3-11c5 4 5 10 0 14"/></svg>', mute: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4zM16 9l5 6m0-6-5 6"/></svg>', settings: '<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="8" cy="18" r="2"/></svg>', arrow: '<svg viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>', book: '<svg viewBox="0 0 24 24"><path d="M12 6v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2z"/></svg>' })[name] || '';
 function avatar(h = hero(), big = false, mood = 'neutral') { return companionArt(h, big, mood); }
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); storageOK = true; } catch { storageOK = false; } }
-function speak(text) {
+function speak(text, after = null) {
   if (!profile.audio || !hasVoice) return;
   stopAudio();
   const request = speechRequest;
   const play = () => {
     const utterance = frenchUtterance(text, SpeechSynthesisUtterance, speechSynthesis.getVoices());
+    if (after) utterance.onend = () => {
+      if (request !== speechRequest) return;
+      praiseTimer = setTimeout(() => {
+        if (request === speechRequest) speak(after);
+      }, 450);
+    };
     utterance.onerror = event => {
       if (request !== speechRequest || ['canceled','interrupted'].includes(event.error) || screen !== 'discover') return;
       discoveryAudioError = true;
@@ -56,7 +62,7 @@ function speak(text) {
   speechSynthesis.addEventListener('voiceschanged', ready, { once: true });
   timeout = setTimeout(ready, 700);
 }
-function stopAudio() { speechRequest++; voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+function stopAudio() { speechRequest++; clearTimeout(praiseTimer); voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 function announce(text) { document.querySelector('#announcer').textContent = text; }
 function controls(focus = false, showParents = true) { return `<div class="controls">${focus ? '' : `<button class="tool help-voice" data-action="guide" aria-label="Écouter comment jouer">${icon('audio')}</button>`}<button class="tool" data-action="audio" aria-label="${profile.audio ? 'Couper le son' : 'Activer le son'}" aria-pressed="${!profile.audio}">${icon(profile.audio ? 'audio' : 'mute')}</button><button class="tool" data-action="settings" aria-label="Réglages">${icon('settings')}</button>${showParents ? '<a class="parents-top-link" href="/parents/">Pour les parents <span aria-hidden="true">↗</span></a>' : ''}</div>`; }
 function header(focus = false) { return `<header class="header child-header ${focus ? 'exercise-header' : ''}">${focus ? `<button class="tool exit-picture" data-action="${screen === 'discover' ? 'discovery-home' : 'quit'}" aria-label="${screen === 'discover' ? 'Revenir à l’accueil sans modifier ma mission' : 'Arrêter l’exercice et revenir à l’accueil'}">${picture('home')}</button>` : '<div class="brand-with-purpose"><a class="brand" href="#" data-action="home" aria-label="Accueil Azyl.it"><span class="brand-mark">ϟ</span>azyl<span class="brand-dot">.it</span></a><a class="parent-purpose" href="/parents/" aria-label="Pour les parents : notre démarche pour apprendre à lire">Apprendre à lire, chacun à son rythme.</a></div>'}${controls(focus || screen === 'difficulty' || (screen === 'onboarding' && step === 1), !focus)}</header>`; }
@@ -192,12 +198,12 @@ function startMission() {
   screen = 'mission'; feedback = null; save(); render(true); readQuestion();
 }
 function readQuestion() { stopAudio(); speak(exerciseSpeech(currentQuestion(),profile.session?.interaction)); }
-function endMission() {
+function endMission(successTarget = null) {
   rememberGroup(profile,profile.session,true);
   if (profile.session.mode !== 'replay') recordBeginnerMission(profile, profile.session);
   suggestedStage = profile.session.mode !== 'replay' && profile.session.level === 0 && profile.session.beginnerStage < 3 && profile.beginnerWins[profile.session.beginnerStage] >= 2 ? profile.session.beginnerStage + 1 : null;
   lastResults = [...profile.session.results]; profile.completed++; profile.assisted += lastResults.filter(r => r === 'assisted').length;
-  profile.session = null; save(); screen = 'celebration'; feedback = null; render(true); speak('Bravo ! Tu as terminé ta mission. Pour rejouer, touche le triangle. Pour faire une pause, touche la maison.');
+  profile.session = null; save(); screen = 'celebration'; feedback = null; render(true); speak(successTarget || 'Bravo ! Tu as terminé ta mission. Pour rejouer, touche le triangle. Pour faire une pause, touche la maison.', successTarget ? 'Bravo !' : null);
 }
 function finishCalibration() { clearTimeout(calibrationTimer); stopAudio(); screen = 'calibrationResult'; render(true); speak('Ton aventure t’attend ! Touche le grand triangle pour jouer.'); }
 function calibrationAnswer(correct) {
@@ -213,8 +219,9 @@ function completeExercise(question) {
   recordExercise(profile, question, assisted ? 'assisted' : 'independent');
   session.results.push(assisted ? 'assisted' : 'independent');
   feedback = { correct: true, assisted }; save();
-  if (session.index === 7) return endMission();
-  speak(question.foundation ? exerciseSpeech(question,session.interaction) : ['Bien joué !', 'Oui, c’est ça !', 'Tu as trouvé !'][session.index % 3] + (question.mechanic === 'build' ? ' ' + completedText(question) + '.' : question.type === 'letter_match' && !question.mechanic ? ' C’est la lettre ' + question.text + '.' : '') + ' On continue ? Touche la flèche.');
+  const successTarget = question.foundation ? exerciseSpeech(question,question.mechanic === 'pairs' ? {...session.interaction,selectedSource:session.interaction.matched.at(-1)} : session.interaction) : null;
+  if (session.index === 7) return endMission(successTarget);
+  speak(question.foundation ? successTarget : ['Bien joué !', 'Oui, c’est ça !', 'Tu as trouvé !'][session.index % 3] + (question.mechanic === 'build' ? ' ' + completedText(question) + '.' : question.type === 'letter_match' && !question.mechanic ? ' C’est la lettre ' + question.text + '.' : '') + ' On continue ? Touche la flèche.', question.foundation ? 'Bravo !' : null);
   render(); document.querySelector('[data-action="next"]')?.focus();
 }
 function incorrectExercise(question) {

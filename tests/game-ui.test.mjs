@@ -4,10 +4,10 @@ import { beginnerBanks } from '../app/foundations.js';
 import { freshProfile, STORAGE_KEY } from '../app/state.js';
 
 function fixture(profile) {
-  const memory = new Map([[STORAGE_KEY, JSON.stringify(profile)]]), listeners = {}, spoken = [];
+  const memory = new Map([[STORAGE_KEY, JSON.stringify(profile)]]), listeners = {}, spoken = [], utterances = [];
   const app = { innerHTML:'', addEventListener(name, handler) { listeners[name] = handler; } };
   globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
-  globalThis.speechSynthesis = { cancel() {}, getVoices:() => [{ lang:'fr-FR' }], speak(utterance) { spoken.push(utterance.text); } };
+  globalThis.speechSynthesis = { cancel() {}, getVoices:() => [{ lang:'fr-FR' }], speak(utterance) { spoken.push(utterance.text); utterances.push(utterance); } };
   globalThis.window = { speechSynthesis, SpeechSynthesisUtterance };
   globalThis.localStorage = { getItem:key => memory.get(key), setItem:(key,value) => memory.set(key,value) };
   globalThis.document = {
@@ -15,7 +15,7 @@ function fixture(profile) {
     querySelector(selector) { if (selector === '#app') return app; if (selector === 'dialog[open]') return null; return { focus() {} }; }
   };
   return {
-    app, spoken, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
+    app, spoken, utterances, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
     click(action, card) { listeners.click({ target:{ closest:() => ({ dataset:{ action, card:String(card), answer:String(card), exerciseId:String(card), groupId:String(card) } }) }, preventDefault() {} }); }
   };
 }
@@ -107,4 +107,14 @@ test('la syllabe est prononcée seule au lancement, après erreur et en réécou
  assert.equal(f.spoken.at(-1),'ma');f.click('answer',1);assert.equal(f.spoken.at(-1),'ma');
  f.click('repeat');assert.equal(f.spoken.at(-1),'ma');
  f.click('answer',0);assert.equal(f.spoken.at(-1),'ma');
+});
+
+test('la syllabe précède Bravo, avec une pause après sa fin et annulation au jeu suivant',async()=>{
+ const f=fixture(profileAt(2));await import('../app/app.js?syllable-praise');f.click('resume');f.click('answer',0);
+ const target=f.utterances.at(-1);assert.equal(target.text,'ma');assert.equal(typeof target.onend,'function');
+ target.onend();assert.equal(f.spoken.at(-1),'ma');
+ await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.at(-1),'Bravo !');
+ f.click('next');f.click('answer',1); // second item is mi, correct option is 1 in this legacy plan
+ const success=f.utterances.at(-1);assert.equal(success.text,'mi');success.onend();f.click('next');
+ const before=f.spoken.length;await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.length,before);
 });
