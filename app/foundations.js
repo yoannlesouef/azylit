@@ -1,6 +1,6 @@
 export const beginnerStages = [
   { label: 'Les lettres', picture: 'a', spoken: 'On regarde une seule lettre. Puis on retrouve la même.', description: 'Reconnaître une lettre parmi deux choix.' },
-  { label: 'Les sons', picture: 'a ♪', spoken: 'On écoute un son. Puis on retrouve sa lettre.', description: 'Associer les sons des voyelles à leurs lettres.' },
+  { label: 'Les premiers sons', picture: 'a ♪', spoken: 'On écoute un son. Puis on retrouve sa lettre.', description: 'Associer les sons a, i, o et u à leurs lettres. Les autres correspondances restent à développer.' },
   { label: 'Les syllabes', picture: 'ma', spoken: 'On écoute une petite syllabe. Puis on la retrouve.', description: 'Reconnaître des syllabes simples : ma, mi, la et li.' },
   { label: 'On assemble', picture: 'ma + mi', spoken: 'On met deux syllabes ensemble pour former un petit mot.', description: 'Assembler deux syllabes familières, sans geste précis.' }
 ];

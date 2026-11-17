@@ -110,3 +110,49 @@ test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>
   assert.deepEqual(crumbs.map(item=>item.item),['https://www.azyl.it/','https://www.azyl.it/'+name+'/']);
  }
 });
+
+test('chaque page publie une image de partage réelle et une date cohérente',async()=>{
+ const png=await readFile(new URL('../app/social-card.png',import.meta.url));
+ assert.equal(png.subarray(1,4).toString(),'PNG');
+ assert.equal(png.readUInt32BE(16),1200);assert.equal(png.readUInt32BE(20),630);
+ for(const [path,html] of files){
+  if(!path.endsWith('.html') || path==='404.html')continue;
+  assert.ok(html.includes('property="og:image" content="https://www.azyl.it/social-card.png"'));
+  assert.ok(html.includes('name="twitter:card" content="summary_large_image"'));
+  assert.ok(html.includes('property="og:image:alt"'));
+  const page=schema(html)['@graph'].find(item=>['WebPage','FAQPage'].includes(item['@type']));
+  assert.equal(page.dateModified,'2026-11-17');
+ }
+ assert.equal((files.get('sitemap.xml').match(/<lastmod>2026-11-17<\/lastmod>/g)||[]).length,pages.length+1);
+});
+
+test('prévisualisations Cloudflare : noindex automatique, en-tête et sitemap cohérents',()=>{
+ const config=publicConfig({CF_PAGES_BRANCH:'preview-seo',INDEXABLE:'true'});
+ assert.equal(config.indexable,false);
+ const preview=publicFiles(template,config);
+ assert.ok(preview.get('_headers').includes('X-Robots-Tag: noindex, follow'));
+ assert.ok(!preview.get('sitemap.xml').includes('<loc>'));
+ assert.ok(!preview.get('robots.txt').includes('Sitemap:'));
+ assert.ok(preview.get('robots.txt').includes('Allow: /'));
+ assert.equal(publicConfig({CF_PAGES_BRANCH:'main'}).indexable,true);
+ assert.equal(publicConfig({CF_PAGES_BRANCH:'release',PRODUCTION_BRANCH:'release'}).indexable,true);
+ assert.ok(!files.get('_headers').includes('noindex'));
+});
+
+test('sommaires et questions structurées ciblent des sections visibles et sourcées',()=>{
+ for(const page of pages){
+  const html=files.get(page.path.slice(1)+'index.html');
+  assert.match(html,/class="parent-contents"/);
+  const targets=[...html.matchAll(/href="#([^"]+)"/g)].map(match=>match[1]);
+  for(const id of targets)assert.ok(html.includes(`id="${id}"`),id);
+  const entity=schema(html)['@graph'].find(item=>item['@type']==='FAQPage');
+  if(entity)for(const question of entity.mainEntity){
+   const id=question['@id'].split('#')[1];assert.ok(html.includes(`id="${id}"`));
+  }
+  assert.match(html,/Code source et historique du projet/);
+ }
+ assert.ok(files.get('demarche/index.html').includes('https://www.csen.education.gouv.fr/'));
+ const app=schema(files.get('index.html'))['@graph'].find(item=>item['@type']==='WebApplication');
+ assert.equal(app.applicationCategory,'EducationalApplication');
+ assert.equal(app.aggregateRating,undefined);assert.equal(app.offers,undefined);
+});

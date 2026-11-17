@@ -56,3 +56,7 @@ test('les anciennes URLs redirigent vers les nouvelles pages partagées',async()
   const short=await request('/'+name);assert.equal(short.status,308);assert.equal(short.headers.Location,'/'+name+'/');
  }
 });
+
+test('l’image de partage est servie avec le type PNG',async()=>{
+ const response=await request('/social-card.png');assert.equal(response.status,200);assert.equal(response.headers['Content-Type'],'image/png');
+});

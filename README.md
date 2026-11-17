@@ -56,7 +56,7 @@ Après le premier déploiement, ouvrir l’adresse `<nom-du-projet>.pages.dev` f
 
 Pour proposer aussi `azyl.it`, configurer une redirection permanente vers `https://www.azyl.it`, en conservant le chemin et les paramètres. L’ajout du domaine racine à Pages nécessite que la zone DNS soit gérée par Cloudflare ; le sous-domaine `www` peut utiliser un DNS externe.
 
-Les URL canoniques et le sitemap utilisent déjà `https://www.azyl.it`. Pour les déploiements de prévisualisation, définir `INDEXABLE=false` dans l’environnement **Preview** ; conserver l’origine canonique de production. Les prochains pushs sur `main` déclenchent un nouveau déploiement lorsque l’intégration Git est activée.
+Les URL canoniques et le sitemap utilisent déjà `https://www.azyl.it`. Les branches Cloudflare autres que `main` sont automatiquement désindexées. Si la branche de production porte un autre nom, renseigner `PRODUCTION_BRANCH`. `INDEXABLE=false` permet aussi de désindexer un aperçu hors Cloudflare ; conserver l’origine canonique de production. Les prochains pushs sur `main` déclenchent un nouveau déploiement lorsque l’intégration Git est activée.
 
 La progression reste propre au navigateur et à l’origine du site : les données enregistrées sur localhost, sur `pages.dev` ou sur `azyl.it` ne sont pas automatiquement transférées à `www.azyl.it`. Les voix restent celles disponibles sur l’appareil de l’utilisateur.
 
@@ -231,3 +231,5 @@ La page publique `/enseignants/` présente les usages d’entraînement en class
 Le parcours pilote Syllabes propose une démonstration facultative depuis l’ampoule avec un exemple distinct. Le bouton pause conserve la place ; la maison garde son rôle d’arrêt. La reprise conserve les aides et ne compte pas deux fois une réussite. Le [plan d’amélioration](docs/plan-amelioration.md) indique les statuts de chaque phase. La [matrice de compétences](docs/matrice-competences.md), encore non validée professionnellement, est contrôlée par `npm run audit:coverage` ; elle ne produit aucun score élève.
 
 La navigation adulte commence par Parents et Enseignants, puis Notre démarche, Accessibilité, Données et Questions. Les pages communes sont à la racine du site. Les anciennes adresses sous `/parents/` redirigent en 301 vers les nouvelles ; la construction génère un fichier `_redirects` pour Cloudflare Pages et met à jour les URL canoniques, les liens et le sitemap. L’en-tête enfant distingue les informations adultes des commandes de jeu ; les liens adultes sont absents des écrans de travail et de choix.
+
+L’[audit SEO / GEO / AEO](docs/audit-seo-geo-aeo.md) recense les corrections et les contrôles de production restant à faire. Les pages adultes disposent de titres descriptifs, sources, sommaires, FAQ cohérentes et aperçus de partage. Les prévisualisations sont exclues de l’index via métadonnées et `_headers`, avec un sitemap sans URL. Aucun positionnement ni citation dans un moteur de réponse n’est garanti.

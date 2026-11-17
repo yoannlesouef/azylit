@@ -126,7 +126,7 @@ function onboarding() {
 }
 function complexityLabel() {
   const position = difficultyPosition(profile);
-  const names = ['Lettres', 'Sons', 'Syllabes', 'Assemblage', 'Mots et phrases', 'Secrets des mots', 'Histoires'];
+  const names = ['Lettres', 'Premiers sons', 'Syllabes', 'Assemblage', 'Mots et phrases', 'Secrets des mots', 'Histoires'];
   return `${position + 1} · ${names[position]}`;
 }
 function difficultyDescription() {
