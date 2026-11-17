@@ -129,3 +129,18 @@ test('un groupe complet peut être rejoué avec son numéro et sans annonce d’
   assert.match(f.app.innerHTML,/Groupe 1, huit jeux, déjà terminé/);
   assert.ok(f.spoken.every(text => !/activit/i.test(text)));
 });
+
+test('la bibliothèque garde le groupe en cours et donne accès aux anciens par six',async()=>{
+ const {createMission}=await import('../app/missions.js');
+ const profile=freshProfile();profile.onboarded=true;
+ for(let i=0;i<20;i++) {const session=createMission(profile);if(i===0)profile.session=session;}
+ const f=fixture(profile);await import('../app/app.js?recent-groups');f.click('groups');
+ const ids=()=>[...f.app.innerHTML.matchAll(/data-action="select-group" data-group-id="([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(ids(),['new','g-1','g-20','g-19','g-18','g-17']);
+ const all=new Set(ids());f.click('toggle-older-groups');
+ assert.equal(ids().length,7);
+ const html=f.app.innerHTML;assert.match(html,/data-action="group-page"/);
+ assert.ok(!html.includes('data-group-id="g-20"'));
+ f.click('toggle-older-groups');assert.deepEqual(ids(),['new','g-1','g-20','g-19','g-18','g-17']);
+ assert.equal(f.saved().missionGroups.length,20);
+});

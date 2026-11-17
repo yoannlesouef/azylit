@@ -2160,3 +2160,10 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .discovery-level-choice[aria-pressed="true"] { border-color: var(--accent); background: var(--pale); }
 .discovery-level-choice > span:first-child { color: var(--accent); min-width: 62px; }
 @media (max-width:600px) { .syllable-focus-grid { gap: 14px; } .syllable-focus-grid .discovery-syllable { min-height: 86px; font-size: 28px; } }
+
+/* Keep the six-card libraries stable at every width. */
+.discovery-letter-grid { grid-template-columns: repeat(3,minmax(0,1fr)); max-width: 540px; margin-inline: auto; }
+.discovery-word-grid { max-width: 760px; margin-inline: auto; }
+.difficulty-step { height: auto; min-height: 100px; padding: 10px 4px; border-radius: 22px; gap: 6px; }
+.difficulty-step > span { font-size: 12px; line-height: 1.3; text-align: center; }
+@media (max-width:600px) { .difficulty-step { min-height: 94px; } .difficulty-step > span { font-size: 11px; } }

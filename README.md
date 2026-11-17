@@ -111,7 +111,7 @@ Les retours sont visuels et oraux : compagnon, étoile et coche en cas de réuss
 
 Le parcours débutant démarre par une lettre isolée à retrouver parmi deux choix. Il propose quatre petites étapes séparées : reconnaissance des lettres, sons des voyelles, syllabes simples, puis assemblage de deux syllabes. Chaque étape possède une mission de huit questions ; la difficulté ne monte pas pendant la mission.
 
-Le choix se fait dans un sélecteur visuel accessible par le pictogramme moins / plus : un aperçu du jeu, deux boutons pour rendre le jeu plus facile ou plus difficile et un grand triangle pour démarrer. Ce sélecteur est aussi présenté après le choix du compagnon, sans menu de niveaux à lire. Une étape suivante peut être proposée après deux missions consécutives avec au moins sept réponses autonomes sur huit ; l’enfant reste libre de refaire la même étape. Une réponse avec indice ou exercice de remplacement ne compte pas comme autonome. Cette règle de démonstration reste à valider pédagogiquement.
+Le choix se fait dans un sélecteur visuel accessible par le pictogramme moins / plus : un aperçu du jeu, deux boutons pour rendre le jeu plus facile ou plus difficile et une maison pour valider et revenir à l’accueil. Le choix du compagnon se termine lui aussi par un retour à l’accueil ; Jouer lance ensuite la mission. Une étape suivante peut être proposée après deux missions consécutives avec au moins sept réponses autonomes sur huit ; l’enfant reste libre de refaire la même étape. Une réponse avec indice ou exercice de remplacement ne compte pas comme autonome. Cette règle de démonstration reste à valider pédagogiquement.
 
 Le positionnement s’arrête dès la première difficulté et ne propose jamais directement les niveaux de syntaxe ou de compréhension avancée. Il reste indicatif.
 
@@ -160,7 +160,7 @@ SITE_URL=https://preview.exemple.fr INDEXABLE=false npm run build
 
 Les tests de référencement vérifient les pages, les liens, les métadonnées et le JSON-LD. La publication sur le domaine, le contrôle des réponses de l’hébergeur, la validation visuelle, la configuration des outils propriétaires des moteurs et le suivi d’indexation restent nécessaires. Le GEO repose sur des contenus accessibles, clairs et vérifiables ; aucune indexation, citation IA ou position n’est garantie.
 
-Le bouton « Choisir la complexité » indique le niveau sélectionné. La page Complexité affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon et le grand bouton Jouer restent prioritaires sur l’accueil.
+Le bouton « Mon niveau » indique le niveau sélectionné. La page « Choisis ton niveau » affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon et le grand bouton Jouer restent prioritaires sur l’accueil.
 
 
 ## Jeux de cartes débutants
@@ -187,7 +187,7 @@ Les anciens compteurs sont préservés, mais les anciens résultats détaillés 
 
 Le choix porte sur un groupe complet de huit exercices. « Groupe N » reste affiché pendant toute la séquence ; la voix donne directement les consignes, sans dire « activité » ni annoncer de numéro avant chaque exercice.
 
-Depuis **Choisir la complexité → Choisir un groupe**, sélectionner **Nouveau groupe** ou la carte d’un groupe déjà proposé, puis toucher le triangle. Une coche indique les groupes terminés. Rejouer conserve le numéro, les huit exercices, leur ordre et les mélanges sauvegardés. Les groupes rejoués comptent comme des missions terminées, mais ne déclenchent pas de proposition de montée de niveau.
+Depuis **Mon niveau → Choisir un groupe**, sélectionner **Nouveau groupe** ou la carte d’un groupe déjà proposé, puis toucher le triangle. Une coche indique les groupes terminés. Rejouer conserve le numéro, les huit exercices, leur ordre et les mélanges sauvegardés. Les groupes rejoués comptent comme des missions terminées, mais ne déclenchent pas de proposition de montée de niveau.
 
 Les 200 derniers groupes sont conservés localement, en plus de l’historique détaillé des 2 000 derniers exercices. Les anciens groupes complets peuvent être récupérés à partir des huit résultats conservés, sans inventer leurs anciennes positions de réponses. Le sélecteur ne propose plus de révision d’un seul exercice.
 
@@ -201,3 +201,12 @@ Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jo
 Le catalogue est extensible et ne couvre pas toutes les syllabes du français. Les découpages et prononciations nécessitent une validation pédagogique et des essais avec les voix des appareils cibles. Les cartes de l’alphabet prononcent les noms des lettres, distincts de leurs sons dans les mots. La voix française dépend du navigateur ; une panne audio empêche de répondre au quiz jusqu’à une nouvelle écoute.
 
 Dans « Écoute et trouve », le compagnon choisi apparaît après une réponse : cœur d’encouragement après une erreur, sourire et étoiles après réussite. Il reste petit et sans animation, puis disparaît au mot suivant pour laisser la place à l’écoute et aux choix.
+
+L’[audit de navigation enfant](docs/audit-navigation-enfant.md) détaille les points à simplifier et les essais utilisateurs à prévoir.
+
+
+### Navigation simplifiée
+
+L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres, syllabes et mots se parcourent par séries de six cartes. La bibliothèque montre le groupe en cours et les plus récents ; les anciens restent accessibles par séries de six. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
+
+Le bouton Retour du navigateur et les flèches internes retrouvent les écrans précédents pendant la visite, avec leurs pages de cartes et sélections. Les résultats ne sont jamais annulés par ce retour, et une mission terminée ou abandonnée n’est pas restaurée. Le rechargement revient à l’accueil avec la progression locale conservée. La validation auprès d’enfants et les vérifications visuelles sur appareils restent nécessaires.

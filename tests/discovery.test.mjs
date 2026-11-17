@@ -61,3 +61,20 @@ test('jeu audio : écoute requise, réessai, réussite et nouveau mot', () => {
   assert.ok(!/activit/i.test(discoveryGuidance(s)));
   assert.match(renderDiscovery(s,false),/voix n’est pas disponible/);
 });
+
+test('les lettres et les mots restent accessibles par petites séries',()=>{
+ let s=updateDiscovery(createDiscoveryState(),'letters').state;
+ const letters=new Set();
+ for(let page=0;page<5;page++){
+  const html=renderDiscovery(s),ids=[...html.matchAll(/data-command="letter" data-value="([^"]+)"/g)].map(m=>m[1]);
+  assert.ok(ids.length<=6);ids.forEach(id=>letters.add(id));
+  s=updateDiscovery(s,'letter-page','next').state;
+ }
+ assert.equal(letters.size,26);assert.equal(s.letterPage,4);
+ s=updateDiscovery(s,'alphabet-set','extra').state;assert.equal(s.letterPage,0);
+ s=updateDiscovery(s,'syllable','ma').state;
+ assert.ok((renderDiscovery(s).match(/data-command="word"/g)||[]).length<=6);
+ const savedPage=s.letterPage;
+ s=updateDiscovery(s,'quiz').state;s=updateDiscovery(s,'back').state;
+ assert.equal(s.page,'words');assert.equal(s.letterPage,savedPage);
+});
