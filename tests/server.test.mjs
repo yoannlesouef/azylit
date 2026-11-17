@@ -44,3 +44,15 @@ test('la page enseignants est accessible directement et sans barre finale',async
  const redirect=await request('/enseignants');assert.equal(redirect.status,308);
  assert.equal(redirect.headers.Location,'/enseignants/');
 });
+
+
+test('les anciennes URLs redirigent vers les nouvelles pages partagées',async()=>{
+ for(const name of ['demarche','accessibilite','donnees','questions']){
+  for(const suffix of ['', '/']){
+   const response=await request('/parents/'+name+suffix+'?source=ancien');
+   assert.equal(response.status,301);assert.equal(response.headers.Location,'/'+name+'/?source=ancien');
+  }
+  assert.equal((await request('/'+name+'/')).status,200);
+  const short=await request('/'+name);assert.equal(short.status,308);assert.equal(short.headers.Location,'/'+name+'/');
+ }
+});

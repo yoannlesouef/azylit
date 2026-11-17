@@ -30,7 +30,7 @@ export const pages = [
     ]
   },
   {
-    path: '/parents/demarche/', title: 'Notre démarche : lettres, sons et syllabes | Azyl.it',
+    path: '/demarche/', title: 'Notre démarche : lettres, sons et syllabes | Azyl.it',
     description: 'Comprendre la progression prévue par Azyl.it : reconnaître les lettres, associer des sons, découvrir les syllabes et les assembler, sans montée automatique.',
     heading: 'Commencer petit, laisser le temps d’essayer.', intro: 'La démarche d’Azyl.it distingue les premiers apprentissages pour éviter de proposer un mot entier à un enfant qui découvre encore les lettres.',
     sections: [
@@ -41,7 +41,7 @@ export const pages = [
     ]
   },
   {
-    path: '/parents/accessibilite/', title: 'Accessibilité et confort de lecture pour les enfants | Azyl.it',
+    path: '/accessibilite/', title: 'Accessibilité et confort de lecture pour les enfants | Azyl.it',
     description: 'Consignes orales, grandes cibles, réglages de texte et retours illustrés : découvrez les adaptations présentes et les améliorations prévues dans Azyl.it.',
     heading: 'Adapter le jeu, garder les repères.', intro: 'Les réglages d’Azyl.it cherchent à rendre les activités plus faciles à percevoir et à utiliser. Leur présence ne remplace pas des essais d’usage avec les enfants.',
     sections: [
@@ -52,7 +52,7 @@ export const pages = [
     ]
   },
   {
-    path: '/parents/donnees/', title: 'Progression et données sur votre appareil | Azyl.it',
+    path: '/donnees/', title: 'Progression et données sur votre appareil | Azyl.it',
     description: 'Où est sauvegardée la progression Azyl.it ? Découvrez le stockage local, l’effacement des données et les limites actuelles de la récupération sur un autre appareil.',
     heading: 'Une progression locale, sans compte nominatif.', intro: 'La version actuelle conserve le profil de jeu dans le navigateur utilisé. Elle ne demande pas de nom, de prénom ni d’adresse e-mail pour commencer.',
     sections: [
@@ -64,7 +64,7 @@ export const pages = [
     ]
   },
   {
-    path: '/parents/questions/', title: 'Questions des parents sur les jeux de lecture | Azyl.it',
+    path: '/questions/', title: 'Questions des parents sur les jeux de lecture | Azyl.it',
     description: 'Réponses sur le niveau de départ, les exercices, les erreurs, la voix et la sauvegarde locale dans la version actuelle des jeux de lecture Azyl.it.',
     heading: 'Vos questions, des réponses concrètes.', intro: 'Ces réponses décrivent la version actuelle du projet. Les fonctions encore prévues sont distinguées de celles qui peuvent être utilisées.', faq,
     sections: []
@@ -84,8 +84,13 @@ export const pages = [
       {heading:'Observer les réussites sans en faire une note', paragraphs:['L’historique local distingue les exercices réussis de manière autonome et ceux réalisés avec une erreur ou une aide ; il conserve aussi les tentatives. Il est accessible dans Réglages, Pour les adultes, Historique des exercices. Son export actuel est un fichier JSON technique.', 'Ces traces d’entraînement ne mesurent pas à elles seules le niveau de lecture. Elles ne remplacent ni l’observation en classe, ni une évaluation pédagogique, ni les échanges avec les professionnels qui accompagnent l’élève. Le site ne réalise pas de diagnostic.']},
       {heading:'Les limites à connaître sur un appareil partagé', paragraphs:['Un seul profil est actuellement stocké par navigateur. Si plusieurs élèves l’utilisent, leurs résultats se mélangent : cet historique ne peut alors pas servir à un suivi individuel. Il n’existe pas encore de gestion de classe, d’affectation de tâches à distance ou de tableau de bord enseignant.', 'Le site ne demande pas de nom d’élève pour commencer. Le stockage est local, sans synchronisation. La synthèse vocale dépend du navigateur et peut utiliser un service de son fournisseur. Les usages scolaires et les flux de données doivent être examinés avant toute mise en place d’un suivi partagé.']},
       {heading:'Ce que le plan d’amélioration prévoit pour les enseignants', list:['Une matrice de compétences et de prérequis, pour identifier ce qui est couvert ou manque encore.', 'Des fiches adultes avec objectif, exemples, erreurs possibles, aides et pistes de réinvestissement hors écran.', 'Des contenus et audios relus avec des professionnels de la lecture.', 'Un bilan lisible par compétence, distinguant réussite autonome, réussite aidée et incident technique.', 'Une préparation de séance côté adulte, sans ajouter de menus ni de groupes à choisir par l’enfant.'], paragraphs:['Ces fonctions sont prévues, pas disponibles dans le prototype actuel. Leur conception doit être testée avec des enseignants et des élèves avant d’annoncer un gain d’apprentissage ou de temps de préparation.']},
-      {heading:'Repères pédagogiques et informations complémentaires', paragraphs:['Le CSEN présente l’intérêt d’identifier les besoins pour orienter et ajuster l’intervention pédagogique. Cette référence éclaire le plan ; elle ne valide pas Azyl.it et ne transforme pas ses résultats en évaluation étalonnée.'], links:[{label:'CSEN : Évaluer pour mieux aider',href:'https://www.csen.education.gouv.fr/evaluer-pour-mieux-aider/'},{label:'Comprendre la démarche d’Azyl.it',href:'/parents/demarche/'},{label:'Accessibilité et confort de lecture',href:'/parents/accessibilite/'},{label:'Sauvegarde et données locales',href:'/parents/donnees/'}]}
+      {heading:'Repères pédagogiques et informations complémentaires', paragraphs:['Le CSEN présente l’intérêt d’identifier les besoins pour orienter et ajuster l’intervention pédagogique. Cette référence éclaire le plan ; elle ne valide pas Azyl.it et ne transforme pas ses résultats en évaluation étalonnée.'], links:[{label:'CSEN : Évaluer pour mieux aider',href:'https://www.csen.education.gouv.fr/evaluer-pour-mieux-aider/'},{label:'Comprendre la démarche d’Azyl.it',href:'/demarche/'},{label:'Accessibilité et confort de lecture',href:'/accessibilite/'},{label:'Sauvegarde et données locales',href:'/donnees/'}]}
     ]
   }
 
 ];
+
+// Shared adult pages live at the root; preserve existing bookmarks and search URLs.
+export const legacyRedirects = Object.fromEntries(['demarche','accessibilite','donnees','questions'].flatMap(name=>[[`/parents/${name}`,`/${name}/`],[`/parents/${name}/`,`/${name}/`]]));
+const adultNavigationOrder=['/parents/','/enseignants/','/demarche/','/accessibilite/','/donnees/','/questions/'];
+pages.sort((a,b)=>adultNavigationOrder.indexOf(a.path)-adultNavigationOrder.indexOf(b.path));

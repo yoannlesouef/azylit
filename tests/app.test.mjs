@@ -173,10 +173,14 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.match(app.innerHTML, /Mon niveau/);
   assert.match(app.innerHTML, /1 · Lettres/);
   assert.match(app.innerHTML, /class="parents-top-link"/);
+  assert.match(app.innerHTML, /class="teachers-top-link"/);
+  assert.match(app.innerHTML, /adult-header-links/);
   click('guide'); assert.match(spoken.at(-1), /grand triangle/);
   assert.equal(utterances.at(-1).lang, 'fr-FR');
   assert.equal(utterances.at(-1).voice.lang, 'fr-FR');
   click('onboard'); assert.match(spoken.at(-1), /Choisis ton compagnon/);
+  assert.ok(!app.innerHTML.includes('adult-header-links'));
+  assert.ok(!app.innerHTML.includes('href="/enseignants/"'));
   assert.equal((app.innerHTML.match(/class="companion-choice/g) || []).length, 4);
   click('hero', { hero: 'pirate' }); assert.match(spoken.at(-1), /Malo, le pirate/);
   click('confirm-settings'); assert.match(app.innerHTML, /À toi de jouer/);
@@ -194,6 +198,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session,null);
   click('start'); assert.equal(spoken.at(-1), (await import('../app/exercise-speech.js')).exerciseSpeech((await import('../app/missions.js')).missionQuestion(JSON.parse(memory.get(STORAGE_KEY)).session),JSON.parse(memory.get(STORAGE_KEY)).session.interaction));
   assert.ok(!app.innerHTML.includes('class="parents-top-link"'));
+  assert.ok(!app.innerHTML.includes('class="teachers-top-link"'));
   click('quit');
   assert.equal(dialogOpen, false);
   assert.match(app.innerHTML, /À toi de jouer/);

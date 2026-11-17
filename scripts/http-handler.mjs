@@ -1,3 +1,4 @@
+import {pages,legacyRedirects} from '../content/parents.mjs';
 import { readFile } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
 
@@ -9,7 +10,11 @@ export function createRequestHandler(rootDirectory, generated = new Map()) {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
   catch { res.writeHead(400).end('Adresse invalide'); return; }
-  if (pathname === '/enseignants' || /^\/parents(?:\/(?:demarche|accessibilite|donnees|questions))?$/.test(pathname)) {
+  if (Object.hasOwn(legacyRedirects,pathname)) {
+    const query = new URL(req.url,'http://localhost').search;
+    res.writeHead(301,{Location:legacyRedirects[pathname]+query}).end(); return;
+  }
+  if (pages.some(page=>page.path === pathname + '/')) {
     res.writeHead(308, { Location: pathname + '/' }).end(); return;
   }
   try {

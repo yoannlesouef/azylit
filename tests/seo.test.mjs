@@ -29,7 +29,7 @@ test('chaque page parents est complète et explorable sans exécuter JavaScript'
 });
 
 test('les questions structurées correspondent exactement aux réponses visibles', () => {
-  const html = files.get('parents/questions/index.html');
+  const html = files.get('questions/index.html');
   const graph = schema(html)['@graph'];
   const entity = graph.find(item => item['@type'] === 'FAQPage');
   assert.equal(entity.mainEntity.length, faq.length);
@@ -90,6 +90,23 @@ test('la page enseignants est indexable, distingue le prévu du livré et prése
  assert.equal(questions.length,3);
  for(const item of questions){assert.ok(html.includes(item.name));assert.ok(html.includes(item.acceptedAnswer.text));}
  const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
- assert.ok(!files.get('index.html').includes('href="/enseignants/"'));
- assert.ok(!app.includes('href="/enseignants/"'));
+ assert.ok(files.get('index.html').includes('href="/enseignants/"'));
+ assert.ok(files.get('index.html').includes('class="adult-header-links"'));
+ assert.ok(app.includes('const adultLinks = isHome ?'));
+});
+
+test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>{
+ assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/demarche/','/accessibilite/','/donnees/','/questions/']);
+ const html=files.get('parents/index.html');
+ const navigation=html.match(/<nav class="parent-nav"[^>]*>([^]*?)<\/nav>/)[1];
+ assert.ok(navigation.indexOf('/parents/')<navigation.indexOf('/enseignants/'));
+ assert.ok(navigation.indexOf('/enseignants/')<navigation.indexOf('/demarche/'));
+ for(const name of ['demarche','accessibilite','donnees','questions']){
+  const page=files.get(name+'/index.html');
+  assert.ok(page.includes(`rel="canonical" href="https://www.azyl.it/${name}/"`));
+  assert.ok(!files.get('sitemap.xml').includes('/parents/'+name));
+  assert.ok(files.get('_redirects').includes(`/parents/${name}/ /${name}/ 301`));
+  const crumbs=schema(page)['@graph'].find(item=>item['@type']==='BreadcrumbList').itemListElement;
+  assert.deepEqual(crumbs.map(item=>item.item),['https://www.azyl.it/','https://www.azyl.it/'+name+'/']);
+ }
 });

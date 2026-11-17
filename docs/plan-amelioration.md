@@ -6,12 +6,12 @@ Document de travail du 17 novembre 2026. Référence : [objectifs initiaux](../d
 
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
-| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise conservant la place et tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
+| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
 | 2 · Socle pédagogique et audio | **En cours — préparation de la matrice** | 29 objectifs définis, rattachement des 180 exercices, lacunes visibles et fiche pilote | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
 | 3 · Premiers apprentissages | **À démarrer dans ce plan** | Fonctions existantes conservées ; aucune nouvelle mécanique de ce lot livrée ici | Après le premier sous-ensemble relu de la phase 2 |
 | 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
 | 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
-| 6 · Validation publique | **À démarrer** | Tests techniques maintenus ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
+| 6 · Validation publique | **En cours — contrôles techniques uniquement** | Navigation publique, nouvelles URL racine, redirections 301, sitemap et liens testés ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
 
 Une phase n’est pas déclarée terminée tant que ses critères d’acceptation ne sont pas satisfaits. Chaque incrément technique terminé est enregistré et poussé sur GitHub ; les phases terminées feront également l’objet d’un push. Les tâches dépendant d’une validation professionnelle ou d’un essai utilisateur restent explicitement ouvertes.
 
@@ -144,7 +144,7 @@ Acceptation : les réglages persistent, se combinent sans casser les écrans et 
 
 ## Lot 6 — Validation de la version publique et suivi adulte
 
-**Statut : à démarrer dans ce plan.**
+**Statut : en cours, volet technique.** Pages adultes réorganisées, URL canoniques et sitemap mis à jour, anciennes adresses redirigées. Tests locaux réussis ; contrôle du déploiement public, essais terrain et examen des données encore à faire.
 
 Objectif : une version testée et un positionnement honnête.
 
@@ -230,3 +230,5 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 
 - 17 novembre 2026 — Phase 1 : démonstration facultative de la sélection de syllabes via l’ampoule ; exemple distinct de la question, sans résultat attribué. Ajout d’une pause qui conserve la place, tandis que la maison continue d’arrêter. Tests de l’aide, de la reprise après rechargement et de l’absence de double résultat. Vérification visuelle et observations externes encore à réaliser.
 - 17 novembre 2026 — Phase 2 : première matrice de compétences et prérequis, rapport reproductible de couverture et fiche pilote. Les tâches guidées sont distinguées de la lecture autonome ; les objectifs sans exercices restent visibles. Statuts professionnels et utilisateurs : en attente pour tous les objectifs.
+
+- 17 novembre 2026 — Phases 1 et 6 : en-tête d’accueil avec liens Parents et Enseignants séparés des commandes enfant, sans liens adultes pendant les écrans de choix ou de travail. Navigation des pages adultes ordonnée par public puis par sujet ; pages communes déplacées à la racine, redirections 301 générées pour les anciennes URL, liens/canoniques/sitemap actualisés et testés. Vérification visuelle et déploiement public non vérifiés dans cette session.

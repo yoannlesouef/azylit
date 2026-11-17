@@ -1,4 +1,4 @@
-import { pages, faq, updated } from '../content/parents.mjs';
+import { pages, updated, legacyRedirects } from '../content/parents.mjs';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
 const serialize = value => JSON.stringify(value).replace(/</g, '\\u003c');
 export function publicConfig(env = process.env) {
@@ -34,7 +34,7 @@ export function metadata({ title, description, path = '/', heading, faq: questio
   <meta name="twitter:description" content="${escape(description)}">
   <script type="application/ld+json">${serialize({ '@context':'https://schema.org', '@graph':graph })}</script>`;
 }
-const labels = ['Pour les parents','Notre démarche','Accessibilité','Données','Questions','Enseignants'];
+const labels = ['Parents','Enseignants','Notre démarche','Accessibilité','Données','Questions'];
 function parentHTML(page, config) {
   const navigation = pages.map((item, i) => `<a href="${item.path}" ${item.path === page.path ? 'aria-current="page"' : ''}>${labels[i]}</a>`).join('');
   const sections = page.sections.map((section, index) => `<section id="section-${index + 1}" aria-labelledby="heading-${index + 1}"><h2 id="heading-${index + 1}">${escape(section.heading)}</h2>${(section.paragraphs || []).map(p => `<p>${escape(p)}</p>`).join('')}${section.list ? `<ul>${section.list.map(item => `<li>${escape(item)}</li>`).join('')}</ul>` : ''}${section.links ? `<ul>${section.links.map(link=>`<li><a href="${escape(link.href)}">${escape(link.label)}</a></li>`).join('')}</ul>` : ''}</section>`).join('\n');
@@ -51,6 +51,7 @@ export function publicFiles(homeTemplate, config = publicConfig()) {
   const home = { title:'Apprendre à lire : lettres, syllabes et jeux | Azyl.it', description:'Des jeux de lecture en français : lettres, sons et syllabes, compagnons illustrés et petites missions. Découvrez aussi la démarche dans l’espace parents.', path:'/' };
   files.set('index.html', homeTemplate.replace(/<!-- public-meta:start -->[\s\S]*?<!-- public-meta:end -->/, `<!-- public-meta:start -->\n${metadata(home,config)}\n<!-- public-meta:end -->`));
   for (const page of pages) files.set(page.path.slice(1) + 'index.html', parentHTML(page,config));
+  files.set('_redirects',Object.entries(legacyRedirects).map(([from,to])=>`${from} ${to} 301`).join('\n')+'\n');
   files.set('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', ...pages.map(p => p.path)].map(path => `<url><loc>${escape(config.origin + path)}</loc></url>`).join('')}</urlset>\n`);
   files.set('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${config.origin}/sitemap.xml\n`);
   files.set('404.html', '<!doctype html><html lang="fr-FR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>Page introuvable | Azyl.it</title><link rel="stylesheet" href="/parents.css"></head><body><main><h1>Cette page est introuvable.</h1><p><a href="/">Retour au jeu</a> · <a href="/parents/">Pour les parents</a></p></main></body></html>');

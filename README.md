@@ -144,7 +144,7 @@ Avant toute implémentation, consulter ces deux documents. Les technologies pré
 
 ## Informations pour les parents et référencement
 
-L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Le lien est accessible dans l’en-tête près du son et de l’accessibilité ; la phrase près du logo ouvre aussi cet espace. Ces accès restent absents des écrans d’exercice.
+L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Les liens Parents et Enseignants sont regroupés dans une navigation adulte discrète de l’accueil, séparée des commandes audio et des réglages. La phrase près du logo ouvre aussi l’espace parents. Ces liens disparaissent pendant les exercices, Découvrir et les choix du compagnon ou du niveau.
 
 Les pages sont générées en HTML complet, sans JavaScript nécessaire, à partir de `content/parents.mjs`. La construction ajoute titres et descriptions distincts, URL canoniques, métadonnées de partage, données structurées cohérentes avec la FAQ visible, sitemap et robots.txt. Le serveur de développement expose les mêmes pages.
 
@@ -229,3 +229,5 @@ Le grand haut-parleur est commun aux exercices de sons, de syllabes et d’assem
 La page publique `/enseignants/` présente les usages d’entraînement en classe, une proposition de séance, les limites de l’historique local et les fonctions prévues dans le plan. Elle est liée depuis la navigation adulte, incluse au sitemap et dispose de métadonnées et d’une FAQ spécifiques. Le volet enseignant reste facultatif : aucun compte, choix de séance ou accord adulte n’est requis pour jouer et progresser.
 
 Le parcours pilote Syllabes propose une démonstration facultative depuis l’ampoule avec un exemple distinct. Le bouton pause conserve la place ; la maison garde son rôle d’arrêt. La reprise conserve les aides et ne compte pas deux fois une réussite. Le [plan d’amélioration](docs/plan-amelioration.md) indique les statuts de chaque phase. La [matrice de compétences](docs/matrice-competences.md), encore non validée professionnellement, est contrôlée par `npm run audit:coverage` ; elle ne produit aucun score élève.
+
+La navigation adulte commence par Parents et Enseignants, puis Notre démarche, Accessibilité, Données et Questions. Les pages communes sont à la racine du site. Les anciennes adresses sous `/parents/` redirigent en 301 vers les nouvelles ; la construction génère un fichier `_redirects` pour Cloudflare Pages et met à jour les URL canoniques, les liens et le sitemap. L’en-tête enfant distingue les informations adultes des commandes de jeu ; les liens adultes sont absents des écrans de travail et de choix.
