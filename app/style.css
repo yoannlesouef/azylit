@@ -2232,3 +2232,7 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
   .child-header.home-header .controls { grid-column: 1 / -1; grid-row: 3; justify-self: end; }
   .child-header.choice-header { gap: 16px; }
 }
+
+.exercise-navigation { display: flex; align-items: center; gap: 16px; }
+.exercise-header .tool { width: 64px; height: 64px; min-width: 64px; max-width: 64px; padding: 12px; flex-shrink: 0; }
+.exercise-navigation .tool svg.nav-picture { width: 32px; height: 32px; }

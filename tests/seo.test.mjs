@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { pages, faq } from '../content/parents.mjs';
+import { pages, faq, updated } from '../content/parents.mjs';
 import { publicConfig, publicFiles } from '../scripts/public-pages.mjs';
 const template = await readFile(new URL('../app/index.html', import.meta.url), 'utf8');
 const config = publicConfig({});
@@ -96,7 +96,7 @@ test('la page enseignants est indexable, distingue le prévu du livré et prése
 });
 
 test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>{
- assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/demarche/','/accessibilite/','/donnees/','/questions/']);
+ assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/ulis/','/aesh/','/demarche/','/accessibilite/','/donnees/','/questions/']);
  const html=files.get('parents/index.html');
  const navigation=html.match(/<nav class="parent-nav"[^>]*>([^]*?)<\/nav>/)[1];
  assert.ok(navigation.indexOf('/parents/')<navigation.indexOf('/enseignants/'));
@@ -121,9 +121,9 @@ test('chaque page publie une image de partage réelle et une date cohérente',as
   assert.ok(html.includes('name="twitter:card" content="summary_large_image"'));
   assert.ok(html.includes('property="og:image:alt"'));
   const page=schema(html)['@graph'].find(item=>['WebPage','FAQPage'].includes(item['@type']));
-  assert.equal(page.dateModified,'2026-11-17');
+  assert.equal(page.dateModified,updated);
  }
- assert.equal((files.get('sitemap.xml').match(/<lastmod>2026-11-17<\/lastmod>/g)||[]).length,pages.length+1);
+ assert.equal((files.get('sitemap.xml').match(new RegExp('<lastmod>'+updated+'<\\/lastmod>','g'))||[]).length,pages.length+1);
 });
 
 test('prévisualisations Cloudflare : noindex automatique, en-tête et sitemap cohérents',()=>{
@@ -155,4 +155,22 @@ test('sommaires et questions structurées ciblent des sections visibles et sourc
  const app=schema(files.get('index.html'))['@graph'].find(item=>item['@type']==='WebApplication');
  assert.equal(app.applicationCategory,'EducationalApplication');
  assert.equal(app.aggregateRating,undefined);assert.equal(app.offers,undefined);
+});
+
+test('les pages ULIS et AESH sont distinctes, sourcées et ne créent pas de parcours enfant supplémentaire',async()=>{
+ for(const path of ['/ulis/','/aesh/']){
+  const html=files.get(path.slice(1)+'index.html');assert.ok(html);
+  assert.ok(html.includes(`rel="canonical" href="https://www.azyl.it${path}"`));
+  assert.ok(files.get('sitemap.xml').includes('https://www.azyl.it'+path));
+  assert.ok(html.includes('https://www.education.gouv.fr/'));
+  assert.ok(html.includes('ne constitue') || html.includes('ne modifie pas'));
+  assert.ok(html.includes('Un seul profil') || html.includes('un seul profil'));
+  assert.ok(html.includes('sans compte') || html.includes('Aucun compte'));
+  const entity=schema(html)['@graph'].find(item=>item['@type']==='FAQPage');assert.equal(entity.mainEntity.length,3);
+  for(const item of entity.mainEntity){assert.ok(html.includes(item.name));assert.ok(html.includes(item.acceptedAnswer.text));}
+ }
+ for(const page of pages){const html=files.get(page.path.slice(1)+'index.html');assert.ok(html.includes('href="/ulis/"'));assert.ok(html.includes('href="/aesh/"'));assert.ok(!html.includes('undefined'));}
+ assert.ok(files.get('ulis/index.html').includes('dispositifs d’appui'));
+ const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
+ assert.ok(!app.includes('href="/ulis/"'));assert.ok(!app.includes('href="/aesh/"'));
 });

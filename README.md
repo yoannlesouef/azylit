@@ -28,7 +28,7 @@ Le répertoire `dist/` peut être hébergé sur un service de fichiers statiques
 
 ## Déployer sur Cloudflare Pages
 
-Le code actuel peut être déployé directement sur Cloudflare Pages. La construction produit les fichiers statiques des jeux, les six pages d’information pour les parents et enseignants, le sitemap, `robots.txt` et une page `404.html`. Aucun serveur Node.js en production, Pages Function ou secret d’API n’est nécessaire.
+Le code actuel peut être déployé directement sur Cloudflare Pages. La construction produit les fichiers statiques des jeux, les huit pages d’information pour les parents, enseignants, équipes ULIS et AESH, le sitemap, `robots.txt` et une page `404.html`. Aucun serveur Node.js en production, Pages Function ou secret d’API n’est nécessaire.
 
 Dans Cloudflare, créer un projet **Pages** connecté à GitHub, puis utiliser les paramètres suivants :
 
@@ -230,7 +230,7 @@ La page publique `/enseignants/` présente les usages d’entraînement en class
 
 Le parcours pilote Syllabes propose une démonstration facultative depuis l’ampoule avec un exemple distinct. Le bouton pause conserve la place ; la maison garde son rôle d’arrêt. La reprise conserve les aides et ne compte pas deux fois une réussite. Le [plan d’amélioration](docs/plan-amelioration.md) indique les statuts de chaque phase. La [matrice de compétences](docs/matrice-competences.md), encore non validée professionnellement, est contrôlée par `npm run audit:coverage` ; elle ne produit aucun score élève.
 
-La navigation adulte commence par Parents et Enseignants, puis Notre démarche, Accessibilité, Données et Questions. Les pages communes sont à la racine du site. Les anciennes adresses sous `/parents/` redirigent en 301 vers les nouvelles ; la construction génère un fichier `_redirects` pour Cloudflare Pages et met à jour les URL canoniques, les liens et le sitemap. L’en-tête enfant distingue les informations adultes des commandes de jeu ; les liens adultes sont absents des écrans de travail et de choix.
+La navigation adulte commence par Parents, Enseignants, ULIS et AESH, puis Notre démarche, Accessibilité, Données et Questions. Les pages communes sont à la racine du site. Les anciennes adresses sous `/parents/` redirigent en 301 vers les nouvelles ; la construction génère un fichier `_redirects` pour Cloudflare Pages et met à jour les URL canoniques, les liens et le sitemap. L’en-tête enfant distingue les informations adultes des commandes de jeu ; les liens adultes sont absents des écrans de travail et de choix.
 
 L’[audit SEO / GEO / AEO](docs/audit-seo-geo-aeo.md) recense les corrections et les contrôles de production restant à faire. Les pages adultes disposent de titres descriptifs, sources, sommaires, FAQ cohérentes et aperçus de partage. Les prévisualisations sont exclues de l’index via métadonnées et `_headers`, avec un sitemap sans URL. Aucun positionnement ni citation dans un moteur de réponse n’est garanti.
 
@@ -239,3 +239,5 @@ L’[audit SEO / GEO / AEO](docs/audit-seo-geo-aeo.md) recense les corrections e
 Le [parcours proposé](docs/parcours-premiers-sons.md) documente 31 unités sonores et les 26 lettres, avec un premier pilote éditorial sur l, r, f et j. Les données sont dans `content/sound-curriculum.mjs` ; elles ne sont pas utilisées par le jeu tant que contenus et enregistrements ne sont pas relus. `npm run audit:sounds` recense les éléments prêts et manquants ; `node scripts/audit-sounds.mjs --require-ready` retourne un échec lorsque des unités ne disposent pas des métadonnées requises et d’un fichier présent. La vérification technique ne remplace pas une écoute compétente. Le niveau jouable reste sur a, i, o et u.
 
 Le lecteur des futurs sons enregistrés est intégré : MP3 local, pas de repli vers un nom de lettre, réponses après démarrage audio, arrêt et erreurs pris en charge. Aucun nouveau phonème n’est encore activé. Le [kit de production du pilote](docs/kit-enregistrement-pilote.md) décrit les quatre fichiers l/r/f/j et les relectures nécessaires. `npm run audit:sound-pilot` contrôle les fichiers et leur empreinte ; ajouter `-- --export` pour produire un export de revue uniquement lorsque toutes les conditions sont réunies. Cet export ne modifie pas le jeu.
+
+Les pages `/ulis/` et `/aesh/` présentent les usages d’entraînement et d’accompagnement, les problèmes d’accès auxquels les commandes cherchent à répondre et les limites du prototype. Elles citent des ressources institutionnelles, disposent de FAQ visibles et structurées et sont reliées aux autres pages adultes. Aucun mode handicap, compte professionnel ou nouvel accès ne s’ajoute au parcours enfant. Dans les exercices, maison et pause sont à gauche ; son et réglages restent à droite, les réglages étant toujours la dernière commande.

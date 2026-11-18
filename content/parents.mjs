@@ -1,5 +1,7 @@
-export const updated = '2026-11-17';
+import {inclusionPages} from './inclusion-pages.mjs';
+export const updated = '2026-11-18';
 export const faq = [
+  {question:'Existe-t-il des informations pour les équipes ULIS et les AESH ?', answer:'Oui. Deux pages dédiées présentent les usages possibles du prototype, ses aides à la navigation et les limites de l’accompagnement et du suivi local. L’enfant garde le même parcours, sans mode handicap, compte professionnel ni validation adulte obligatoire.'},
   {question:'Le niveau Premiers sons couvre-t-il toutes les lettres ?', answer:'Non. Ce palier travaille pour le moment les sons a, i, o et u, avec 16 exercices. Les autres voyelles et les correspondances des consonnes restent à développer. Le nom d’une consonne, comme bé, est différent du phonème à apprendre ; les prochaines étapes nécessitent des prononciations vérifiées. Découvrir propose les noms des 26 lettres, ce qui ne remplace pas ce travail des sons.'},
   {question:'Azyl.it remplace-t-il un enseignant ou un accompagnement spécialisé ?', answer:'Non. Azyl.it est un prototype d’entraînement à la lecture, pas un outil de diagnostic ni un programme de rééducation validé. Les contenus, les prononciations et l’usage avec les enfants doivent encore être évalués. Le choix des apprentissages reste à adapter avec les adultes et professionnels qui accompagnent l’enfant.'},
   {question:'Azyl.it peut-il être utilisé par un enseignant ?', answer:'Oui, comme support d’entraînement accompagné après vérification des contenus et de la voix. L’enseignant choisit le niveau et peut consulter l’historique local. Le prototype ne dispose pas de tableau de bord de classe ni de profils séparés pour plusieurs élèves ; son historique n’est pas une évaluation étalonnée. La page Enseignants précise les usages actuels et les améliorations prévues.'},
@@ -95,5 +97,8 @@ export const pages = [
 
 // Shared adult pages live at the root; preserve existing bookmarks and search URLs.
 export const legacyRedirects = Object.fromEntries(['demarche','accessibilite','donnees','questions'].flatMap(name=>[[`/parents/${name}`,`/${name}/`],[`/parents/${name}/`,`/${name}/`]]));
-const adultNavigationOrder=['/parents/','/enseignants/','/demarche/','/accessibilite/','/donnees/','/questions/'];
+pages.push(...inclusionPages);
+const adultNavigationOrder=['/parents/','/enseignants/','/ulis/','/aesh/','/demarche/','/accessibilite/','/donnees/','/questions/'];
+const navigationLabels=['Parents','Enseignants','ULIS','AESH','Notre démarche','Accessibilité','Données','Questions'];
+for(const page of pages)page.navLabel=navigationLabels[adultNavigationOrder.indexOf(page.path)];
 pages.sort((a,b)=>adultNavigationOrder.indexOf(a.path)-adultNavigationOrder.indexOf(b.path));

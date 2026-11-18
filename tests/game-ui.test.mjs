@@ -195,3 +195,11 @@ test('le fichier fonctionne sans TTS, et une panne offre une nouvelle écoute sa
   f.click('pause');
  }finally{beginnerBanks[1][0]=original;}
 });
+
+test('dans les exercices les réglages restent tout à droite, la pause reste avec la maison',async()=>{
+ const f=fixture(profileAt(2));await import('../app/app.js?stable-exercise-header');
+ const actions=()=>[...f.app.innerHTML.split('</header>')[0].matchAll(/data-action="([^"]+)"/g)].map(match=>match[1]);
+ assert.equal(actions().at(-1),'settings');f.click('resume');
+ assert.deepEqual(actions(),['quit','pause','audio','settings']);
+ f.click('pause');assert.equal(actions().at(-1),'settings');assert.ok(!actions().includes('pause'));
+});

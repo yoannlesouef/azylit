@@ -51,3 +51,7 @@ Les FAQ structurées décrivent les questions réellement visibles. Leur présen
 - [Cloudflare Pages : en-têtes personnalisés](https://developers.cloudflare.com/pages/configuration/headers/) — fichier _headers utilisé pour les prévisualisations.
 
 Le fichier scripts/generate-share-image.swift est un outil facultatif de création de l’image sur macOS. Le PNG est versionné ; le déploiement conserve uniquement son prérequis Node.js.
+
+## Complément du 18 novembre 2026
+
+Ajout de `/ulis/` et `/aesh/` : deux contenus distincts, sources institutionnelles, exemples d’usage, limites et trois questions-réponses chacun. Les fonctions présentes ne sont pas assimilées à une efficacité pédagogique démontrée. La navigation adulte, les liens, les canoniques et le sitemap couvrent désormais huit pages d’information. Les tests vérifient l’absence de lien supplémentaire vers ces pages dans le contrôleur enfant. Les contrôles du domaine public restent à faire.
