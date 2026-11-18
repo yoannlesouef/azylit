@@ -24,7 +24,10 @@ let screen = 'home', step = 0, feedback = null, calibrationState = null, calibra
 const navigation = createNavigationHistory(window, snapshot => {
   stopAudio(); clearTimeout(calibrationTimer);
   document.querySelector('dialog[open]')?.close();
+  const previousDiscovery = screen === 'discover' ? discoveryState : null;
   ({screen,step,discoveryState,difficultyReturn} = snapshot);
+  const returningToSyllables = screen === 'discover' && discoveryState.page === 'syllables' && previousDiscovery?.page === 'words';
+  if (returningToSyllables) { discoveryState.syllableId = previousDiscovery.syllableId; discoveryState.syllableInitial = previousDiscovery.syllableInitial; }
   feedback = null;
   if (screen === 'mission') {
     if (!profile.session) screen = 'home';
@@ -33,6 +36,7 @@ const navigation = createNavigationHistory(window, snapshot => {
   }
   if (['calibrate','calibrationResult'].includes(screen)) screen = 'home';
   render(true); navigationGuidance();
+  if (returningToSyllables) document.querySelector(`[data-command="syllable"][data-value="${discoveryState.syllableId}"]`)?.focus();
 });
 const hero = () => heroes.find(h => h.id === profile.hero);
 const escape = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -134,6 +138,7 @@ function home() {
 }
 function discoveryView() { return renderDiscovery(discoveryState,hasVoice && !discoveryAudioError,hero()); }
 function dispatchDiscovery(button) {
+  if (button.dataset.command === 'syllable-initial') stopAudio();
   const result = updateDiscovery(discoveryState,button.dataset.command,button.dataset.value,Math.random,{canSpeak:hasVoice,canHear:hasVoice && profile.audio});
   discoveryState = result.state;
   if (result.exit) return actions.home();
@@ -141,6 +146,12 @@ function dispatchDiscovery(button) {
   if (result.speech) discoveryAudioError = false;
   render(result.pageChanged);
   if (result.speech) speak(result.speech);
+  if (button.dataset.command === 'syllable-initial') {
+    const toggle = document.querySelector(`[data-command="syllable-initial"][data-value="${button.dataset.value}"]`);
+    toggle?.focus();
+    if (discoveryState.syllableInitial) toggle?.scrollIntoView?.({block:'start'});
+    return;
+  }
   if (result.focusCommand === 'selected-syllable') { document.querySelector(`[data-command="syllable"][data-value="${discoveryState.syllableId}"]`)?.focus(); return; }
   const command = result.focusCommand || (!result.pageChanged ? button.dataset.command : null);
   if (command) document.querySelector(`[data-action="discover-action"][data-command="${command}"]${result.focusCommand ? '' : `[data-value="${button.dataset.value || ''}"]`}`)?.focus({preventScroll:command !== 'syllable'});

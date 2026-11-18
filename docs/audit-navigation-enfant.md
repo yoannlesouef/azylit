@@ -39,3 +39,9 @@ Les recommandations de cet audit sont maintenant implémentées : pictogramme au
 L’historique du navigateur conserve les écrans et les pages de cartes, sans restaurer d’anciens résultats. Une mission terminée ou abandonnée n’est pas ressuscitée par Retour. Le rechargement et le retour depuis une page parents réinitialisent la navigation à l’accueil ; la progression sauvegardée reste disponible. Les tests automatisés ne remplacent pas la vérification visuelle sur appareils ni les essais avec les enfants.
 
 Mise à jour : les groupes ont ensuite été retirés de l’interface à la demande du porteur du projet. Les recommandations historiques relatives à leur bibliothèque sont donc remplacées par le lancement automatique des missions. L’audio des exercices de fondation prononce désormais la cible seule.
+
+## Simplification de Découvrir — 18 novembre 2026
+
+L’index d’initiales est remplacé par une seule page de lignes dépliables, avec des exemples concrets. La ligne ma/mi est ouverte au départ ; une seule ligne est développée à la fois. Depuis le choix Découvrir, deux clics ouvrent les mots de ma, au lieu de trois. Sur les mots, passer à une autre syllabe de la même série demande un seul clic au lieu d’un retour suivi d’une sélection. La cible porte un haut-parleur et un état sélectionné ; sa réécoute conserve le mot déjà écouté. Le retour retrouve la dernière cible et sa ligne ouverte.
+
+Les tests couvrent les 124 syllabes accessibles, six mots par cible, les changements en place, l’historique et l’absence de modification de la mission. Les commandes restent de vrais boutons avec état annoncé et utilisation clavier native. Les vérifications visuelles à 320 px, au zoom, sur tablette et l’observation des enfants restent à réaliser ; aucune efficacité spécifique au TDAH n’est déclarée démontrée.

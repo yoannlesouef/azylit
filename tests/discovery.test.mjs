@@ -19,7 +19,7 @@ test('exploration sonore, mots associés et retour conservant la page', () => {
   const go=(command,value)=>{const r=updateDiscovery(s,command,value,Math.random,audio);s=r.state;return r;};
   go('letters'); assert.equal(go('letter','b').speech,'bé');
   go('families');
-  assert.equal(s.page,'syllable-index');
+  assert.equal(s.page,'syllables');
   const seen = new Set();
   for (const initial of syllableInitials) {
     go('syllable-initial',initial);
@@ -35,7 +35,7 @@ test('exploration sonore, mots associés et retour conservant la page', () => {
   assert.equal(go('word','w-maman').speech,'maman');
   assert.equal(go('word','w-robot').speech,undefined);
   assert.equal(go('back').focusCommand,'selected-syllable');assert.equal(s.page,'syllables');assert.equal(s.syllableId,'ma');assert.equal(s.syllableInitial,'m');
-  go('back');assert.equal(s.page,'syllable-index');go('back');assert.equal(s.page,'hub');assert.equal(go('back').exit,true);
+  go('back');assert.equal(s.page,'hub');assert.equal(go('back').exit,true);
 });
 test('jeu audio : écoute requise, réessai, réussite et nouveau mot', () => {
   let s=updateDiscovery(createDiscoveryState(),'quiz',null,()=>0,{}).state;
@@ -102,7 +102,7 @@ test('les cartes d’une seule lettre restent dans l’alphabet, pas dans les sy
   assert.ok(discoverySyllables.some(syllable=>syllable.id==='ou'));
 });
 
-test('les sons courants ajoutés ont six mots et on se trouve directement par l’index des sons',()=>{
+test('les sons courants ajoutés ont six mots et on se trouve dans la ligne on et ou',()=>{
  const expected=['on','in','au','oi','chi','gui','gé','ju','le','me','pe','re','se','te','ve','ge','son'];
  for(const id of expected) assert.ok(wordsForSyllable(id).length>=6,id);
  let s=updateDiscovery(createDiscoveryState(),'families').state;
@@ -110,4 +110,45 @@ test('les sons courants ajoutés ont six mots et on se trouve directement par l�
  assert.match(renderDiscovery(s),/data-command="syllable" data-value="on"/);
  const result=updateDiscovery(s,'syllable','on');assert.equal(result.speech,'on');
  assert.equal((renderDiscovery(result.state).match(/data-command="word"/g)||[]).length,6);
+});
+
+test('les syllabes sont visibles dès l’entrée et une seule série est dépliée',()=>{
+ let state=updateDiscovery(createDiscoveryState(),'families').state;
+ let html=renderDiscovery(state);
+ assert.equal(state.page,'syllables');
+ assert.match(html,/data-command="syllable" data-value="ma"/);
+ assert.match(html,/data-command="syllable" data-value="mi"/);
+ assert.equal((html.match(/aria-expanded="true"/g)||[]).length,1);
+ assert.ok(!html.includes('syllable-initial-grid'));
+ assert.match(html,/ma · mi/);assert.match(html,/on · ou/);
+ assert.ok(!html.includes('data-command="syllable" data-value="ba"'));
+ state=updateDiscovery(state,'syllable-initial','b').state;
+ html=renderDiscovery(state);
+ assert.match(html,/data-command="syllable" data-value="ba"/);
+ assert.ok(!html.includes('data-command="syllable" data-value="ma"'));
+ assert.equal((html.match(/aria-expanded="true"/g)||[]).length,1);
+ state=updateDiscovery(state,'syllable-initial','b').state;
+ assert.equal((renderDiscovery(state).match(/data-command="syllable" /g)||[]).length,0);
+ state=updateDiscovery(state,'families').state;
+ assert.match(renderDiscovery(state),/data-command="syllable" data-value="ma"/);
+});
+
+test('changer de syllabe depuis les mots ne demande aucun retour et actualise les six mots',()=>{
+ let state=updateDiscovery(createDiscoveryState(),'families').state;
+ let result=updateDiscovery(state,'syllable','ma');state=result.state;
+ assert.equal(result.speech,'ma');assert.equal(result.pageChanged,true);
+ assert.match(renderDiscovery(state),/data-command="syllable" data-value="mi"/);
+ state=updateDiscovery(state,'word','w-maman').state;
+ result=updateDiscovery(state,'syllable','ma');state=result.state;
+ assert.equal(result.speech,'ma');assert.equal(state.lastWord,'w-maman');
+ result=updateDiscovery(state,'syllable','mi');state=result.state;
+ assert.equal(result.pageChanged,false);assert.equal(result.speech,'mi');assert.equal(result.listen,true);
+ assert.equal(state.lastWord,null);assert.equal(state.wordPage,0);
+ const html=renderDiscovery(state);
+ assert.equal((html.match(/data-command="word"/g)||[]).length,6);
+ assert.match(html,/<mark>mi<\/mark>/);assert.ok(!html.includes('data-value="w-maman"'));
+ assert.equal((html.match(/aria-pressed="true"/g)||[]).length,1);
+ result=updateDiscovery(state,'back');state=result.state;
+ assert.equal(state.page,'syllables');assert.equal(state.syllableInitial,'m');assert.equal(state.syllableId,'mi');
+ assert.equal(result.focusCommand,'selected-syllable');
 });

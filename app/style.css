@@ -2176,19 +2176,13 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .exercise-companion-guide.exercise-syllable-repeat:hover { background: var(--pale); border-color: var(--accent); }
 .exercise-syllable-repeat:focus-visible { outline: 4px solid var(--accent); outline-offset: 5px; }
 
-/* Direct lookup: stable alphabet and a compact index, no repeated page arrows. */
+/* Stable alphabet, no repeated page arrows. */
 .discovery-letter-grid { grid-template-columns: repeat(6,minmax(0,1fr)); max-width: 760px; gap: 16px; }
-.syllable-initial-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; max-width: 760px; margin: auto; }
-.syllable-initial { display: grid; place-items: center; min-height: 76px; padding: 12px 8px; border: 2px solid var(--line); border-radius: 20px; background: #fffefa; color: var(--ink); font-family: var(--reading-font,sans-serif); font-size: 27px; }
-.syllable-initial[aria-pressed="true"] { border-color: var(--accent); background: var(--pale); }
-.syllable-initial:first-child { grid-column: span 2; }
-.syllable-initial:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 @media(max-width:600px) {
-  .discovery-letter-grid, .syllable-initial-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+  .discovery-letter-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
   .discovery-letter { flex-direction: column; gap: 0; min-height: 94px; }
   .discovery-letter > span:first-child { font-size: 30px; }
   .discovery-letter > span:last-child { font-size: 24px; }
-  .syllable-initial { min-height: 68px; font-size: 24px; }
 }
 
 .exercise-stimulus.has-model.clear-audio-stimulus { grid-template-columns: minmax(0,1fr); gap: 18px; }
@@ -2240,3 +2234,28 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 /* Six companions, arranged in balanced rows without a carousel or extra steps. */
 .companion-grid { grid-template-columns: repeat(3,minmax(0,1fr)); max-width: 900px; margin-inline: auto; }
 @media(max-width:700px) { .companion-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+
+/* One syllabary page: concrete examples, one open shelf, no index detour. */
+.syllable-shelves { display: grid; gap: 14px; max-width: 620px; margin: auto; text-align: left; }
+.syllable-shelf { border: 1px solid var(--line); border-radius: 24px; background: #fffefa; overflow: hidden; }
+.syllable-shelf h2 { margin: 0; font-size: inherit; }
+.syllable-shelf-toggle { scroll-margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 72px; padding: 14px 24px; background: transparent; color: var(--ink); font-family: var(--reading-font,sans-serif); font-size: 27px; text-align: left; }
+.syllable-shelf-toggle svg { width: 28px; height: 28px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2.5; }
+.syllable-shelf-toggle[aria-expanded="true"] { color: var(--accent); background: var(--pale); }
+.syllable-shelf-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.syllable-shelf .syllable-focus-grid { max-width: none; padding: 20px; gap: 16px; }
+.syllable-shelf .syllable-focus-grid[hidden] { display: none; }
+.syllable-shelf .discovery-syllable { min-height: 86px; padding: 12px 6px; }
+.syllable-switcher { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; max-width: 620px; margin: 0 auto 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.syllable-switcher .discovery-syllable { min-height: 88px; padding: 10px 6px; font-size: 27px; line-height: 1.2; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2px; }
+.syllable-switcher-audio { display: grid; place-items: center; height: 22px; }
+.syllable-switcher .nav-picture { width: 22px; height: 22px; }
+.syllable-switcher .listened { border-width: 3px; }
+.syllable-shelf-toggle:focus-visible, .syllable-shelves .discovery-syllable:focus-visible, .syllable-switcher .discovery-syllable:focus-visible { outline: 3px solid var(--accent); outline-offset: -5px; }
+@media(max-width:600px) {
+  .syllable-shelf-toggle { min-height: 68px; padding: 12px 18px; font-size: 25px; }
+  .syllable-shelf .syllable-focus-grid { padding: 14px; gap: 12px; }
+  .syllable-shelf .discovery-syllable { min-height: 76px; font-size: 27px; }
+  .syllable-switcher { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
+  .syllable-switcher .discovery-syllable { min-height: 84px; font-size: 25px; }
+}

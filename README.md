@@ -193,7 +193,7 @@ Dans les premiers exercices, l’audio prononce uniquement la cible : nom de la 
 
 ## Découvrir les lettres, les syllabes et les mots
 
-Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes accessibles directement par leur début (m, ch, br…), avec une carte dédiée aux sons comme on et ou et des mots à écouter. Les 124 entrées de syllabes proposées renvoient à 697 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
+Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes immédiatement visibles (ma, mi…), avec les autres séries dépliables au même endroit et des mots à écouter. Les lignes montrent des exemples de syllabes plutôt que des initiales isolées ; « on · ou » reste accessible sur sa propre ligne. Les 124 entrées de syllabes proposées renvoient à 697 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
 
 **Écoute et trouve** propose un mot à entendre et trois mots écrits parmi lesquels le retrouver. Réécoute, essais sans pénalité, coche et nouveau mot sont disponibles. Cette exploration ne change ni la mission conservée ni l’historique des exercices.
 
@@ -206,7 +206,7 @@ L’[audit de navigation enfant](docs/audit-navigation-enfant.md) détaille les 
 
 ### Navigation simplifiée
 
-L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres sont visibles dans un alphabet aéré ; les syllabes se trouvent par leur début, sans pagination. Les mots restent présentés six par six. Aucun groupe n’est proposé à l’enfant. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
+L’état sonore est visible avec un haut-parleur actif ou barré. Les lettres sont visibles dans un alphabet aéré ; les syllabes s’ouvrent directement sur une première série de cartes, les autres séries restant repliées sur la même page, sans pagination. Les mots restent présentés six par six. Aucun groupe n’est proposé à l’enfant. Les consignes d’accueil sont courtes. Les réglages enfant exposent la taille et l’espacement ; police, interligne et aides sont repliés dans la partie adulte.
 
 Le bouton Retour du navigateur et les flèches internes retrouvent les écrans précédents pendant la visite, avec leurs pages de cartes et sélections. Les résultats ne sont jamais annulés par ce retour, et une mission terminée ou abandonnée n’est pas restaurée. Le rechargement revient à l’accueil avec la progression locale conservée. La validation auprès d’enfants et les vérifications visuelles sur appareils restent nécessaires.
 
@@ -222,7 +222,7 @@ Dans les exercices de choix d’une syllabe, la réécoute utilise un grand pict
 
 Les « Bravo ! » utilisent quatre variations légères de hauteur et de débit, sans répétition immédiate de la même combinaison. La voix française et son volume restent identiques ; la prononciation des lettres, syllabes et mots conserve ses réglages habituels. La pause de 450 ms avant la félicitation et son annulation lors d’une navigation sont conservées. Le rendu émotionnel dépend des capacités de la voix du navigateur.
 
-La navigation directe remplace les anciennes pages de lettres et de syllabes. Le catalogue inclut désormais on, in, au, oi, chi, gui, gé, ju, le, me, pe, re, se, te, ve, ge et son. Il reste non exhaustif ; voir le [suivi de couverture](docs/catalogue-syllabes.md). Les tests garantissent six mots distincts pour chaque entrée proposée et l’accès à toutes les entrées par l’index.
+La navigation directe remplace les anciennes pages de lettres et de syllabes. Le catalogue inclut désormais on, in, au, oi, chi, gui, gé, ju, le, me, pe, re, se, te, ve, ge et son. Il reste non exhaustif ; voir le [suivi de couverture](docs/catalogue-syllabes.md). Les tests garantissent six mots distincts pour chaque entrée proposée et l’accès à toutes les entrées depuis les lignes dépliables.
 
 Le grand haut-parleur est commun aux exercices de sons, de syllabes et d’assemblage. En cas d’erreur de synthèse vocale signalée par le navigateur, les réponses nécessitant l’écoute sont retirées jusqu’à une réécoute, avec accès à un exercice alternatif sans écoute. Réessayer le son ne compte ni comme erreur ni comme aide pédagogique. Le niveau Syllabes contient 40 exercices couvrant 32 syllabes simples, dont 24 nouvelles syllabes consonne-voyelle. Chaque mission conserve quatre choix de réponse et quatre constructions de lettres.
 
@@ -245,3 +245,5 @@ Les pages `/ulis/` et `/aesh/` présentent les usages d’entraînement et d’a
 Naya et Pico possèdent les mêmes états discrets de guidage, d’encouragement et de joie que les autres compagnons, y compris dans Découvrir. Le choix affiche les six cartes, sur trois colonnes sur grand écran et deux sur petit écran, et conserve la mission et les résultats existants.
 
 La [couverture complète préparée](docs/couverture-premiers-sons.md) contient 104 essais non activés : sons et mots en contexte, avec suivi des 26 lettres. `npm run audit:sound-coverage` détaille les manques ; `npm run audit:sound-coverage -- --export` refuse de produire un dossier de revue si un audio ou une relecture manque. Aucun export ne modifie la banque du jeu. Les enregistrements restent à produire avant de finaliser la couverture jouable.
+
+Dans Découvrir/Syllabes, l’écran d’index est supprimé : une série est ouverte d’emblée et une seule peut être dépliée à la fois. Toucher une syllabe l’écoute et affiche ses six mots. Sur la page des mots, les syllabes de la même série restent accessibles pour changer de cible en un clic, sans retour intermédiaire. Le haut-parleur identifie la syllabe sélectionnée et permet de la réécouter. Le retour retrouve la dernière syllabe et sa ligne ouverte, y compris avec l’historique du navigateur.
