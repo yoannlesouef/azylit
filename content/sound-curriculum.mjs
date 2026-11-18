@@ -40,6 +40,12 @@ export const soundCurriculum=[
  sound('in','ɛ̃',['in'],['lapin','sapin'],'later-sounds'),
  sound('un','œ̃',['un'],['un','brun'],'later-sounds','La distinction avec /ɛ̃/ varie selon les locuteurs ; ne pas en faire un critère de difficulté sans relecture.'),
  sound('eu','ø',['eu'],['feu','jeu'],'later-sounds','La valeur /œ/ dans d’autres mots doit être distinguée.'),
+ sound('o-open','ɔ',['o'],['porte','bol'],'later-sounds','Distinguer le o ouvert du o fermé ; le contexte doit accompagner cette correspondance.'),
+ sound('eu-open','œ',['eu'],['peur','fleur'],'later-sounds','Distinguer du eu fermé de feu.'),
+ sound('w-glide','w',['w'],['wapiti','kiwi'],'later-sounds','w dépend du mot ; comparer à wagon seulement dans une séquence contextualisée.'),
+ sound('y-glide','j',['y'],['yaourt','yoyo'],'later-sounds','Distinguer du y prononcé /i/ dans stylo et du son de j.'),
+ sound('x-ks','ks',['x'],['taxi','boxe'],'later-sounds','Séquence de deux consonnes, à écouter en contexte.','phoneme-sequence'),
+ sound('x-gz','ɡz',['x'],['examen','exemple'],'later-sounds','Séquence de deux consonnes, à écouter en contexte.','phoneme-sequence'),
  sound('oi','wa',['oi'],['oiseau','voiture'],'later-sounds','Séquence de sons : ne pas la présenter comme un phonème unique.','phoneme-sequence')
 ];
 // Every alphabet letter is accounted for; some require context instead of an isolated-sound card.
@@ -58,7 +64,7 @@ export const letterSoundCoverage=[
  ['l',['l'],'direct','Les groupes comme ill nécessitent un autre contexte.'],
  ['m',['m'],'direct','Les voyelles nasales avec m se traitent séparément.'],
  ['n',['n'],'direct','Les voyelles nasales avec n se traitent séparément.'],
- ['o',['o'],'context','Valeurs /o/ et /ɔ/ ; groupes on/ou/oi à distinguer.'],
+ ['o',['o','o-open'],'context','Valeurs /o/ et /ɔ/ ; groupes on/ou/oi à distinguer.'],
  ['p',['p'],'direct','Son bref ; lettres muettes et ph en contexte.'],
  ['q',['k'],'context','Enseigner notamment qu ; ne pas prononcer systématiquement q puis u.'],
  ['r',['r'],'direct','Réalisation variable selon les locuteurs.'],
@@ -66,9 +72,9 @@ export const letterSoundCoverage=[
  ['t',['t'],'direct','Son bref ; tion et finales ne relèvent pas de la première étape.'],
  ['u',['u'],'context','Son /y/ puis groupes ou/gu/qu et semi-voyelles en contexte.'],
  ['v',['v'],'direct','Distinguer le son du nom vé.'],
- ['w',['v'],'context','Son /v/ ou /w/ selon les mots ; /w/ à compléter avant ces exercices.'],
- ['x',[],'context','Souvent /ks/ ou /ɡz/, parfois muet ; pas un phonème unique à inventer.'],
- ['y',['i'],'context','Valeurs /i/ et /j/ selon les mots ; /j/ à compléter avant ces exercices.'],
+ ['w',['v','w-glide'],'context','Son /v/ ou /w/ selon les mots ; les deux valeurs doivent être présentées avec un mot contexte.'],
+ ['x',['x-ks','x-gz'],'context','Souvent /ks/ ou /ɡz/, parfois muet ; pas un phonème unique à inventer.'],
+ ['y',['i','y-glide'],'context','Valeurs /i/ et /j/ selon les mots ; les deux valeurs doivent être présentées avec un mot contexte.'],
  ['z',['z'],'direct','Distinguer le son du nom zède et les finales muettes.']
 ].map(([letter,soundIds,mode,note])=>({letter,soundIds,mode,note,status:'draft'}));
 export const pilotSoundExercises=[

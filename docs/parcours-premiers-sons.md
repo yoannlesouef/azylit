@@ -4,7 +4,7 @@
 
 ## Ce qui est préparé
 
-- Un inventaire de 31 unités orales proposées, dont oi explicitement traité comme une séquence et non un phonème unique.
+- Un inventaire de 37 unités orales proposées, dont oi explicitement traité comme une séquence et non un phonème unique.
 - Une fiche pour chacune des 26 lettres, y compris les cas où une carte de son isolé serait trompeuse.
 - Six étapes éditoriales, sans ajouter de niveaux, menus ou groupes au parcours enfant.
 - Huit essais de conception sur l, r, f et j, chacun avec deux propositions distinctes et des positions de réponse équilibrées.
@@ -88,9 +88,9 @@ Le nom de la lettre appartient à Découvrir/Lettres. Le niveau Premiers sons tr
 | t | Correspondance initiale proposée | Son bref ; tion et finales ne relèvent pas de la première étape. |
 | u | Contexte nécessaire | Son /y/ puis groupes ou/gu/qu et semi-voyelles en contexte. |
 | v | Correspondance initiale proposée | Distinguer le son du nom vé. |
-| w | Contexte nécessaire | Son /v/ ou /w/ selon les mots ; /w/ à compléter avant ces exercices. |
+| w | Contexte nécessaire | Son /v/ ou /w/ selon les mots ; Les deux valeurs doivent être présentées avec un mot contexte. |
 | x | Contexte nécessaire | Souvent /ks/ ou /ɡz/, parfois muet ; pas un phonème unique à inventer. |
-| y | Contexte nécessaire | Valeurs /i/ et /j/ selon les mots ; /j/ à compléter avant ces exercices. |
+| y | Contexte nécessaire | Valeurs /i/ et /j/ selon les mots ; Les deux valeurs doivent être présentées avec un mot contexte. |
 | z | Correspondance initiale proposée | Distinguer le son du nom zède et les finales muettes. |
 
 Les valeurs /ɔ/ pour o, /œ/ pour eu et /w/ ou /j/ dans certains emplois de w et y ne sont pas des cartes déjà prêtes dans ce premier inventaire. Elles doivent être préparées avant les exercices correspondants. Les h muet ou aspiré, les lettres muettes et les groupes x/qu/ch ne sont pas traités comme des phonèmes isolés uniformes. La liste des 26 lettres est un suivi éditorial, pas une déclaration de couverture pédagogique achevée.

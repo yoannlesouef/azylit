@@ -7,7 +7,7 @@ Document de travail mis à jour le 18 novembre 2026. Référence : [objectifs in
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
 | 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
-| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 31 unités sonores proposées, 26 lettres documentées, huit essais sur l/r/f/j, contrat audio, contrôle des fichiers/empreintes et kit de production préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
+| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 37 unités sonores proposées, 26 lettres documentées, 104 essais préparés et pilote l/r/f/j, contrat audio, contrôle des fichiers/empreintes et kit de production préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
 | 3 · Premiers apprentissages | **En cours — intégration technique du pilote** | Lecteur de fichiers locaux intégré, erreurs et interruptions testées, réponses après démarrage audio ; aucun nouveau phonème activé | Fichiers et relectures de la phase 2, écoutes réelles puis observation enfant |
 | 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
 | 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
@@ -68,7 +68,7 @@ Acceptation : aucune impasse connue sur les scénarios ; reprise conservée ; co
 
 ## Lot 2 — Fiabiliser le socle pédagogique et l’audio
 
-**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs et 180 exercices rattachés. Parcours Premiers sons préparé avec 31 unités sonores, 26 lettres documentées, huit essais de conception sur l/r/f/j, prérequis, aides et contrat audio. Tests de cohérence et audit des métadonnées disponibles. Aucune relecture professionnelle ni production d’audios validés réalisée ; le jeu conserve ses quatre voyelles actuelles.
+**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs et 180 exercices rattachés. Parcours Premiers sons préparé avec 37 unités sonores, 26 lettres documentées, 104 essais de conception dont le pilote l/r/f/j, prérequis, aides et contrat audio. Tests de cohérence et audit des métadonnées disponibles. Aucune relecture professionnelle ni production d’audios validés réalisée ; le jeu conserve ses quatre voyelles actuelles.
 
 Objectif : rendre les contenus justes et cohérents avant de les multiplier.
 
@@ -245,3 +245,5 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 - 18 novembre 2026 — Phase 1, choix du compagnon : Naya la sirène et Pico le dragon ajoutés aux quatre compagnons existants. Six cartes en grille, sans carrousel ni étape supplémentaire ; profils, mission et réglages conservés. Illustrations vectorielles inspectées dans les quatre états, tests du choix, de la sauvegarde et des retours dans les jeux et Découvrir passés. Vérification du parcours en navigateur et avec les enfants encore à réaliser.
 
 - 18 novembre 2026 — Phase 1 : liens d’accueil ordonnés Parents, Enseignants, AESH, ULIS. Navigation adulte sur une ligne dédiée sur mobile, toujours absente des exercices.
+
+- 18 novembre 2026 — Phase 2, préparation étendue : 37 unités et 104 essais, valeurs contextuelles de c/g/q/s/w/x/y et traitement de h sans faux son. Dossier de production complet et contrôle global avec export refusé en cas de fichiers ou relectures manquants. Phases 2 et 3 toujours en cours : aucun enregistrement disponible, aucun nouvel exercice activé, couverture jouable non finalisée. Voir couverture-premiers-sons.md.
