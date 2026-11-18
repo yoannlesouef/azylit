@@ -2236,3 +2236,7 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .exercise-navigation { display: flex; align-items: center; gap: 16px; }
 .exercise-header .tool { width: 64px; height: 64px; min-width: 64px; max-width: 64px; padding: 12px; flex-shrink: 0; }
 .exercise-navigation .tool svg.nav-picture { width: 32px; height: 32px; }
+
+/* Six companions, arranged in balanced rows without a carousel or extra steps. */
+.companion-grid { grid-template-columns: repeat(3,minmax(0,1fr)); max-width: 900px; margin-inline: auto; }
+@media(max-width:700px) { .companion-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }

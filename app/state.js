@@ -1,3 +1,4 @@
+import { heroes } from './data.js';
 import { HISTORY_LIMIT, GROUP_LIMIT, recoverGroups } from './missions.js';
 const validQuestionId = value => typeof value === 'string' && /^(n[1-4]|f[0-3])-[1-9][0-9]{0,2}$/.test(value);
 const validOrder = value => Array.isArray(value) && value.length >= 2 && value.length <= 4 && new Set(value).size === value.length && value.every(index => Number.isInteger(index) && index >= 0 && index < value.length);
@@ -10,7 +11,7 @@ export function parseProfile(raw) {
     if (!data || typeof data !== 'object') return freshProfile();
     const p = freshProfile();
     const legacy = { nova: 'unicorn', atlas: 'knight', lyra: 'princess', zephyr: 'pirate' };
-    if (['unicorn', 'knight', 'princess', 'pirate'].includes(data.hero)) p.hero = data.hero;
+    if (heroes.some(hero=>hero.id===data.hero)) p.hero = data.hero;
     else if (Object.hasOwn(legacy, data.hero)) p.hero = legacy[data.hero];
     if (Number.isInteger(data.level) && data.level >= 0 && data.level <= 3) p.level = data.level;
     if (Number.isInteger(data.beginnerStage) && data.beginnerStage >= 0 && data.beginnerStage < 4) p.beginnerStage = data.beginnerStage;

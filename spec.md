@@ -1,6 +1,6 @@
 # Spécification Technique et Fonctionnelle — Azyl.it (`www.azyl.it`)
 **Version :** 1.7.0  
-**Dernière mise à jour :** 17 novembre 2026  
+**Dernière mise à jour :** 18 novembre 2026\
 **Domaine cible :** `https://www.azyl.it`  
 **Objet :** Application web éducative et inclusive d'apprentissage et d'entraînement à la lecture (compétences équivalentes CP à CM2), conçue selon les principes de la Conception Universelle de l'Apprentissage (CUA) pour les enfants avec ou sans troubles neurodéveloppementaux (TND).
 
@@ -11,7 +11,7 @@ Cette version intègre les retours sur les compagnons, l'autonomie des non-lecte
 
 | Sujet | Réalisé dans le prototype | À compléter ou à valider |
 | --- | --- | --- |
-| Compagnons | Licorne Lumi, chevalier Arthur, princesse Alma et pirate Malo, avec illustrations vectorielles distinctes et thème associé | Animations et variantes d'expression plus riches |
+| Compagnons | Licorne Lumi, chevalier Arthur, princesse Alma, pirate Malo, sirène Naya et dragon Pico, avec illustrations vectorielles distinctes et thème associé | Animations et variantes d'expression plus riches |
 | Accueil | Action principale de jeu, choix du compagnon et accès illustré à la difficulté | Essais avec des enfants non lecteurs |
 | Information des parents | Espace HTML dédié en huit pages d’information et phrase cliquable près du logo : « Apprendre à lire, chacun à son rythme. » ; sous le logo sur petit écran ; absente des exercices | Vérification visuelle sur les appareils cibles |
 | Difficulté | Sélecteur unique avec aperçu, moins, plus et triangle, accompagné oralement ; sept positions | Validation de la compréhension des pictogrammes et de la progression |
@@ -75,7 +75,7 @@ L'application doit offrir une expérience fluide, bienveillante et non stigmatis
 
 ### 3.1 Onboarding (Première visite)
 1. **Choix du Compagnon (Obligatoire) :**
-   - L'enfant choisit parmi 4 types de compagnons aux silhouettes distinctes : une licorne (*Lumi*), un chevalier (*Arthur*), une princesse (*Alma*) et un pirate (*Malo*).
+   - L'enfant choisit parmi 6 types de compagnons aux silhouettes distinctes : une licorne (*Lumi*), un chevalier (*Arthur*), une princesse (*Alma*), un pirate (*Malo*), une sirène (*Naya*) et un dragon (*Pico*).
    - Ce choix applique un thème chromatique doux, contrasté et adapté (couleurs primaires d'accentuation, illustrations du compagnon).
    - Le design doit être clair, moderne, attrayant et adapté aux enfants. Les illustrations et animations servent la compréhension et la motivation sans surcharger l'écran. Chaque type d'exercice comporte une mécanique ludique adaptée à la compétence travaillée. La lisibilité, la compréhension des interactions et l'intérêt des activités doivent être vérifiés lors d'essais avec des enfants représentatifs des publics cibles.
 2. **Choix du point de départ :**
@@ -431,3 +431,5 @@ Les nouveaux exercices n’ont aucun repli TTS vers un nom de consonne ou une no
 Le lecteur des futurs sons enregistrés est intégré : MP3 local, pas de repli vers un nom de lettre, réponses après démarrage audio, arrêt et erreurs pris en charge. Aucun nouveau phonème n’est encore activé. Le [kit de production du pilote](docs/kit-enregistrement-pilote.md) décrit les quatre fichiers l/r/f/j et les relectures nécessaires. `npm run audit:sound-pilot` contrôle les fichiers et leur empreinte ; ajouter `-- --export` pour produire un export de revue uniquement lorsque toutes les conditions sont réunies. Cet export ne modifie pas le jeu.
 
 Les pages ULIS et AESH présentent des usages proposés et les difficultés d’accès que les fonctions actuelles visent à réduire, sans déclarer de bénéfices pédagogiques démontrés. Elles distinguent les rôles des adultes, l’autonomie de l’enfant et les limites du profil local partagé. Les textes restent hors des écrans enfant. Dans l’en-tête des exercices, la pause rejoint la maison dans le groupe de navigation gauche, tandis que son et réglages restent à droite ; les pictogrammes de navigation sont normalisés à 32 px dans des cibles de 64 px.
+
+Les six compagnons sont proposés sur une grille de trois colonnes sur grand écran et deux colonnes sur petit écran, sans carrousel ni étape supplémentaire. Chaque compagnon dispose des états repos, guidage, encouragement et joie ; les états intermédiaires restent discrets. Les identifiants mermaid et dragon sont conservés par le profil local, sans réinitialiser le niveau, les réglages ou la mission. Les profils existants et les anciens identifiants migrés restent pris en charge.

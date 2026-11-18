@@ -3,7 +3,9 @@ export const heroes = [
   { id: 'unicorn', name: 'Lumi', title: 'La licorne', color: '#79548d', pale: '#f1eaf4', symbol: '✦', message: 'Un petit mot, une grande découverte !' },
   { id: 'knight', name: 'Arthur', title: 'Le chevalier', color: '#346b7c', pale: '#e6eff1', symbol: '◆', message: 'On essaie ensemble, à ton rythme.' },
   { id: 'princess', name: 'Alma', title: 'La princesse', color: '#98546e', pale: '#f7e9ed', symbol: '♛', message: 'Chaque histoire commence avec toi.' },
-  { id: 'pirate', name: 'Malo', title: 'Le pirate', color: '#9b593c', pale: '#f6ece1', symbol: '⚓', message: 'Chaque mot est un petit trésor !' }
+  { id: 'pirate', name: 'Malo', title: 'Le pirate', color: '#9b593c', pale: '#f6ece1', symbol: '⚓', message: 'Chaque mot est un petit trésor !' },
+  { id: 'mermaid', name: 'Naya', title: 'La sirène', color: '#236b74', pale: '#e6f3f3', symbol: '◒', message: 'Une petite découverte à la fois !' },
+  { id: 'dragon', name: 'Pico', title: 'Le dragon', color: '#577743', pale: '#eef3e6', symbol: '✧', message: 'À toi de découvrir !' }
 ];
 export const levels = [
   { name: 'Apprenti Décodeur', label: 'Les lettres, pas à pas', icon: '✦', description: 'Je commence par reconnaître une lettre, puis les sons et les syllabes, à mon rythme.' },

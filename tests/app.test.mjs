@@ -29,7 +29,7 @@ test('le positionnement ignoré ne produit pas de niveau automatique', () => {
   assert.equal(recommendedLevel([true, true, true, true, true]), 1);
 });
 test('chaque mission possède huit questions cohérentes et une alternative sans audio', () => {
-  assert.equal(heroes.length, 4);
+  assert.equal(heroes.length, 6);
   assert.equal(calibration.length, 5);
   const ids = new Set();
   for (const bank of banks) {
@@ -132,10 +132,10 @@ test('les anciens compagnons migrent sans effacer la progression', () => {
   }
 });
 
-test('les quatre compagnons ont des silhouettes et des libellés distincts', () => {
-  assert.deepEqual(heroes.map(h => h.id), ['unicorn', 'knight', 'princess', 'pirate']);
+test('les six compagnons ont des silhouettes et des libellés distincts', () => {
+  assert.deepEqual(heroes.map(h => h.id), ['unicorn', 'knight', 'princess', 'pirate', 'mermaid', 'dragon']);
   const pictures = heroes.map(h => companionArt(h));
-  assert.equal(new Set(pictures).size, 4);
+  assert.equal(new Set(pictures.map(svg=>svg.match(/<g class="companion-character">([^]*?)<\/g>/)[1])).size, 6);
   for (const [index, svg] of pictures.entries()) {
     assert.ok(svg.includes(heroes[index].title.toLowerCase()));
     assert.ok(!svg.includes('super-héros'));
@@ -181,7 +181,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   click('onboard'); assert.match(spoken.at(-1), /Choisis ton compagnon/);
   assert.ok(!app.innerHTML.includes('adult-header-links'));
   assert.ok(!app.innerHTML.includes('href="/enseignants/"'));
-  assert.equal((app.innerHTML.match(/class="companion-choice/g) || []).length, 4);
+  assert.equal((app.innerHTML.match(/class="companion-choice/g) || []).length, 6);
   click('hero', { hero: 'pirate' }); assert.match(spoken.at(-1), /Malo, le pirate/);
   click('confirm-settings'); assert.match(app.innerHTML, /À toi de jouer/);
   assert.equal(JSON.parse(memory.get(STORAGE_KEY)).session,null);
@@ -316,4 +316,14 @@ test('les boutons moins et plus parcourent les fondations et les niveaux sans sa
     assert.equal(difficultyPosition(profile), position);
   }
   setDifficultyPosition(profile, -10); assert.equal(difficultyPosition(profile), 0);
+});
+
+test('chaque compagnon est conservé sans modifier le profil de lecture',()=>{
+ for(const hero of heroes){
+  const initial=freshProfile();initial.hero=hero.id;initial.completed=3;initial.settings.size=34;initial.beginnerStage=2;
+  const restored=parseProfile(JSON.stringify(initial));
+  assert.equal(restored.hero,hero.id);assert.equal(restored.completed,3);assert.equal(restored.settings.size,34);assert.equal(restored.beginnerStage,2);
+  for(const mood of ['neutral','guide','support','cheer'])assert.match(companionArt(hero,false,mood),new RegExp('companion-'+mood));
+  assert.notEqual(companionArt(hero,false,'neutral'),companionArt(hero,false,'cheer'));
+ }
 });

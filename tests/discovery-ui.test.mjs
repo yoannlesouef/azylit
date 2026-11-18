@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { freshProfile, STORAGE_KEY } from '../app/state.js';
-function fixture(voice=true) {
- const profile=freshProfile();profile.onboarded=true;profile.hero='pirate';
+function fixture(voice=true,hero='pirate') {
+ const profile=freshProfile();profile.onboarded=true;profile.hero=hero;
  profile.session={level:0,beginnerStage:0,index:0,results:[],attempts:0,rejected:[],overrides:{}};
  const memory=new Map([[STORAGE_KEY,JSON.stringify(profile)]]),listeners={},spoken=[];
  const app={innerHTML:'',addEventListener(n,h){listeners[n]=h;}};
@@ -53,5 +53,19 @@ test('les six mots de la syllabe ma sont tous écoutables, y compris les nouveau
  assert.equal((f.app.innerHTML.match(/data-command="word"/g)||[]).length,6);
  for(const word of wordsForSyllable('ma')) {
    f.click('discover-action','word',word.id);assert.equal(f.spoken.at(-1).text,word.text);
+ }
+});
+
+test('les nouveaux compagnons encouragent aussi dans Découvrir',async()=>{
+ for(const [id,name] of [['mermaid','Naya'],['dragon','Pico']]){
+  const f=fixture(true,id);await import('../app/app.js?discovery-new-companion-'+id);
+  f.click('discover');f.click('discover-action','quiz');
+  const targetText=f.spoken.at(-1).text;
+  const {discoveryWords}=await import('../app/discovery-data.js');
+  const target=discoveryWords.find(word=>word.text===targetText).id;
+  const options=[...f.app.innerHTML.matchAll(/data-command="quiz-answer" data-value="([^"]+)"/g)].map(match=>match[1]);
+  f.click('discover-action','quiz-answer',options.find(value=>value!==target));
+  assert.ok(f.app.innerHTML.includes(name+' t’encourage'));assert.match(f.app.innerHTML,/companion-support/);
+  f.click('discover-action','quiz-answer',target);assert.ok(f.app.innerHTML.includes(name+' te félicite'));assert.match(f.app.innerHTML,/companion-cheer/);
  }
 });

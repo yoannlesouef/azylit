@@ -19,7 +19,7 @@ function fixture(profile,withRecordings=false,withVoice=true) {
   };
   return {
     app, spoken, utterances, recordings, dialog, demoClick(selector){dialogButtons.get(selector)?.onclick();}, saved:() => JSON.parse(memory.get(STORAGE_KEY)),
-    click(action, card) { listeners.click({ target:{ closest:() => ({ dataset:{ action, card:String(card), answer:String(card), exerciseId:String(card), groupId:String(card) } }) }, preventDefault() {} }); }
+    click(action, card) { listeners.click({ target:{ closest:() => ({ dataset:{ action, hero:String(card), card:String(card), answer:String(card), exerciseId:String(card), groupId:String(card) } }) }, preventDefault() {} }); }
   };
 }
 function profileAt(stage, index = 0) {
@@ -202,4 +202,18 @@ test('dans les exercices les réglages restent tout à droite, la pause reste av
  assert.equal(actions().at(-1),'settings');f.click('resume');
  assert.deepEqual(actions(),['quit','pause','audio','settings']);
  f.click('pause');assert.equal(actions().at(-1),'settings');assert.ok(!actions().includes('pause'));
+});
+
+test('Naya et Pico se choisissent, se sauvegardent et accompagnent la mission existante',async()=>{
+ for(const [id,name,title] of [['mermaid','Naya','la sirène'],['dragon','Pico','le dragon']]){
+  const f=fixture(profileAt(0));await import('../app/app.js?new-companion-'+id);
+  const before=f.saved();f.click('change-hero');
+  assert.equal((f.app.innerHTML.match(/class="companion-choice/g)||[]).length,6);
+  f.click('hero',id);assert.match(f.spoken.at(-1),new RegExp(name));f.click('confirm-settings');
+  assert.equal(f.saved().hero,id);assert.deepEqual(f.saved().session,before.session);assert.equal(f.saved().completed,before.completed);
+  await import('../app/app.js?new-companion-reload-'+id);assert.equal(f.saved().hero,id);
+  f.click('resume');assert.ok(f.app.innerHTML.includes(name+', '+title));
+  f.click('answer',1);assert.match(f.app.innerHTML,/companion-support/);
+  f.click('answer',0);assert.match(f.app.innerHTML,/companion-cheer/);
+ }
 });

@@ -372,7 +372,7 @@ const actions = {
   'discover-action'(button) { dispatchDiscovery(button); },
   onboard() { step = 0; screen = 'onboarding'; render(true); navigationGuidance(); },
   'change-hero'() { actions.onboard(); },
-  hero(button) { profile.hero = button.dataset.hero; save(); render(); document.querySelector(`[data-hero="${profile.hero}"]`)?.focus(); speak('Voici ' + hero().name + ', ' + hero().title.toLowerCase() + '. Touche la maison pour revenir à l’accueil.'); },
+  hero(button) { if(!heroes.some(item=>item.id===button.dataset.hero))return; profile.hero = button.dataset.hero; save(); render(); document.querySelector(`[data-hero="${profile.hero}"]`)?.focus(); speak('Voici ' + hero().name + ', ' + hero().title.toLowerCase() + '. Touche la maison pour revenir à l’accueil.'); },
   'confirm-settings'() {
     const returnToGame = screen === 'difficulty' && difficultyReturn?.screen === 'mission';
     if (screen === 'difficulty' && profile.session && (profile.session.level !== profile.level || (profile.level === 0 && profile.session.beginnerStage !== profile.beginnerStage))) profile.session = null;

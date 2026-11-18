@@ -91,7 +91,7 @@ L'expérience est pensée pour les enfants avec ou sans troubles des apprentissa
 
 L’accueil présente le compagnon et un grand bouton de jeu. Les choix sont illustrés et annoncés oralement. Le triangle lance le jeu, la flèche fait avancer, la maison permet une pause, le haut-parleur répète les consignes et l’ampoule demande un indice. Les réglages proposent des échantillons visuels. La gestion des données reste dans une section adulte repliée.
 
-Les compagnons sont Lumi la licorne, Arthur le chevalier, Alma la princesse et Malo le pirate. Les anciens profils sont migrés sans effacer la progression.
+Les six compagnons sont Lumi la licorne, Arthur le chevalier, Alma la princesse, Malo le pirate, Naya la sirène et Pico le dragon. Les anciens profils sont migrés sans effacer la progression.
 
 Le guidage vocal nécessite une voix française disponible et le son activé. La première action sur Jouer ou le haut-parleur déclenche la narration ; une validation auprès d’enfants non lecteurs reste nécessaire.
 
@@ -241,3 +241,5 @@ Le [parcours proposé](docs/parcours-premiers-sons.md) documente 31 unités sono
 Le lecteur des futurs sons enregistrés est intégré : MP3 local, pas de repli vers un nom de lettre, réponses après démarrage audio, arrêt et erreurs pris en charge. Aucun nouveau phonème n’est encore activé. Le [kit de production du pilote](docs/kit-enregistrement-pilote.md) décrit les quatre fichiers l/r/f/j et les relectures nécessaires. `npm run audit:sound-pilot` contrôle les fichiers et leur empreinte ; ajouter `-- --export` pour produire un export de revue uniquement lorsque toutes les conditions sont réunies. Cet export ne modifie pas le jeu.
 
 Les pages `/ulis/` et `/aesh/` présentent les usages d’entraînement et d’accompagnement, les problèmes d’accès auxquels les commandes cherchent à répondre et les limites du prototype. Elles citent des ressources institutionnelles, disposent de FAQ visibles et structurées et sont reliées aux autres pages adultes. Aucun mode handicap, compte professionnel ou nouvel accès ne s’ajoute au parcours enfant. Dans les exercices, maison et pause sont à gauche ; son et réglages restent à droite, les réglages étant toujours la dernière commande.
+
+Naya et Pico possèdent les mêmes états discrets de guidage, d’encouragement et de joie que les autres compagnons, y compris dans Découvrir. Le choix affiche les six cartes, sur trois colonnes sur grand écran et deux sur petit écran, et conserve la mission et les résultats existants.

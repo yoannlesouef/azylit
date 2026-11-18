@@ -25,7 +25,7 @@ La stratégie est de garder peu de commandes et de faire évoluer les contenus e
 
 ## Point de départ
 
-Le prototype comprend quatre compagnons, sept positions de niveau, des missions de huit exercices, une exploration libre, des consignes audio, des réglages et une sauvegarde locale. Il contient 180 exercices : 60 mots à assembler, 40 exercices couvrant 32 syllabes simples et 16 exercices dans chacun des cinq autres paliers. Découvrir propose 124 entrées de sons ou syllabes avec six mots par entrée, sans prétendre couvrir toutes les correspondances du français.
+Le prototype comprend six compagnons, sept positions de niveau, des missions de huit exercices, une exploration libre, des consignes audio, des réglages et une sauvegarde locale. Il contient 180 exercices : 60 mots à assembler, 40 exercices couvrant 32 syllabes simples et 16 exercices dans chacun des cinq autres paliers. Découvrir propose 124 entrées de sons ou syllabes avec six mots par entrée, sans prétendre couvrir toutes les correspondances du français.
 
 Le positionnement existe dans le code mais n’est pas proposé dans le parcours visible. Les mécanismes avancés sont surtout des QCM. Il n’existe pas encore d’évaluation auprès des enfants, de bibliothèque audio validée ou de couverture pédagogique démontrée du CP au CM2.
 
@@ -241,3 +241,5 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 - 18 novembre 2026 — Phases 2 et 3 : lecteur MP3 local branché au contrôleur, attente du démarrage du son avant les réponses, réécoute, gestion des erreurs/autoplay, temporisation et annulation avant Bravo testées. Un son enregistré peut être lu sans TTS. Ajout du contrôle du pilote (fichiers, empreinte de la version relue, relectures des huit essais) et du kit de production. Aucune nouvelle correspondance activée : les quatre enregistrements et les relectures restent à produire.
 
 - 18 novembre 2026 — Phases 1 et 6 : pages publiques ULIS et AESH ajoutées, avec usages, limites, références institutionnelles et FAQ structurées. Navigation adulte étendue sans nouveau bouton dans le jeu. En-tête des exercices corrigé : pause avec la maison à gauche, son puis réglages à droite ; tailles des pictogrammes normalisées. Tests de l’ordre des commandes, des liens, du sitemap et des contenus passés ; observation visuelle et essais utilisateurs encore à réaliser.
+
+- 18 novembre 2026 — Phase 1, choix du compagnon : Naya la sirène et Pico le dragon ajoutés aux quatre compagnons existants. Six cartes en grille, sans carrousel ni étape supplémentaire ; profils, mission et réglages conservés. Illustrations vectorielles inspectées dans les quatre états, tests du choix, de la sauvegarde et des retours dans les jeux et Découvrir passés. Vérification du parcours en navigateur et avec les enfants encore à réaliser.

@@ -1,4 +1,4 @@
-Construire un site Internet (www.azyl.it) pour aider les enfants en école élémentaire d'apprendre à lire de manière efficace et ludique. Chaque réussite est récompensée avec des compagnonss illustrés (licorne, chevalier, princesse ou pirate) qui félicitent les enfants. 
+Construire un site Internet (www.azyl.it) pour aider les enfants en école élémentaire d'apprendre à lire de manière efficace et ludique. Chaque réussite est récompensée avec des compagnons illustrés (licorne, chevalier, princesse, pirate, sirène ou dragon) qui félicitent les enfants.
 
 Ce site doit être adapté et efficace pour les enfants souffrant de troubles des fonctions cognitives et des apprentissages: 
 > Les troubles spécifiques du langage et des apprentissages (troubles « Dys ») :
@@ -48,7 +48,7 @@ Ajouter les fonctionnalités suivantes:
 
 
 
-Navigation autonome pour les enfants non lecteurs : privilégier de grands pictogrammes constants et des choix illustrés, avec un guidage vocal rejouable après le premier geste. Chaque écran présente une action principale. Les confirmations et les réglages enfant doivent aussi être compréhensibles sans lecture. Les compagnons proposés sont une licorne, un chevalier, une princesse et un pirate.
+Navigation autonome pour les enfants non lecteurs : privilégier de grands pictogrammes constants et des choix illustrés, avec un guidage vocal rejouable après le premier geste. Chaque écran présente une action principale. Les confirmations et les réglages enfant doivent aussi être compréhensibles sans lecture. Les compagnons proposés sont une licorne, un chevalier, une princesse, un pirate, une sirène et un dragon.
 
 Le parcours de départ doit convenir à un enfant qui ne reconnaît pas encore les lettres : une lettre isolée parmi deux choix, puis des étapes distinctes pour les sons, les syllabes simples et leur assemblage. Ne pas augmenter automatiquement la difficulté après une seule mission. La voix doit être française, naturelle, chaleureuse et encourageante, sans débit artificiellement lent.
 
