@@ -172,5 +172,5 @@ test('les pages ULIS et AESH sont distinctes, sourcées et ne créent pas de par
  for(const page of pages){const html=files.get(page.path.slice(1)+'index.html');assert.ok(html.includes('href="/ulis/"'));assert.ok(html.includes('href="/aesh/"'));assert.ok(!html.includes('undefined'));}
  assert.ok(files.get('ulis/index.html').includes('dispositifs d’appui'));
  const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
- assert.ok(!app.includes('href="/ulis/"'));assert.ok(!app.includes('href="/aesh/"'));
+ assert.ok(app.includes('href="/ulis/"'));assert.ok(app.includes('href="/aesh/"'));
 });

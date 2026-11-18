@@ -175,6 +175,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.match(app.innerHTML, /class="parents-top-link"/);
   assert.match(app.innerHTML, /class="teachers-top-link"/);
   assert.match(app.innerHTML, /adult-header-links/);
+  assert.match(app.innerHTML, /Parents<\/a>.*Enseignants<\/a>.*AESH<\/a>.*ULIS<\/a>/);
   click('guide'); assert.match(spoken.at(-1), /grand triangle/);
   assert.equal(utterances.at(-1).lang, 'fr-FR');
   assert.equal(utterances.at(-1).voice.lang, 'fr-FR');
