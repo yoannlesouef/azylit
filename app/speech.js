@@ -1,41 +1,52 @@
 export const SPEECH_LANGUAGE = 'fr-FR';
-export function preferredFrenchVoice(voices) {
-  const locale = voice => voice.lang.toLowerCase().replace('_', '-');
-  const score = voice => {
-    const name = voice.name || '';
-    let value = locale(voice) === 'fr-fr' ? 1000 : 0;
-    if (/natural|neural|premium|enhanced|amélior|multilingual/i.test(name)) value += 200;
-    if (/google|microsoft.*online/i.test(name)) value += 100;
-    if (/audrey|aurélie|amelie|amélie|denise|henri/i.test(name)) value += 30;
-    if (/compact|espeak|mbrola/i.test(name)) value -= 100;
-    return value;
-  };
+export const DEFAULT_SPEECH_RATE = 0.8;
+export const SPEECH_RATES = [0.7,0.8,0.9];
+export const speechRate = value => SPEECH_RATES.includes(value) ? value : DEFAULT_SPEECH_RATE;
+export const voiceKey = voice => voice.voiceURI || `${voice.lang}:${voice.name || ''}`;
+const locale = voice => (voice.lang || '').toLowerCase().replaceAll('_','-');
+const voiceScore = voice => {
+  const name = `${voice.name || ''} ${voice.voiceURI || ''}`;
+  let value = locale(voice) === 'fr-fr' ? 100 : 0;
+  // Voice names are hints, not an acoustic quality or age certification.
+  if (/natural|neural|premium|enhanced|amélior|multilingual|siri/i.test(name)) value += 400;
+  if (/google|microsoft.*online/i.test(name)) value += 200;
+  if (/child|enfant|junior|jeune/i.test(name)) value += 40;
+  if (/audrey|aurélie|amelie|amélie|denise|henri/i.test(name)) value += 20;
+  if (/compact|espeak|mbrola/i.test(name)) value -= 500;
+  return value;
+};
+export function frenchVoices(voices) {
   return voices.filter(voice => locale(voice) === 'fr' || locale(voice).startsWith('fr-'))
-    .sort((a, b) => score(b) - score(a))[0];
+    .sort((a,b)=>voiceScore(b)-voiceScore(a));
 }
-// Leave the voice's own intonation intact; excessive slowing makes syllables sound mechanical.
-export function frenchUtterance(text, Utterance, voices) {
+export function preferredFrenchVoice(voices, preferred = '') {
+  const french = frenchVoices(voices);
+  return french.find(voice=>preferred && voiceKey(voice)===preferred) || french[0];
+}
+// Slow the delivery without imitating a child by artificially raising the pitch.
+export function frenchUtterance(text, Utterance, voices, settings = {}) {
   const utterance = new Utterance(text);
   utterance.lang = SPEECH_LANGUAGE;
-  utterance.rate = 0.97;
+  utterance.rate = speechRate(settings.speechRate);
   utterance.pitch = 1;
-  const voice = preferredFrenchVoice(voices);
+  const voice = preferredFrenchVoice(voices,settings.speechVoice);
   if (voice) utterance.voice = voice;
   return utterance;
 }
 
-// Small changes keep praise lively without changing the voice used to teach sounds.
+// Keep praise warm and varied, while respecting the chosen slower pace.
 export function createPraiseVariation(random = Math.random) {
   const variations = [
-    {pitch:1.08,rate:1.02},
-    {pitch:1.14,rate:1.06},
-    {pitch:1.10,rate:0.99},
-    {pitch:1.06,rate:1.08}
+    {pitch:1.06,factor:1.02},
+    {pitch:1.10,factor:1.04},
+    {pitch:1.08,factor:0.99},
+    {pitch:1.04,factor:1.06}
   ];
   let previous = -1;
-  return () => {
+  return (rate = DEFAULT_SPEECH_RATE) => {
     const choices = variations.map((_,index)=>index).filter(index=>index!==previous);
     previous = choices[Math.min(choices.length-1,Math.max(0,Math.floor(random()*choices.length)))];
-    return {...variations[previous]};
+    const variation=variations[previous];
+    return {pitch:variation.pitch,rate:Math.min(0.95,Number((speechRate(rate)*variation.factor).toFixed(3)))};
   };
 }

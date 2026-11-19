@@ -298,7 +298,7 @@ test('la voix naturelle française est prioritaire et conserve son intonation', 
   const utterance = frenchUtterance('Bravo, tu as trouvé !', class { constructor(text) { this.text = text; } }, [compact, natural]);
   assert.equal(utterance.voice, natural);
   assert.equal(utterance.lang, 'fr-FR');
-  assert.equal(utterance.rate, 0.97);
+  assert.equal(utterance.rate, 0.8);
   assert.equal(utterance.pitch, 1);
 });
 

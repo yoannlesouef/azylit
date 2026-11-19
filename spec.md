@@ -1,6 +1,6 @@
 # Spécification Technique et Fonctionnelle — Azyl.it (`www.azyl.it`)
-**Version :** 1.7.0  
-**Dernière mise à jour :** 18 novembre 2026\
+**Version :** 1.8.0\
+**Dernière mise à jour :** 19 novembre 2026\
 **Domaine cible :** `https://www.azyl.it`  
 **Objet :** Application web éducative et inclusive d'apprentissage et d'entraînement à la lecture (compétences équivalentes CP à CM2), conçue selon les principes de la Conception Universelle de l'Apprentissage (CUA) pour les enfants avec ou sans troubles neurodéveloppementaux (TND).
 
@@ -19,7 +19,7 @@ Cette version intègre les retours sur les compagnons, l'autonomie des non-lecte
 | Catalogue | 180 activités de démonstration : choix de réponse, quatre associations de cartes lettres, huit fusions de lettres et soixante constructions de mots | Étendre les autres mécaniques et valider la couverture CP–CM2 |
 | Retours | Compagnon et symboles, sans félicitations ni indices écrits visibles ; voix rejouable avant la réussite | Tests de compréhension des retours sans lecture |
 | Page d'exercice | Réponses prioritaires, une réécoute centrale, outils secondaires ; après réussite, réponse statique et une grande flèche | Vérification en navigateur et essais utilisateurs |
-| Audio | Français `fr-FR`, préférence pour les voix naturelles disponibles, débit `0.97`, intonation native, encouragements courts | Enregistrements humains ou synthèse naturelle validée, notamment pour les phonèmes isolés |
+| Audio | Français `fr-FR`, préférence pour les voix naturelles disponibles, débit ralenti `0.8`, intonation native, encouragements courts | Enregistrements humains ou synthèse naturelle validée, notamment pour les phonèmes isolés |
 | Sauvegarde | Profil local immédiat, réglages, sous-palier, résultats et reprise après fermeture de la page | Synchronisation distante et code avatar sécurisé |
 | Accessibilité | Polices système, taille et espacements, interligne, coloration des syllabes renseignées et guide de lecture | Polices Andika/Lexend/OpenDyslexic, lettres muettes et graphèmes complexes |
 | Positionnement | Logique et écrans de démonstration présents dans le code, arrêt à la première difficulté, maximum deux minutes | Point d'entrée illustré à réintégrer dans le sélecteur et étalonnage pédagogique ; non proposé actuellement dans le parcours visible |
@@ -55,7 +55,7 @@ L'application doit offrir une expérience fluide, bienveillante et non stigmatis
 - **État actuel :** profil sérialisé dans `localStorage` sous la clé `azylit.profile.v1`, avec validation des valeurs à la lecture. Si le stockage échoue, la session reste utilisable en mémoire et son absence de persistance est signalée.
 - **Évolution de la persistance :** une API et un stockage serveur seront nécessaires avant de proposer une récupération multiappareil par code avatar. Cloudflare Workers et D1/KV restent une option d'architecture. Le prototype ne fournit actuellement ni API de synchronisation ni code de récupération.
 - **Frameworks :** une migration vers un framework n'est pas nécessaire pour lancer cette version ; Next.js ou Astro/React restent des options futures, sans obligation de réécriture.
-- **Audio actuel :** Web Speech API avec `lang: 'fr-FR'`, `rate: 0.97` et `pitch: 1`. Priorité à une voix française de France ; parmi les voix de même langue, privilégier les variantes naturelles ou améliorées. Attendre jusqu'à 700 ms le chargement initial des voix lorsque le navigateur le permet. Toute nouvelle lecture interrompt la précédente.
+- **Audio actuel :** Web Speech API avec `lang: 'fr-FR'`, `rate: 0.8` et `pitch: 1`. Préférer une voix française naturelle ou améliorée à une voix compacte ; à qualité annoncée comparable, préférer fr-FR. Un choix explicite de voix française dans les réglages adultes prend le dessus. Attendre jusqu'à 700 ms le chargement initial des voix lorsque le navigateur le permet. Toute nouvelle lecture interrompt la précédente.
 - **Audio cible :** fichiers audio validés pour les consignes, encouragements et phonèmes isolés, servis comme ressources statiques ; Web Speech API en repli pour les textes dynamiques. La qualité et la prononciation doivent être vérifiées, sans garantie fondée sur le seul format du fichier.
 
 ### 2.2 Conformité RGPD Mineurs (< 15 ans)
@@ -178,7 +178,7 @@ Chaque aide cible est activable/désactivable indépendamment en un clic. Dans l
 
 ### 4.4 Politique Audio et Sensorielle
 - **Discrétion visuelle du compagnon :** éviter toute animation pendant la recherche et après une erreur. Les encouragements intermédiaires restent statiques ; réserver le mouvement de célébration à la fin de mission, en respectant la réduction des animations. Ce choix vise à limiter les distractions, sans supposer une réaction identique chez tous les enfants avec TDAH ; il doit être évalué avec les enfants concernés.
-- **Voix chaleureuse :** privilégier une voix française de France naturelle, neuronale ou améliorée lorsqu'elle est disponible. Conserver son intonation native et un débit proche de la conversation (`0.97` dans le prototype), sans ralentissement artificiel excessif. Attendre brièvement le chargement des voix au premier usage. Les encouragements sont courts, variés et familiers. La qualité du fallback dépend de l'appareil ; des enregistrements humains ou une synthèse naturelle validée sont nécessaires pour garantir un rendu homogène.
+- **Voix chaleureuse :** privilégier une voix française de France naturelle, neuronale ou améliorée lorsqu'elle est disponible. Conserver sa hauteur native pour les cibles et un débit ralenti (`0.8` par défaut), avec choix adulte de `0.7`, `0.8` ou `0.9`. Ne pas simuler une voix d’enfant par une forte hausse de hauteur. Attendre brièvement le chargement des voix au premier usage. Les encouragements sont courts, variés et familiers. La qualité du fallback dépend de l'appareil ; des enregistrements humains ou une synthèse naturelle validée sont nécessaires pour garantir un rendu homogène.
 - **Musique de fond :** **Strictement bannie** pendant la lecture et la réflexion.
 - **Commande audio globale :** Le bouton `Muet / Audio` est présent et accessible sur tous les écrans, y compris l'accueil, le choix du compagnon et de la difficulté, le positionnement, les exercices, les réglages et la célébration. Son état est conservé dans le profil. Le mode muet coupe les voix, les bruitages et tout autre son ; les consignes et feedbacks restent disponibles visuellement. Un exercice nécessitant l'écoute propose de réactiver l'audio ou de choisir une activité sans écoute obligatoire. En positionnement, une épreuve non réalisable en mode muet n'est jamais comptée comme une erreur ; proposer le choix direct du niveau si les réponses disponibles ne suffisent pas.
 - **Audio utile systématique :**
@@ -437,3 +437,12 @@ Les six compagnons sont proposés sur une grille de trois colonnes sur grand éc
 ### Dossier de couverture complète des Premiers sons
 
 37 unités et 104 essais éditoriaux sont préparés dans content/sound-curriculum.mjs et content/sound-exercises.mjs. Les cas o ouvert, eu ouvert, w, y et les deux séquences usuelles de x sont documentés. Les mots en contexte utilisent leur propre enregistrement et constituent une tâche distincte ; h ne reçoit pas de phonème fictif. Le contrôle global vérifie couverture, corrections, fichiers, empreintes et déclarations de relecture, sans prétendre vérifier acoustiquement les fichiers. Son export reste un dossier de revue et n’active rien. Le niveau jouable conserve 16 exercices a/i/o/u tant que production audio et revue ne sont pas réalisées. Voir docs/couverture-premiers-sons.md.
+
+
+### Retour enfant sur la voix et premier bilan adulte — 19 novembre 2026
+
+Le retour rapporté « trop rapide et trop robot » motive un débit plus lent dès le prochain chargement, y compris pour les profils existants sans préférence audio. La sélection automatique privilégie les voix françaises annoncées comme naturelles ; les noms ne garantissent ni une qualité acoustique ni un âge. Le choix et la préécoute restent sous les réglages adultes, avec mise à jour des voix chargées tardivement. La préférence locale est conservée si sa voix devient indisponible et une sélection française de remplacement est utilisée. La prononciation des cibles reste à pitch 1 ; les Bravo utilisent quatre variantes modérées à pitch 1,04–1,10 et un débit relatif au rythme choisi, plafonné à 0,95. La pause de 450 ms après la fin de la cible est conservée. Les enregistrements de phonèmes ne sont pas ralentis ni remplacés par du TTS.
+
+Le bilan local est accessible depuis l’historique adulte et inclus dans son export JSON. Il utilise le même rattachement éditorial aux objectifs que l’outil de couverture, partagé dans app/competencies.js. Il agrège uniquement les résultats encore conservés, distingue sans aide supplémentaire / avec aide ou nouvel essai, et indique jusqu’à trois cibles dont le dernier exercice correspondant était accompagné. Les modèles et les limites des tâches sont explicites. Aucun seuil de maîtrise, diagnostic, changement automatique de niveau ou verrou adulte n’est ajouté. Les résultats inconnus ne sont pas inférés à partir du niveau de la mission. Les résultats restent mélangés si plusieurs enfants utilisent le même navigateur.
+
+Le retour rapporté n’est pas une évaluation systématique : nombres d’enfants, appareils et contexte ne sont pas connus. Une nouvelle écoute avec les enfants reste nécessaire avant de déclarer la voix satisfaisante. Aucune nouvelle consonne enregistrée ni voix d’enfant uniforme n’est livrée dans cet incrément.

@@ -2259,3 +2259,16 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
   .syllable-switcher { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-bottom: 24px; }
   .syllable-switcher .discovery-syllable { min-height: 84px; font-size: 25px; }
 }
+
+/* Voice choices and descriptive progress stay inside the adult controls. */
+.adult-voice-settings { display: grid; gap: 10px; min-width: 0; margin: 16px 0 24px; padding: 16px; border: 1px solid var(--line); border-radius: 18px; }
+.adult-voice-settings legend { font-size: 16px; font-weight: 700; padding: 0 6px; }
+.adult-voice-settings label { font-size: 14px; font-weight: 600; }
+.adult-voice-settings select { width: 100%; min-width: 0; min-height: 48px; padding: 10px; font: inherit; font-size: 14px; color: var(--ink); background: #fffefa; border: 1px solid var(--line); border-radius: 10px; }
+.adult-voice-settings select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.adult-voice-settings #speech-preview { justify-self: start; margin: 4px 0; }
+.adult-voice-settings p { margin: 4px 0; }
+.progress-summary { margin: 24px 0; padding-block: 20px; border-block: 1px solid var(--line); }
+.progress-summary h3 { font-size: 18px; }
+.progress-summary .history-table small { display: block; font-weight: 400; min-width: 160px; }
+.progress-summary .history-table td { min-width: 90px; }

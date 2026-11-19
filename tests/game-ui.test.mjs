@@ -121,7 +121,7 @@ test('la syllabe précède Bravo, avec une pause après sa fin et annulation au 
  const target=f.utterances.at(-1);assert.equal(target.text,'ma');assert.equal(typeof target.onend,'function');
  target.onend();assert.equal(f.spoken.at(-1),'ma');
  await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.at(-1),'Bravo !');
- assert.ok(f.utterances.at(-1).pitch>1);assert.equal(target.pitch,1);assert.equal(target.rate,0.97);
+ assert.ok(f.utterances.at(-1).pitch>1);assert.equal(target.pitch,1);assert.equal(target.rate,0.8);
  f.click('next');f.click('answer',1); // second item is mi, correct option is 1 in this legacy plan
  const success=f.utterances.at(-1);assert.equal(success.text,'mi');success.onend();f.click('next');
  const before=f.spoken.length;await new Promise(resolve=>setTimeout(resolve,500));assert.equal(f.spoken.length,before);

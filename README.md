@@ -72,7 +72,7 @@ Références : [déploiement HTML statique](https://developers.cloudflare.com/pa
 ## Limites de cette première version
 
 - La progression reste dans le navigateur utilisé, sans synchronisation distante ni code avatar.
-- La voix privilégie les voix françaises naturelles ou améliorées disponibles dans le navigateur, à un débit proche de la conversation. Leur disponibilité et leur qualité dépendent de l’appareil ; les fichiers audio validés et les phonèmes isolés restent à produire. Une alternative sans écoute est proposée si la voix est indisponible ou coupée.
+- La voix privilégie les voix françaises naturelles ou améliorées disponibles dans le navigateur, avec un débit ralenti par défaut (0,8), y compris pour les félicitations. Les réglages adultes proposent trois vitesses, un choix de voix françaises et une préécoute. Leur disponibilité et leur qualité dépendent de l’appareil ; les fichiers audio validés et les phonèmes isolés restent à produire. Une alternative sans écoute est proposée si la voix est indisponible ou coupée.
 - Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices au même palier (soixante mots en Assemblage, quarante exercices de syllabes et seize exercices aux autres paliers), en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
 - Le positionnement propose un parcours indicatif selon une règle de démonstration non étalonnée.
 - Les exercices combinent choix de réponse, association de lettres par paires, fusion de lettres et assemblage de syllabes par clics successifs. La lecture flash, la fluence chronométrée et les interactions de segmentation et de remise en ordre décrites dans la spécification restent à implémenter.
@@ -247,3 +247,16 @@ Naya et Pico possèdent les mêmes états discrets de guidage, d’encouragement
 La [couverture complète préparée](docs/couverture-premiers-sons.md) contient 104 essais non activés : sons et mots en contexte, avec suivi des 26 lettres. `npm run audit:sound-coverage` détaille les manques ; `npm run audit:sound-coverage -- --export` refuse de produire un dossier de revue si un audio ou une relecture manque. Aucun export ne modifie la banque du jeu. Les enregistrements restent à produire avant de finaliser la couverture jouable.
 
 Dans Découvrir/Syllabes, l’écran d’index est supprimé : une série est ouverte d’emblée et une seule peut être dépliée à la fois. Toucher une syllabe l’écoute et affiche ses six mots. Sur la page des mots, les syllabes de la même série restent accessibles pour changer de cible en un clic, sans retour intermédiaire. Le haut-parleur identifie la syllabe sélectionnée et permet de la réécouter. Le retour retrouve la dernière syllabe et sa ligne ouverte, y compris avec l’historique du navigateur.
+
+
+## Voix ralentie et bilan adulte — 19 novembre 2026
+
+Suite au retour des enfants sur une voix trop rapide et robotique, le débit par défaut passe de 0,97 à 0,8. Les voix françaises annoncées comme naturelles, neuronales ou améliorées sont privilégiées avant les voix compactes. Le nom de voix est un indice de sélection, pas une preuve de qualité ou d’âge. Le site ne transforme pas une voix adulte en voix d’enfant en montant artificiellement sa hauteur. Les cibles restent à leur hauteur d’origine ; les quatre Bravo gardent de petites variations et suivent le rythme choisi.
+
+Dans **Réglages → Pour les adultes → Voix et rythme**, choisir et écouter une voix disponible, puis régler le débit (0,7 / 0,8 / 0,9). Le choix est conservé sur cet appareil ; si la voix disparaît, une autre voix française est utilisée sans effacer la préférence. Les voix qui arrivent après l’ouverture du dialogue actualisent la liste. Le chargement vocal attend une voix française plutôt que de démarrer sur une liste anglaise provisoire. Aucun nouveau bouton n’est ajouté à l’exercice.
+
+Dans **Réglages → Pour les adultes → Historique des exercices**, un bilan descriptif regroupe l’historique encore conservé par objectif travaillé : réponses sans aide supplémentaire, avec aide ou nouvel essai, nombre d’exercices distincts et exemples à reprendre si utile. Il n’attribue aucun statut d’acquisition et ne change pas la progression. Les modèles visibles restent signalés dans les limites de chaque objectif. L’export JSON contient aussi ce bilan. Un appareil partagé mélange toujours les résultats ; aucun suivi individuel de classe n’est déduit.
+
+Les audios enregistrés de consonnes et une voix d’enfant uniforme ne sont pas fournis par cet incrément. Les tests simulés ne remplacent pas une écoute avec les enfants sur leurs appareils. Voir [le retour et la recette d’écoute](docs/retours-enfants.md).
+
+Références techniques : [vitesse de parole](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/rate), [voix disponibles](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/getVoices), [chargement des voix](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/voiceschanged_event).

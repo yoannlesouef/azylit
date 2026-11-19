@@ -1,16 +1,16 @@
 # Plan d’amélioration — Azyl.it
 
-Document de travail mis à jour le 18 novembre 2026. Référence : [objectifs initiaux](../description.md), [spécification actuelle](../spec.md), [audit de navigation](audit-navigation-enfant.md) et [couverture du catalogue](catalogue-syllabes.md).
+Document de travail mis à jour le 19 novembre 2026. Référence : [objectifs initiaux](../description.md), [spécification actuelle](../spec.md), [audit de navigation](audit-navigation-enfant.md) et [couverture du catalogue](catalogue-syllabes.md).
 
-## Statut des phases — suivi du 18 novembre 2026
+## Statut des phases — suivi du 19 novembre 2026
 
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
-| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes et bibliothèque Découvrir sans écran d’index | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
+| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes et bibliothèque Découvrir sans écran d’index ; retour enfant sur la voix reçu, débit ralenti | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
 | 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 37 unités sonores proposées, 26 lettres documentées, 104 essais préparés et pilote l/r/f/j, contrat audio, contrôle des fichiers/empreintes et kit de production préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
 | 3 · Premiers apprentissages | **En cours — intégration technique du pilote** | Lecteur de fichiers locaux intégré, erreurs et interruptions testées, réponses après démarrage audio ; aucun nouveau phonème activé | Fichiers et relectures de la phase 2, écoutes réelles puis observation enfant |
 | 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
-| 5 · Personnalisation et accompagnement enseignant | **À démarrer** | Réglages existants et information enseignants disponibles ; aucun nouveau bilan ou affectation | Relecture des critères et essais d’usage |
+| 5 · Personnalisation et accompagnement enseignant | **En cours — réglages vocaux et bilan local** | Choix et préécoute de voix française, trois vitesses sauvegardées ; bilan descriptif par objectif dans l’historique adulte et son export, sans modification de la mission | Nouvelle écoute avec enfants, relecture des objectifs et essai du bilan avec enseignants ; pas de gestion multi-élèves |
 | 6 · Validation publique | **En cours — contrôles techniques uniquement** | Navigation publique, nouvelles URL racine, redirections 301, sitemap et liens testés ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
 
 Une phase n’est pas déclarée terminée tant que ses critères d’acceptation ne sont pas satisfaits. Chaque incrément technique terminé est enregistré et poussé sur GitHub ; les phases terminées feront également l’objet d’un push. Les tâches dépendant d’une validation professionnelle ou d’un essai utilisateur restent explicitement ouvertes.
@@ -27,7 +27,7 @@ La stratégie est de garder peu de commandes et de faire évoluer les contenus e
 
 Le prototype comprend six compagnons, sept positions de niveau, des missions de huit exercices, une exploration libre, des consignes audio, des réglages et une sauvegarde locale. Il contient 180 exercices : 60 mots à assembler, 40 exercices couvrant 32 syllabes simples et 16 exercices dans chacun des cinq autres paliers. Découvrir propose 124 entrées de sons ou syllabes avec six mots par entrée, sans prétendre couvrir toutes les correspondances du français.
 
-Le positionnement existe dans le code mais n’est pas proposé dans le parcours visible. Les mécanismes avancés sont surtout des QCM. Il n’existe pas encore d’évaluation auprès des enfants, de bibliothèque audio validée ou de couverture pédagogique démontrée du CP au CM2.
+Le positionnement existe dans le code mais n’est pas proposé dans le parcours visible. Les mécanismes avancés sont surtout des QCM. Un premier retour qualitatif des enfants a été rapporté le 19 novembre sur la rapidité et le caractère robotique de la voix. Il ne constitue pas une évaluation structurée. Il n’existe pas encore de bibliothèque audio validée ou de couverture pédagogique démontrée du CP au CM2.
 
 ## Règles à conserver dans tous les lots
 
@@ -128,7 +128,7 @@ Acceptation : chaque axe est relié à la matrice, avec plusieurs familles d’e
 
 ## Lot 5 — Personnaliser par besoins, sans compliquer le choix enfant
 
-**Statut : à démarrer dans ce plan.**
+**Statut : en cours.** Choix et préécoute de voix françaises, trois vitesses sauvegardées et premier bilan descriptif par objectif disponibles dans les outils adultes. Aucune personnalisation pédagogique automatique ni gestion multi-élèves. Rendu sur appareils, écoute des enfants et relecture du bilan encore nécessaires.
 
 Objectif : adapter l’expérience avec peu de commandes visibles.
 
@@ -148,7 +148,7 @@ Acceptation : les réglages persistent, se combinent sans casser les écrans et 
 
 Objectif : une version testée et un positionnement honnête.
 
-- Proposer un bilan adulte court par compétence, compréhensible sans données techniques, avec historique local et export. Pas de notes ni de classement sur l’écran enfant.
+- Premier bilan adulte descriptif par objectif livré le 19 novembre, avec historique local et export ; relecture et essais utilisateurs encore à réaliser. Pas de notes ni de classement sur l’écran enfant.
 - Conserver la persistance locale sans compte comme fonctionnement de base. Le code avatar et la synchronisation restent une option distincte à concevoir seulement si le besoin multi-appareil est confirmé ; un code à quatre chiffres seul ne suffit pas à protéger des données distantes.
 - Faire examiner les flux de données et les informations des parents avant d’ajouter statistiques distantes, microphone ou comptes. Prévoir suppression et conservation documentées. Une validation de conformité est distincte d’une fonctionnalité de sauvegarde.
 - Vérifier navigation tactile et clavier, zoom, contraste, annonces d’état, focus, mouvements réduits et lecteurs d’écran sur les parcours compatibles.
@@ -249,3 +249,6 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 - 18 novembre 2026 — Phase 2, préparation étendue : 37 unités et 104 essais, valeurs contextuelles de c/g/q/s/w/x/y et traitement de h sans faux son. Dossier de production complet et contrôle global avec export refusé en cas de fichiers ou relectures manquants. Phases 2 et 3 toujours en cours : aucun enregistrement disponible, aucun nouvel exercice activé, couverture jouable non finalisée. Voir couverture-premiers-sons.md.
 
 - 18 novembre 2026 — Phase 1, Découvrir : suppression de l’écran des initiales ; syllabes ma/mi immédiatement visibles, autres séries sur la même page avec exemples concrets et une seule ligne dépliée. Choix d’une autre syllabe directement depuis les mots, réécoute de la cible et retour sur la dernière sélection, y compris avec l’historique du navigateur. Tests de la couverture des 124 entrées, des six mots, du nombre d’étapes, des retours et de la conservation de la mission passés. Phase toujours en cours : rendu sur appareils et observation avec enfants à réaliser.
+
+- 19 novembre 2026 — Phases 1, 2 et 5 : retour enfant rapporté sur une voix trop rapide et robotique. Débit par défaut ralenti à 0,8, Bravo suivant le rythme choisi, sélection des voix naturelles avant les compactes, choix et préécoute adultes avec 0,7/0,8/0,9 sauvegardés. Gestion du chargement tardif des voix et annulation testées. Aucun enregistrement de voix d’enfant ni phonème nouveau livré ; une nouvelle écoute reste nécessaire.
+- 19 novembre 2026 — Phases 5 et 6 : bilan descriptif local par objectif ajouté à l’historique et à son export, avec limites des modèles visibles et exemples à reprendre si utile. Même matrice éditoriale que l’audit ; les tâches alternatives sont rattachées à leur objectif réel. Aucun seuil d’acquisition, aucune modification du niveau ou de la mission. Pages adultes et FAQ actualisées. Phase 5 passe à en cours ; les tests techniques ne valent pas validation pédagogique ou utilisateur. Voir retours-enfants.md.

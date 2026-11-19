@@ -5,7 +5,9 @@ import { createNavigationHistory } from './navigation.js';
 import { createDiscoveryState, renderDiscovery, discoveryGuidance, updateDiscovery } from './discovery.js';
 import { createMission, rememberGroup, missionQuestion, recordExercise, HISTORY_LIMIT } from './missions.js';
 import { interactionFor, applyInteraction, completedText } from './interactions.js';
-import { frenchUtterance, createPraiseVariation } from './speech.js';
+import { frenchUtterance, createPraiseVariation, frenchVoices } from './speech.js';
+import { renderVoiceSettings, bindVoiceSettings } from './voice-settings.js';
+import { summarizeProgress, renderProgressSummary } from './progress.js';
 import { beginnerStages } from './foundations.js';
 import { companionArt, navigationPicture as picture } from './companions.js';
 import { heroes, levels, banks, calibration, questionsFor, questionById } from './data.js';
@@ -49,8 +51,9 @@ function speak(text, after = null) {
   stopAudio();
   const request = speechRequest;
   const play = () => {
-    const utterance = frenchUtterance(text, SpeechSynthesisUtterance, speechSynthesis.getVoices());
-    if (/^Bravo(?:\s|[!,])/.test(text)) Object.assign(utterance,nextPraiseVariation());
+    if (request !== speechRequest || !profile.audio) return;
+    const utterance = frenchUtterance(text, SpeechSynthesisUtterance, speechSynthesis.getVoices(),profile.settings);
+    if (/^Bravo(?:\s|[!,])/.test(text)) Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
     if (after) utterance.onend = () => {
       if (request !== speechRequest) return;
       praiseTimer = setTimeout(() => {
@@ -69,13 +72,13 @@ function speak(text, after = null) {
     };
     speechSynthesis.speak(utterance);
   };
-  if (speechSynthesis.getVoices().length || !speechSynthesis.addEventListener) { play(); return; }
+  if (frenchVoices(speechSynthesis.getVoices()).length || !speechSynthesis.addEventListener) { play(); return; }
   // Browsers often expose their higher-quality voices just after the first interaction.
   let timeout;
-  const ready = () => { voiceWaitCleanup?.(); play(); };
+  const ready = () => { if (!frenchVoices(speechSynthesis.getVoices()).length) return; voiceWaitCleanup?.(); play(); };
   voiceWaitCleanup = () => { clearTimeout(timeout); speechSynthesis.removeEventListener('voiceschanged', ready); voiceWaitCleanup = null; };
-  speechSynthesis.addEventListener('voiceschanged', ready, { once: true });
-  timeout = setTimeout(ready, 700);
+  speechSynthesis.addEventListener('voiceschanged', ready);
+  timeout = setTimeout(() => { voiceWaitCleanup?.(); play(); }, 700);
 }
 function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 function playExerciseTarget(question,after=null){
@@ -324,7 +327,8 @@ function settings() {
   const settingsGuidance = () => speak('Choisis les lettres qui te plaisent. Pour revenir au jeu, touche la coche.');
   const settingsLabels = { size: 'Taille du texte', spacing: 'Espace entre les lettres', line: 'Espace entre les lignes', font: 'Police de lecture', syllables: 'Syllabes en couleurs', ruler: 'Guide de lecture' };
   const options = (key, values, labels) => values.map((value, i) => `<button class="visual-setting ${profile.settings[key] === value ? 'selected' : ''}" data-setting-key="${key}" data-setting-value="${value}" aria-label="${settingsLabels[key]} : ${labels[i]}" aria-pressed="${profile.settings[key] === value}">${key === 'size' ? `<span style="font-size:${value}px">A</span>` : key === 'spacing' ? `<span style="letter-spacing:${value}em">abc</span>` : key === 'line' ? `<span style="line-height:${value}">abc<br>abc</span>` : `<span style="font-family:${value}">Aa</span>`}</button>`).join('');
-  dialog.innerHTML = `<div class="dialog-heading"><h2 id="settings-title">À ta façon</h2><button class="tool" id="settings-voice" aria-label="Réécouter comment choisir les réglages">${icon('audio')}</button><button class="tool" data-close-settings aria-label="Fermer les réglages">✕</button></div><div class="visual-setting-row"><span aria-hidden="true">A ↔ A</span><div>${options('size', [22,28,34], ['normal','grand','très grand'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">a ↔ b</span><div>${options('spacing', [.05,.08,.12], ['confort','aéré','très aéré'])}</div></div><div class="settings-preview reading" id="settings-preview">À mon rythme.</div><button class="next-picture settings-done" data-close-settings aria-label="Valider et reprendre le jeu">✓</button><details class="adult-settings"><summary>Pour les adultes · Réglages avancés</summary><div class="visual-setting-row"><span aria-hidden="true">↕</span><div>${options('line', [1.6,1.8,2], ['confort','aéré','très aéré'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">Aa</span><div>${options('font', ['sans-serif','Verdana','Arial'], ['sans empattement','Verdana','Arial'])}</div></div><div class="visual-toggles">${['syllables','ruler'].map(key => `<button class="visual-setting toggle-setting ${profile.settings[key] ? 'selected' : ''}" data-setting-key="${key}" data-setting-value="${!profile.settings[key]}" aria-label="${settingsLabels[key]}" aria-pressed="${profile.settings[key]}">${key === 'syllables' ? '<span class="syllable-0">ba</span><span class="syllable-1">teau</span>' : '<span class="ruler-sample">abc</span>'}<span aria-hidden="true">${profile.settings[key] ? '✓' : '○'}</span></button>`).join('')}</div><p>Les réglages sont sauvegardés uniquement sur cet appareil. La voix dépend du navigateur. Une navigation autonome sans lecture nécessite une voix française disponible et le son activé.</p><button class="secondary" id="history-button">Historique des exercices</button><button class="secondary" id="privacy-button">Gérer les données locales</button></details>`;
+  dialog.innerHTML = `<div class="dialog-heading"><h2 id="settings-title">À ta façon</h2><button class="tool" id="settings-voice" aria-label="Réécouter comment choisir les réglages">${icon('audio')}</button><button class="tool" data-close-settings aria-label="Fermer les réglages">✕</button></div><div class="visual-setting-row"><span aria-hidden="true">A ↔ A</span><div>${options('size', [22,28,34], ['normal','grand','très grand'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">a ↔ b</span><div>${options('spacing', [.05,.08,.12], ['confort','aéré','très aéré'])}</div></div><div class="settings-preview reading" id="settings-preview">À mon rythme.</div><button class="next-picture settings-done" data-close-settings aria-label="Valider et reprendre le jeu">✓</button><details class="adult-settings"><summary>Pour les adultes · Réglages avancés</summary>${renderVoiceSettings(profile.settings,hasVoice?speechSynthesis.getVoices():[],hasVoice)}<div class="visual-setting-row"><span aria-hidden="true">↕</span><div>${options('line', [1.6,1.8,2], ['confort','aéré','très aéré'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">Aa</span><div>${options('font', ['sans-serif','Verdana','Arial'], ['sans empattement','Verdana','Arial'])}</div></div><div class="visual-toggles">${['syllables','ruler'].map(key => `<button class="visual-setting toggle-setting ${profile.settings[key] ? 'selected' : ''}" data-setting-key="${key}" data-setting-value="${!profile.settings[key]}" aria-label="${settingsLabels[key]}" aria-pressed="${profile.settings[key]}">${key === 'syllables' ? '<span class="syllable-0">ba</span><span class="syllable-1">teau</span>' : '<span class="ruler-sample">abc</span>'}<span aria-hidden="true">${profile.settings[key] ? '✓' : '○'}</span></button>`).join('')}</div><p>Les réglages sont sauvegardés uniquement sur cet appareil. La voix dépend du navigateur. Une navigation autonome sans lecture nécessite une voix française disponible et le son activé.</p><button class="secondary" id="history-button">Historique des exercices</button><button class="secondary" id="privacy-button">Gérer les données locales</button></details>`;
+  bindVoiceSettings(dialog,profile.settings,hasVoice?speechSynthesis:null,{save,preview:()=>{ if(hasVoice){profile.audio=true;save();} speak('Bonjour ! On prend notre temps. À toi de jouer.'); }});
   const preview = () => { const el = dialog.querySelector('#settings-preview'); el.style.fontFamily = profile.settings.font; el.style.fontSize = profile.settings.size + 'px'; el.style.letterSpacing = profile.settings.spacing + 'em'; el.style.lineHeight = profile.settings.line; };
   dialog.querySelectorAll('[data-setting-key]').forEach(button => button.onclick = () => {
     const key = button.dataset.settingKey, raw = button.dataset.settingValue;
@@ -364,13 +368,15 @@ function showSyllableDemo(question) {
   speak('Un exemple. Écoute, puis touche la carte montrée par la main. ' + state.target);
 }
 function historyDialog() {
+  stopAudio();
   const dialog = document.querySelector('#confirm');
   const entries = profile.exerciseHistory.slice(-40).reverse();
+  const summary = summarizeProgress(profile.exerciseHistory);
   const typeName = question => question?.mechanic === 'pairs' ? 'Association de lettres' : question?.mechanic === 'build' ? question.unit === 'letters' ? 'Fusion de lettres' : 'Assemblage de syllabes' : question?.foundation ? 'Lettres et sons' : question?.type || 'Exercice';
-  dialog.innerHTML = `<div class="dialog-heading"><h2 id="confirm-title">Historique des exercices</h2><button class="tool" id="history-close" aria-label="Fermer l’historique">✕</button></div><p>${profile.exerciseHistory.length} exercice(s) conservé(s) sur cet appareil. Les 40 derniers sont affichés. Jusqu’à ${HISTORY_LIMIT} résultats sont gardés ; les plus anciens sont ensuite remplacés.</p>${entries.length ? `<div class="history-scroll"><table class="history-table"><thead><tr><th>Date</th><th>Exercice</th><th>Résultat</th></tr></thead><tbody>${entries.map(entry => { const question = questionById(entry.exerciseId); return `<tr><td>${escape(new Date(entry.completedAt).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}))}</td><td>${escape(typeName(question))}<small>${escape(question ? completedText(question) : entry.exerciseId)}</small></td><td>${entry.result === 'assisted' ? 'Avec aide ou nouvelle tentative' : 'Autonome'}</td></tr>`; }).join('')}</tbody></table></div><button class="secondary" id="history-export">Télécharger l’historique</button>` : '<p>Les prochains exercices terminés apparaîtront ici. Les anciennes missions ne permettent pas de reconstituer un historique détaillé.</p>'}`;
+  dialog.innerHTML = `<div class="dialog-heading"><h2 id="confirm-title">Historique des exercices</h2><button class="tool" id="history-close" aria-label="Fermer l’historique">✕</button></div><p>${profile.exerciseHistory.length} exercice(s) conservé(s) sur cet appareil. Les 40 derniers sont affichés. Jusqu’à ${HISTORY_LIMIT} résultats sont gardés ; les plus anciens sont ensuite remplacés.</p>${renderProgressSummary(summary)}${entries.length ? `<div class="history-scroll"><table class="history-table"><thead><tr><th>Date</th><th>Exercice</th><th>Résultat</th></tr></thead><tbody>${entries.map(entry => { const question = questionById(entry.exerciseId); return `<tr><td>${escape(new Date(entry.completedAt).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'}))}</td><td>${escape(typeName(question))}<small>${escape(question ? completedText(question) : entry.exerciseId)}</small></td><td>${entry.result === 'assisted' ? 'Avec aide ou nouvelle tentative' : 'Autonome'}</td></tr>`; }).join('')}</tbody></table></div><button class="secondary" id="history-export">Télécharger l’historique</button>` : '<p>Les prochains exercices terminés apparaîtront ici. Les anciennes missions ne permettent pas de reconstituer un historique détaillé.</p>'}`;
   dialog.querySelector('#history-close').onclick = () => dialog.close();
   if (entries.length) dialog.querySelector('#history-export').onclick = () => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify({ version:1, exportedAt:new Date().toISOString(), exercises:profile.exerciseHistory, groups:profile.missionGroups },null,2)],{type:'application/json'}));
+    const url = URL.createObjectURL(new Blob([JSON.stringify({ version:1, exportedAt:new Date().toISOString(), exercises:profile.exerciseHistory, groups:profile.missionGroups, summary },null,2)],{type:'application/json'}));
     const link = document.createElement('a'); link.href = url; link.download = 'azylit-historique.json'; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url),1000);
   };
   dialog.showModal();

@@ -77,7 +77,8 @@ test('l’accueil expose un vrai lien parents sans placer leurs contenus dans le
 test('la page enseignants est indexable, distingue le prévu du livré et préserve le parcours enfant', async()=>{
  const html=files.get('enseignants/index.html');assert.ok(html);
  assert.ok(html.includes('POUR LES ENSEIGNANTS'));
- assert.ok(html.includes('pas encore disponibles'));
+ assert.ok(html.includes('Les fiches pédagogiques et la préparation de séances restent à développer.'));
+ assert.ok(html.includes('Un bilan local regroupe les résultats par objectif travaillé'));
  assert.ok(html.includes('Un seul profil est actuellement stocké par navigateur'));
  assert.ok(html.includes('sans compte enseignant'));
  assert.ok(html.includes('sans attendre une validation adulte'));

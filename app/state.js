@@ -1,9 +1,10 @@
+import { DEFAULT_SPEECH_RATE, SPEECH_RATES } from './speech.js';
 import { heroes } from './data.js';
 import { HISTORY_LIMIT, GROUP_LIMIT, recoverGroups } from './missions.js';
 const validQuestionId = value => typeof value === 'string' && /^(n[1-4]|f[0-3])-[1-9][0-9]{0,2}$/.test(value);
 const validOrder = value => Array.isArray(value) && value.length >= 2 && value.length <= 4 && new Set(value).size === value.length && value.every(index => Number.isInteger(index) && index >= 0 && index < value.length);
 export const STORAGE_KEY = 'azylit.profile.v1';
-export const defaults = { hero: 'unicorn', level: 0, beginnerStage: 0, beginnerWins: [0,0,0,0], onboarded: false, audio: true, settings: { font: 'sans-serif', size: 28, spacing: 0.05, line: 1.6, syllables: false, ruler: false }, completed: 0, assisted: 0, missionSequence: 0, groupSequence: 0, missionGroups: [], lastPlans: {}, exerciseHistory: [], session: null };
+export const defaults = { hero: 'unicorn', level: 0, beginnerStage: 0, beginnerWins: [0,0,0,0], onboarded: false, audio: true, settings: { font: 'sans-serif', size: 28, spacing: 0.05, line: 1.6, syllables: false, ruler: false, speechRate: DEFAULT_SPEECH_RATE, speechVoice: '' }, completed: 0, assisted: 0, missionSequence: 0, groupSequence: 0, missionGroups: [], lastPlans: {}, exerciseHistory: [], session: null };
 export function freshProfile() { return structuredClone(defaults); }
 export function parseProfile(raw) {
   try {
@@ -43,6 +44,8 @@ export function parseProfile(raw) {
     for (const [key, values] of Object.entries({ size: [22, 28, 34], spacing: [0.05, 0.08, 0.12], line: [1.6, 1.8, 2] })) if (values.includes(settings[key])) p.settings[key] = settings[key];
     p.settings.syllables = settings.syllables === true;
     p.settings.ruler = settings.ruler === true;
+    if (SPEECH_RATES.includes(settings.speechRate)) p.settings.speechRate = settings.speechRate;
+    if (typeof settings.speechVoice === 'string' && settings.speechVoice.length <= 256) p.settings.speechVoice = settings.speechVoice;
     const session = data.session;
     const sessionLength = 8;
     if (session && Number.isInteger(session.level) && session.level >= 0 && session.level < 4 && Number.isInteger(session.index) && session.index >= 0 && session.index < sessionLength && Array.isArray(session.results) && session.results.length <= sessionLength && session.results.every(r => r === 'independent' || r === 'assisted')) {
