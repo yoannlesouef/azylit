@@ -1,4 +1,5 @@
 import { questionsFor, questionById } from './data.js';
+import { primaryCompetency } from './competencies.js';
 export const HISTORY_LIMIT = 2000;
 export const GROUP_LIMIT = 200;
 const poolKey = (level, stage) => `${level}:${level === 0 ? stage : 0}`;
@@ -12,7 +13,16 @@ function shuffledIndices(length, random) {
   return order;
 }
 export function createMission(profile, random = Math.random) {
-  const pool = questionsFor(profile.level, profile.beginnerStage);
+  if(profile.nextObjective){
+    const all=[...[0,1,2,3].map(stage=>({level:0,stage,pool:questionsFor(0,stage)})),...[1,2,3].map(level=>({level,stage:0,pool:questionsFor(level)}))];
+    const target=all.find(item=>item.pool.filter(question=>primaryCompetency(question)===profile.nextObjective).length>=8);
+    if(target){profile.level=target.level;profile.beginnerStage=target.stage;}
+  }
+  const allQuestions = questionsFor(profile.level, profile.beginnerStage);
+  const focused = allQuestions.filter(question=>primaryCompetency(question)===profile.nextObjective);
+  const objectiveId=focused.length>=8 ? profile.nextObjective : null;
+  const pool = objectiveId ? focused : allQuestions;
+  profile.nextObjective=null;
   const key = poolKey(profile.level, profile.beginnerStage);
   const previous = profile.lastPlans[key] || [];
   const stats = new Map();
@@ -25,10 +35,13 @@ export function createMission(profile, random = Math.random) {
   else {
     const candidates = pool.map(question => ({ question, count:stats.get(question.id)?.count || 0, last:stats.get(question.id)?.last ?? -1, previous:previous.includes(question.id) ? 1 : 0, tie:random() }));
     candidates.sort((a,b) => a.count - b.count || a.previous - b.previous || a.last - b.last || a.tie - b.tie);
-    selected = pool.slice(0,8).map(template => {
-      const index = candidates.findIndex(item => kind(item.question) === kind(template));
-      return candidates.splice(index,1)[0].question;
-    });
+    selected=[];
+    while(selected.length<8){
+      const minimum=candidates[0];
+      let index=candidates.findIndex(item=>item.count===minimum.count&&item.previous===minimum.previous&&selected.filter(question=>kind(question)===kind(item.question)).length<4);
+      if(index<0)index=0;
+      selected.push(candidates.splice(index,1)[0].question);
+    }
     if (selected.every((q,index) => q.id === previous[index])) {
       const first = selected.findIndex(q => selected.filter(other => kind(q) === kind(other)).length > 1);
       const other = selected.findIndex((q,index) => index > first && kind(q) === kind(selected[first]));
@@ -44,7 +57,7 @@ export function createMission(profile, random = Math.random) {
   profile.missionSequence++;
   const ids = selected.map(question => question.id);
   profile.lastPlans[key] = ids;
-  const session = { id:`m-${profile.missionSequence}`, mode:'mission', level:profile.level, beginnerStage:profile.beginnerStage, questionIds:ids, variants, index:0, results:[], attempts:0, helpUsed:false, rejected:[], overrides:{}, interaction:null };
+  const session = { choiceLimit:profile.settings.choiceLimit || 4, objectiveId, id:`m-${profile.missionSequence}`, mode:'mission', level:profile.level, beginnerStage:profile.beginnerStage, questionIds:ids, variants, index:0, results:[], attempts:0, helpUsed:false, rejected:[], overrides:{}, interaction:null };
   rememberGroup(profile,session);
   return session;
 }
@@ -53,10 +66,14 @@ export function missionQuestion(session, index = session.index) {
   const original = questionById(session.overrides[index] || session.questionIds?.[index]) || questionsFor(session.level,session.beginnerStage)[index];
   const variant = session.variants?.[index] || {};
   const question = { ...original };
-  if (permutation(variant.optionOrder, original.options.length)) {
-    question.options = variant.optionOrder.map(index => original.options[index]);
-    question.answer = variant.optionOrder.indexOf(original.answer);
+  let order=permutation(variant.optionOrder,original.options.length) ? [...variant.optionOrder] : original.options.map((_,index)=>index);
+  const limit=Math.max(original.minChoices || 2,session.choiceLimit || 4);
+  if(order.length>limit){
+    order=order.slice(0,limit);
+    if(!order.includes(original.answer)){order[order.length-1]=original.answer;order.sort((a,b)=>(variant.optionOrder || original.options.map((_,i)=>i)).indexOf(a)-(variant.optionOrder || original.options.map((_,i)=>i)).indexOf(b));}
   }
+  question.options=order.map(index=>original.options[index]);question.answer=order.indexOf(original.answer);
+  if(original.optionPictures)question.optionPictures=order.map(index=>original.optionPictures[index]);
   if (original.tiles && permutation(variant.tileOrder,original.tiles.length)) question.tiles = variant.tileOrder.map(index => original.tiles[index]);
   if (original.pairs && permutation(variant.pairOrder,original.pairs.length)) question.pairOrder = [...variant.pairOrder];
   return question;
@@ -66,7 +83,7 @@ export function recordExercise(profile, question, outcome, now = new Date()) {
   if (!session.id) { profile.missionSequence++; session.id = `m-${profile.missionSequence}`; }
   const duplicate = profile.exerciseHistory.some(event => event.missionId === session.id && event.position === session.index);
   if (duplicate) return;
-  profile.exerciseHistory.push({ exerciseId:question.id, missionId:session.id, position:session.index, groupId:session.groupId || null, level:session.level, beginnerStage:session.beginnerStage, result:outcome, attempts:session.attempts, helpUsed:session.helpUsed === true, completedAt:now.toISOString() });
+  profile.exerciseHistory.push({ exerciseId:question.id, missionId:session.id, position:session.index, groupId:session.groupId || null, level:session.level, beginnerStage:session.beginnerStage, result:outcome, ...(question.mechanic==='reading'?{observation:{kind:'reading-declared',durationMs:session.readingDurationMs ?? null}}:{}), attempts:session.attempts, helpUsed:session.helpUsed === true, completedAt:now.toISOString() });
   if (profile.exerciseHistory.length > HISTORY_LIMIT) profile.exerciseHistory.splice(0,profile.exerciseHistory.length - HISTORY_LIMIT);
 }
 

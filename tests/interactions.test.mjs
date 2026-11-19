@@ -63,7 +63,7 @@ test('les cartes posées et le recours à une aide survivent à une reprise', ()
 test('les nouvelles interactions ne nécessitent aucun glisser-déposer', () => {
   assert.equal(beginnerBanks[0].filter(q => q.mechanic === 'pairs').length, 4);
   assert.equal(beginnerBanks[2].filter(q => q.mechanic === 'build').length, 20);
-  assert.equal(beginnerBanks[3].filter(q => q.mechanic === 'build').length, 60);
+  assert.equal(beginnerBanks[3].filter(q => q.mechanic === 'build').length, 68);
   for (const question of beginnerBanks[2].concat(beginnerBanks[3]).filter(q => q.mechanic === 'build')) {
     let state;
     for (const part of question.parts) {

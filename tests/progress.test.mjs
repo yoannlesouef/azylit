@@ -24,6 +24,6 @@ test('les exercices alternatifs sont classés selon la tâche réelle et les anc
 test('chaque exercice jouable peut contribuer au bilan local',()=>{
  const questions=[...[0,1,2,3].map(stage=>questionsFor(0,stage)),...[1,2,3].map(level=>questionsFor(level))].flat();
  const report=summarizeProgress(questions.map(question=>event(question.id,'independent','19')));
- assert.equal(report.unmapped,0);assert.equal(report.rows.reduce((sum,row)=>sum+row.completed,0),180);
+ assert.equal(report.unmapped,0);assert.equal(report.rows.reduce((sum,row)=>sum+row.completed,0),364);
  assert.ok(report.rows.every(row=>row.assisted===0 && row.recentSupport.length===0));
 });

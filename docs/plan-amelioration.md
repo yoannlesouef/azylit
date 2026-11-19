@@ -6,12 +6,12 @@ Document de travail mis à jour le 19 novembre 2026. Référence : [objectifs in
 
 | Phase | Statut | Avancée de cet incrément | Prochaine validation |
 | --- | --- | --- | --- |
-| 1 · Autonomie | **En cours — incrément pilote développé et testé** | Démonstration facultative via l’aide, pause/reprise, en-tête séparant informations adultes et commandes du jeu, tests du parcours syllabes et bibliothèque Découvrir sans écran d’index ; retour enfant sur la voix reçu, débit ralenti | Rendu sur téléphone/tablette, clavier et essais avec enfants ; navigateur indisponible pendant cette session |
-| 2 · Socle pédagogique et audio | **En cours — matrice et parcours Premiers sons préparés** | 29 objectifs définis et 180 exercices rattachés ; 37 unités sonores proposées, 26 lettres documentées, 104 essais préparés et pilote l/r/f/j, contrat audio, contrôle des fichiers/empreintes et kit de production préparés ; aucun nouveau son activé | Relecture professionnelle du classement, des contenus et des prérequis ; audios validés à produire |
-| 3 · Premiers apprentissages | **En cours — intégration technique du pilote** | Lecteur de fichiers locaux intégré, erreurs et interruptions testées, réponses après démarrage audio ; aucun nouveau phonème activé | Fichiers et relectures de la phase 2, écoutes réelles puis observation enfant |
-| 4 · Parcours avancés | **À démarrer** | QCM existants conservés | Après définition des compétences et des mécanismes prioritaires |
-| 5 · Personnalisation et accompagnement enseignant | **En cours — réglages vocaux et bilan local** | Choix et préécoute de voix française, trois vitesses sauvegardées ; bilan descriptif par objectif dans l’historique adulte et son export, sans modification de la mission | Nouvelle écoute avec enfants, relecture des objectifs et essai du bilan avec enseignants ; pas de gestion multi-élèves |
-| 6 · Validation publique | **En cours — contrôles techniques uniquement** | Navigation publique, nouvelles URL racine, redirections 301, sitemap et liens testés ; ni évaluation terrain ni validation de conformité réalisée | Appareils, publics concernés et examen des flux de données |
+| 1 · Autonomie | **Développement livré pour recette** | Repères conservés, navigation Découvrir simplifiée, pause/reprise, retours de focus et démonstrations des nouvelles mécaniques ; voix ralentie | Recette téléphone/tablette et enfants reportée au porteur du projet ; aucun navigateur connecté ici |
+| 2 · Socle pédagogique et audio | **Partiel — ressources audio manquantes** | Matrice partagée de 30 objectifs et 364 exercices ; premier corpus élargi, fiches éditoriales et contrôle de 37 unités / 104 essais audio préparés | Aucun fichier de consonne ni voix d’enfant enregistrée produit ; relecture professionnelle en attente |
+| 3 · Premiers apprentissages | **Mécaniques livrées hors phonèmes enregistrés** | Formes proches, début commun, intrus, oppositions sur mots, comptage des sons et syllabes, assemblages avec distracteur ; anciens plans compatibles | Audios isolés à produire ; pertinence et prononciations des nouveaux mots à relire puis tester |
+| 4 · Parcours avancés | **Développement livré — premier corpus de recette** | Flash réglable et sans minuterie, segmentation interactive, chronologie, lecture déclarée terminée et durée facultative ; morphologie et compréhension enrichies | Recette utilisateur et relecture des textes ; aucune exhaustivité CP–CM2 ou maîtrise orale déclarée |
+| 5 · Personnalisation et accompagnement enseignant | **Développement livré pour recette** | Voix/rythme, nombre de choix, mouvements réduits, annotations de lecture ; 30 fiches et préparation de 29 objectifs, bilan et export v2 | Vérifier combinaisons et fiches ; polices de confort utilisables si installées, non embarquées ; pas de gestion multi-élèves |
+| 6 · Validation publique | **Contrôles locaux passés — validations externes ouvertes** | Tests, build, imports distribués, couverture, routes et SEO locaux ; recette complète rédigée, pages publiques synchronisées | Domaine public inaccessible aux outils, navigateur non connecté, relecture pédagogique et examen de conformité non réalisés |
 
 Une phase n’est pas déclarée terminée tant que ses critères d’acceptation ne sont pas satisfaits. Chaque incrément technique terminé est enregistré et poussé sur GitHub ; les phases terminées feront également l’objet d’un push. Les tâches dépendant d’une validation professionnelle ou d’un essai utilisateur restent explicitement ouvertes.
 
@@ -25,7 +25,7 @@ La stratégie est de garder peu de commandes et de faire évoluer les contenus e
 
 ## Point de départ
 
-Le prototype comprend six compagnons, sept positions de niveau, des missions de huit exercices, une exploration libre, des consignes audio, des réglages et une sauvegarde locale. Il contient 180 exercices : 60 mots à assembler, 40 exercices couvrant 32 syllabes simples et 16 exercices dans chacun des cinq autres paliers. Découvrir propose 124 entrées de sons ou syllabes avec six mots par entrée, sans prétendre couvrir toutes les correspondances du français.
+La version de recette comprend six compagnons, sept positions de niveau, des missions de huit exercices, une exploration libre, des consignes audio, des réglages et une sauvegarde locale. Elle contient 364 exercices, répartis en 36/48/48/68/68/48/48 selon le palier. Le nombre d’exercices n’établit pas une couverture pédagogique exhaustive. Découvrir propose 124 entrées de sons ou syllabes avec six mots par entrée, sans prétendre couvrir toutes les correspondances du français.
 
 Le positionnement existe dans le code mais n’est pas proposé dans le parcours visible. Les mécanismes avancés sont surtout des QCM. Un premier retour qualitatif des enfants a été rapporté le 19 novembre sur la rapidité et le caractère robotique de la voix. Il ne constitue pas une évaluation structurée. Il n’existe pas encore de bibliothèque audio validée ou de couverture pédagogique démontrée du CP au CM2.
 
@@ -49,7 +49,7 @@ Les valeurs de taille, nombre de choix et présentation sont des décisions prod
 
 ## Lot 1 — Autonomie et clarté, avant tout ajout de mécanique
 
-**Statut : en cours.** Démonstration du choix de syllabes accessible depuis l’aide, sans passage obligatoire, et pause/reprise implémentées. Tests automatisés ajoutés ; rendu navigateur et essais avec enfants à faire. La demande d’aide est conservée comme accompagnement ; la démonstration n’ajoute pas de résultat.
+**Statut : développement livré pour recette.** Démonstrations du choix, des paires, constructions, coupures, chronologie, flash et lecture disponibles depuis l’aide. Pause/reprise, annulations de minuteur, retour de focus et mission conservée testés. La démonstration marque le recours à l’aide sans créer de résultat propre. Rendu navigateur et essais avec enfants à faire après cette livraison.
 
 Objectif : vérifier que l’enfant comprend quoi faire et peut retrouver son chemin.
 
@@ -68,7 +68,7 @@ Acceptation : aucune impasse connue sur les scénarios ; reprise conservée ; co
 
 ## Lot 2 — Fiabiliser le socle pédagogique et l’audio
 
-**Statut : en cours, préparation.** Matrice éditoriale de 29 objectifs et 180 exercices rattachés. Parcours Premiers sons préparé avec 37 unités sonores, 26 lettres documentées, 104 essais de conception dont le pilote l/r/f/j, prérequis, aides et contrat audio. Tests de cohérence et audit des métadonnées disponibles. Aucune relecture professionnelle ni production d’audios validés réalisée ; le jeu conserve ses quatre voyelles actuelles.
+**Statut : partiel, dépendance audio réelle.** Matrice de 30 objectifs et 364 exercices rattachés, corpus de recette et fiches rédigés. Les 37 unités, 26 lettres et 104 essais du dossier d’enregistrement restent préparatoires : aucun fichier ni relecture réelle n’a été produit. Les jeux phonologiques ajoutés utilisent des mots entiers et ne remplacent pas les consonnes isolées. Tests et audit ne valent pas approbation du contenu ou de l’audio.
 
 Objectif : rendre les contenus justes et cohérents avant de les multiplier.
 
@@ -88,7 +88,7 @@ Acceptation : chaque contenu pilote a un objectif, un prérequis, une correction
 
 ## Lot 3 — Compléter les premiers apprentissages
 
-**Statut : en cours, intégration technique du premier pilote.** Le lecteur local et la gestion de ses erreurs sont intégrés et testés par simulations. Le son enregistré est séparé de la synthèse des consignes et de Bravo ; aucun nom de consonne ne lui sert de repli. Les nouveaux phonèmes restent désactivés, sans fichiers ni relecture disponibles.
+**Statut : mécaniques et corpus de recette livrés, phonèmes enregistrés en attente.** Les débuts communs, intrus et oppositions utilisent des mots illustrés et écoutables. Le comptage syllabique et phonémique est distinct des lettres ; les assemblages avec distracteur n’affichent pas de modèle écrit. Les phonèmes isolés restent désactivés, sans fichiers ni relecture disponibles.
 
 Objectif : aller au-delà du repérage visuel et des syllabes simples.
 
@@ -109,7 +109,7 @@ Acceptation : chaque mécanique possède une démonstration courte, un usage au 
 
 ## Lot 4 — Développer les parcours avancés
 
-**Statut : à démarrer dans ce plan.**
+**Statut : développement livré, premier corpus pour recette.** Huit flashs, huit phrases à segmenter, huit histoires à ordonner et huit lectures déclarées terminées, plus enrichissement de morphologie et compréhension. La durée facultative de lecture n’évalue pas l’exactitude et n’est pas un score de fluence. La couverture CP–CM2 reste à établir par une relecture pédagogique.
 
 Objectif : couvrir les axes demandés sans multiplier les types d’écrans.
 
@@ -128,7 +128,7 @@ Acceptation : chaque axe est relié à la matrice, avec plusieurs familles d’e
 
 ## Lot 5 — Personnaliser par besoins, sans compliquer le choix enfant
 
-**Statut : en cours.** Choix et préécoute de voix françaises, trois vitesses sauvegardées et premier bilan descriptif par objectif disponibles dans les outils adultes. Aucune personnalisation pédagogique automatique ni gestion multi-élèves. Rendu sur appareils, écoute des enfants et relecture du bilan encore nécessaires.
+**Statut : développement livré pour recette.** Voix/rythme, choix 2/3/4, durée flash ou absence de minuterie, mesure de lecture facultative, mouvement réduit et annotations explicites. Les polices de confort sont des options locales avec repli, non des fichiers embarqués. Trente fiches et la préparation d’une prochaine mission sur 29 objectifs sont disponibles côté adulte ; la mission actuelle et le choix manuel restent libres. Rendu sur appareils et relecture encore nécessaires.
 
 Objectif : adapter l’expérience avec peu de commandes visibles.
 
@@ -167,9 +167,9 @@ La boucle proposée est : **observer un besoin → choisir une compétence → e
 | Besoin enseignant | Disponible maintenant | Amélioration prévue et lot |
 | --- | --- | --- |
 | Choisir un travail pertinent | Choix manuel d’un niveau et aperçu | Matrice, prérequis et fiches par compétence : lot 2 |
-| Préparer une courte séance | Missions de huit exercices et réglages adultes | Fiche objectif, exemples, erreurs possibles, aide et réinvestissement : lots 2–3 |
+| Préparer une courte séance | Missions de huit exercices, fiches et préparation de la prochaine mission par objectif | Fiche objectif, exemples, erreurs possibles, aide et réinvestissement : lots 2–3 |
 | Différencier sans stigmatiser | Niveau sans classe affichée, confort réglable | Sélection adulte d’une compétence et propositions facultatives conservant le même bouton Jouer : lots 3 et 5 |
-| Comprendre une réussite | Historique local autonome/accompagné et tentatives | Bilan par compétence, distinguant aide, incident technique, tâche avec modèle et transfert : lots 5–6 |
+| Comprendre une réussite | Bilan local sans aide/accompagné/déclaré terminé, tentatives et export | Bilan par compétence, distinguant aide, incident technique, tâche avec modèle et transfert : lots 5–6 |
 | Décider de la suite | Observation de l’élève et changement manuel | Pistes explicites à confirmer : réexpliquer, réviser, essayer un autre exemple ; jamais de diagnostic automatique : lots 2 et 5 |
 | Relier entraînement et classe | L’enseignant choisit lui-même une tâche hors écran | Pistes d’activités orales, de manipulation et de lecture contextualisée : lots 2–4 |
 
@@ -214,9 +214,9 @@ Les contrôles de données, d’accessibilité et de non-régression commencent 
 
 Chaque élément du suivi distingue trois états : **implémenté**, **relu par un professionnel**, **observé auprès des utilisateurs**. Le succès technique ne fait pas passer automatiquement aux autres états. Les critères d’efficacité pédagogique demandent une évaluation distincte.
 
-## Prochain incrément concret
+## Passage à la recette
 
-Commencer par un seul parcours : **Accueil → Jouer → syllabe entendue → choix → aide ou réussite → suivant → pause/reprise**. Décrire le comportement attendu, ajouter une démonstration non verbale et vérifier son usage sur téléphone et tablette. Préparer simultanément la matrice et un petit lot d’audios pour les sons et syllabes de ce parcours. Livrer ce sous-ensemble avant d’étendre toutes les banques.
+La [recette complète](recette-complete.md) donne les chemins pour essayer les nouveaux jeux depuis les fiches adultes, sans modifier l’interface enfant. Les développements ci-dessus sont livrés pour ces essais ; le porteur du projet réalisera ensuite la recette utilisateur. La phase audio reste partielle tant que les fichiers réels et leur relecture manquent. Les validations professionnelles, les observations enfants et la conformité ne sont jamais considérées comme réalisées par une mise à jour de statut.
 
 ## Références de conception
 
@@ -252,3 +252,6 @@ Pour le volet enseignant : [CSEN — Évaluer pour mieux aider](https://www.csen
 
 - 19 novembre 2026 — Phases 1, 2 et 5 : retour enfant rapporté sur une voix trop rapide et robotique. Débit par défaut ralenti à 0,8, Bravo suivant le rythme choisi, sélection des voix naturelles avant les compactes, choix et préécoute adultes avec 0,7/0,8/0,9 sauvegardés. Gestion du chargement tardif des voix et annulation testées. Aucun enregistrement de voix d’enfant ni phonème nouveau livré ; une nouvelle écoute reste nécessaire.
 - 19 novembre 2026 — Phases 5 et 6 : bilan descriptif local par objectif ajouté à l’historique et à son export, avec limites des modèles visibles et exemples à reprendre si utile. Même matrice éditoriale que l’audit ; les tâches alternatives sont rattachées à leur objectif réel. Aucun seuil d’acquisition, aucune modification du niveau ou de la mission. Pages adultes et FAQ actualisées. Phase 5 passe à en cours ; les tests techniques ne valent pas validation pédagogique ou utilisateur. Voir retours-enfants.md.
+
+- 19 novembre 2026 — Livraison de recette des phases 1, 3, 4 et 5 : 364 exercices / 30 objectifs, nouvelles mécaniques testées, préférence de choix fixée par mission, minuteurs annulables et flash commençant après la consigne. Huit lectures déclarées terminées sont distinguées des réponses évaluées ; aucune vitesse orale n’est inférée. Trente fiches et préparation facultative de 29 objectifs sans interrompre la mission en cours. Spécification, matrice, pages adultes et recette synchronisées.
+- 19 novembre 2026 — Phase 2 reste partielle : service de génération vocale non connecté et accès réseau de téléchargement indisponible ; aucun phonème enregistré ni voix d’enfant uniforme livré. Polices proposées seulement si déjà installées. Phase 6 : tests locaux et audit de distribution passés ; domaine public inaccessible à l’outil web et aucun navigateur connecté. Les essais enfants seront réalisés après la livraison, à la demande du porteur du projet.

@@ -29,7 +29,7 @@ test('deux missions au même niveau utilisent des exercices différents avant de
     assert.equal(profile.level,level); assert.equal(profile.beginnerStage,stage);
     assert.equal(profile.exerciseHistory.length,8);
     assert.equal(profile.exerciseHistory[1].result,'assisted');
-    assert.deepEqual(profile.session.questionIds.map(id => questionById(id).mechanic || questionById(id).type), questionsFor(level,stage).slice(0,8).map(q => q.mechanic || q.type));
+    assert.ok(profile.session.questionIds.every(id=>questionsFor(level,stage).some(question=>question.id===id)));
   }
 });
 
@@ -132,28 +132,28 @@ test('les groupes complets peuvent être récupérés depuis l’ancien historiq
 
 
 test('Assemblage contient 60 mots uniques de deux syllabes et les parcourt avant de réviser',()=>{
- const pool=questionsFor(0,3);
- assert.equal(pool.length,60);assert.equal(new Set(pool.map(q=>q.listen)).size,60);
+ const fullPool=questionsFor(0,3),pool=fullPool.filter(question=>question.type==='syllable_assembly');
+ assert.equal(fullPool.length,68);assert.equal(pool.length,60);assert.equal(new Set(pool.map(q=>q.listen)).size,60);
  for(const question of pool){
   assert.equal(question.parts.length,2);assert.equal(question.tiles.length,2);
   assert.equal(question.parts.join(''),question.listen);
   assert.deepEqual(question.modelParts,question.parts);assert.equal(question.mechanic,'build');
  }
  const profile=freshProfile();profile.beginnerStage=3;const seen=new Set();const random=randomSource();
- for(let round=0;round<8;round++){
+ for(let round=0;round<9;round++){
   profile.session=createMission(profile,random);
   const ids=profile.session.questionIds;
   assert.equal(new Set(ids).size,8);
   const fresh=ids.filter(id=>!seen.has(id));
-  assert.equal(fresh.length,round<7?8:4);
+  assert.equal(fresh.length,round<8?8:4);
   ids.forEach(id=>seen.add(id));finish(profile);
  }
- assert.equal(seen.size,60);assert.equal(profile.beginnerStage,3);
+ assert.equal(seen.size,68);assert.equal(profile.beginnerStage,3);
 });
 
 
 test('les nouvelles syllabes gardent le format et la répartition de chaque mission',()=>{
- const pool=questionsFor(0,2);assert.equal(pool.length,40);
+ const pool=questionsFor(0,2).filter(question=>question.type==='simple_syllable');assert.equal(pool.length,40);
  assert.equal(new Set(pool.map(q=>q.listen)).size,32);
  for(const question of pool.slice(16)){
   assert.match(question.listen,/^[bprstvf][aiou]$/);
@@ -161,13 +161,13 @@ test('les nouvelles syllabes gardent le format et la répartition de chaque miss
   else assert.equal(question.options[question.answer],question.listen);
  }
  const profile=freshProfile();profile.beginnerStage=2;const seen=new Set();const random=randomSource();
- for(let round=0;round<5;round++){
+ for(let round=0;round<6;round++){
   profile.session=createMission(profile,random);
-  assert.equal(profile.session.questionIds.filter(id=>questionById(id).mechanic==='build').length,4);
+  assert.equal(profile.session.questionIds.length,8);
   assert.ok(profile.session.questionIds.every(id=>!seen.has(id)));
   profile.session.questionIds.forEach(id=>seen.add(id));finish(profile);
  }
- assert.equal(seen.size,40);
+ assert.equal(seen.size,48);
 });
 
 test('les choix enregistrés peuvent être sélectionnés sans modifier la mécanique ni la reprise',async()=>{
@@ -175,7 +175,7 @@ test('les choix enregistrés peuvent être sélectionnés sans modifier la méca
  const originalLength=beginnerBanks[1].length;
  try{
   const profile=freshProfile();profile.beginnerStage=1;const random=randomSource();
-  profile.session=createMission(profile,random);finish(profile);profile.session=createMission(profile,random);finish(profile);
+  for(let round=0;round<Math.ceil(originalLength/8);round++){profile.session=createMission(profile,random);finish(profile);}
   const template=beginnerBanks[1][0];
   beginnerBanks[1].push({...template,id:'f1-17',type:'phoneme_sound',listen:'',recordedAudio:'/audio/sounds/fr-fr/f-v1.mp3',options:['f','a'],answer:0});
   profile.session=createMission(profile,random);assert.ok(profile.session.questionIds.includes('f1-17'));

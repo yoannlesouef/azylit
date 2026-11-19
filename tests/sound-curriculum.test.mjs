@@ -24,7 +24,7 @@ test('le pilote propose deux choix distincts, sans cartes homophones et sans mis
   assert.equal(exercise.live,false);assert.equal(exercise.ttsFallback,null);
  }
  // This preparation does not change a child's saved plan or pretend to ship missing audio.
- const live=questionsFor(0,1);assert.equal(live.length,16);assert.deepEqual([...new Set(live.map(item=>item.listen))].sort(),['a','i','o','u']);
+ const live=questionsFor(0,1).filter(question=>question.type==='vowel_sound');assert.equal(live.length,16);assert.deepEqual([...new Set(live.map(item=>item.listen))].sort(),['a','i','o','u']);
 });
 test('les champs de relecture, droits et contrôle appareils sont nécessaires mais ne vérifient pas le fichier',()=>{
  const entry=structuredClone(soundCurriculum.find(item=>item.id==='f'));

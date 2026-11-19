@@ -2,7 +2,7 @@
 
 Mise à jour : 18 novembre 2026.
 
-**Non finalisée pour les enfants : le jeu conserve 16 exercices sur a/i/o/u.** Les 104 essais ci-dessous sont une préparation éditoriale, sans fichiers audio ni relecture réalisée. Les 37 unités ne constituent pas un inventaire exhaustif de toutes les graphies et exceptions du français. Les 26 lettres sont documentées ; cela ne signifie pas que chaque lettre possède un son isolé.
+**Non finalisée pour les enfants : les correspondances isolées restent les 16 exercices a/i/o/u. Le palier comprend aussi 32 exercices sur des mots entiers (48 au total), distincts des enregistrements de consonnes.** Les 104 essais ci-dessous sont une préparation éditoriale, sans fichiers audio ni relecture réalisée. Les 37 unités ne constituent pas un inventaire exhaustif de toutes les graphies et exceptions du français. Les 26 lettres sont documentées ; cela ne signifie pas que chaque lettre possède un son isolé.
 
 ## Cibles à enregistrer
 
@@ -81,3 +81,7 @@ H ne reçoit aucun faux phonème. Les propositions pour h sont des mots à écou
 5. Après revue, intégrer les questions par étapes pédagogiques, vérifier la sélection des missions, la reprise des anciens identifiants, la réécoute et la répétition avant Bravo. Tester le parcours avec de vrais fichiers, puis mettre à jour les effectifs et les explications publiques. Les questions de mots contextuels restent distinctes des premières correspondances son/écriture.
 
 Aucun menu supplémentaire n'est prévu pour les enfants. Les sources pédagogiques et la distinction nom/son/contexte sont dans [le parcours proposé](parcours-premiers-sons.md). Le [kit pilote](kit-enregistrement-pilote.md) demeure disponible pour commencer par quatre consonnes.
+
+## Mise à jour de recette — 19 novembre 2026
+
+Le palier Premiers sons contient maintenant 48 exercices : 16 correspondances a/i/o/u et 32 jeux sur les débuts de mots, les intrus et le nombre de sons. Ces jeux utilisent des mots entiers et ne constituent pas une activation des 104 essais d’enregistrements de ce dossier. Les fichiers de consonnes et leur relecture restent absents.

@@ -33,7 +33,7 @@ test('chaque mission possède huit questions cohérentes et une alternative sans
   assert.equal(calibration.length, 5);
   const ids = new Set();
   for (const bank of banks) {
-    assert.equal(bank.length, 16);
+    assert.ok(bank.length >= 16);
     assert.ok(bank.some(q => !q.listen && !q.optionAudio));
     for (const question of bank) {
       assert.ok(!ids.has(question.id)); ids.add(question.id);
@@ -261,9 +261,9 @@ test('les premiers exercices ne demandent ni mot entier ni connaissance du nom d
     assert.ok(!question.listen);
   }
   for (const [stage,bank] of beginnerBanks.entries()) {
-    assert.equal(bank.length, stage === 3 ? 60 : stage === 2 ? 40 : 16);
+    assert.equal(bank.length, [36,48,48,68][stage]);
     for (const question of bank) {
-      assert.equal(question.options.length, 2);
+      assert.ok(question.options.length >= 2 && question.options.length <= 3);
       assert.equal(question.visualAids, false);
       assert.ok(question.options[question.answer]);
     }

@@ -132,3 +132,7 @@ Le [CSEN sur l’apprentissage de la lecture](https://www.csen.education.gouv.fr
 ## Avancement du 18 novembre 2026
 
 Le lecteur de fichiers locaux est désormais intégré au jeu, sans activer de nouvelle question. Les tests vérifient notamment l’absence de substitution par un nom de lettre, l’attente du démarrage audio, la lecture sans TTS, les pannes, la reprise et l’annulation de Bravo. Le [kit de production](kit-enregistrement-pilote.md) décrit les quatre fichiers et les huit essais à relire. `npm run audit:sound-pilot` contrôle les métadonnées, les fichiers réels et leur empreinte ; `--export` est refusé si un élément manque. L’export prêt est un document de revue, pas une activation automatique. Les validations professionnelles et les écoutes réelles restent ouvertes.
+
+## Mise à jour de recette — 19 novembre 2026
+
+Le palier Premiers sons contient maintenant 48 exercices : 16 correspondances a/i/o/u et 32 jeux sur les débuts de mots, les intrus et le nombre de sons. Ces jeux utilisent des mots entiers et ne constituent pas une activation des 104 essais d’enregistrements de ce dossier. Les fichiers de consonnes et leur relecture restent absents.

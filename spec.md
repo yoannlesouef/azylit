@@ -1,5 +1,5 @@
 # Spécification Technique et Fonctionnelle — Azyl.it (`www.azyl.it`)
-**Version :** 1.8.0\
+**Version :** 1.9.0\
 **Dernière mise à jour :** 19 novembre 2026\
 **Domaine cible :** `https://www.azyl.it`  
 **Objet :** Application web éducative et inclusive d'apprentissage et d'entraînement à la lecture (compétences équivalentes CP à CM2), conçue selon les principes de la Conception Universelle de l'Apprentissage (CUA) pour les enfants avec ou sans troubles neurodéveloppementaux (TND).
@@ -16,7 +16,7 @@ Cette version intègre les retours sur les compagnons, l'autonomie des non-lecte
 | Information des parents | Espace HTML dédié en huit pages d’information et phrase cliquable près du logo : « Apprendre à lire, chacun à son rythme. » ; sous le logo sur petit écran ; absente des exercices | Vérification visuelle sur les appareils cibles |
 | Difficulté | Sélecteur unique avec aperçu, moins, plus et triangle, accompagné oralement ; sept positions | Validation de la compréhension des pictogrammes et de la progression |
 | Premiers apprentissages | Quatre sous-paliers de huit questions : lettres, sons des voyelles, syllabes simples et assemblage | Contenus supplémentaires, enseignement explicite de la fusion lettre-son et validation pédagogique |
-| Catalogue | 180 activités de démonstration : choix de réponse, quatre associations de cartes lettres, huit fusions de lettres et soixante constructions de mots | Étendre les autres mécaniques et valider la couverture CP–CM2 |
+| Catalogue | 364 exercices de recette : choix, associations, constructions, phonologie sur des mots, flash, segmentation, chronologie et lecture déclarée terminée | Relecture et validation de la couverture pédagogique, phonèmes enregistrés manquants |
 | Retours | Compagnon et symboles, sans félicitations ni indices écrits visibles ; voix rejouable avant la réussite | Tests de compréhension des retours sans lecture |
 | Page d'exercice | Réponses prioritaires, une réécoute centrale, outils secondaires ; après réussite, réponse statique et une grande flèche | Vérification en navigateur et essais utilisateurs |
 | Audio | Français `fr-FR`, préférence pour les voix naturelles disponibles, débit ralenti `0.8`, intonation native, encouragements courts | Enregistrements humains ou synthèse naturelle validée, notamment pour les phonèmes isolés |
@@ -109,7 +109,7 @@ L'application doit offrir une expérience fluide, bienveillante et non stigmatis
 - Après une réussite : les propositions cliquables, les commandes de réécoute et l'aide quittent la zone centrale. Afficher la réponse correcte en élément statique, le compagnon et une seule grande flèche pour continuer. Aucune validation supplémentaire n'est nécessaire.
 
 ### Missions évolutives au même palier et historique
-- Constituer un catalogue de seize activités pour chacune des sept positions de complexité ; sélectionner huit activités distinctes par mission en conservant la répartition des mécaniques et catégories du palier.
+- Conserver des catalogues de 36, 48, 48, 68, 68, 48 et 48 exercices selon le palier ; sélectionner huit exercices distincts, avec variation des mécaniques sans sacrifier la priorité aux exercices non vus. Une préparation adulte peut cibler un objectif disposant de huit exercices dans le même palier.
 - Priorité aux activités non terminées auparavant, puis aux moins revues. À fréquence équivalente, éviter le dernier plan proposé et préférer les activités vues le moins récemment. Les ex æquo sont départagés aléatoirement.
 - Le premier parcours d'un nouveau profil garde une introduction guidée. Les missions suivantes changent leur sélection ; même une mission abandonnée ne doit pas relancer systématiquement le même plan. La complexité reste celle choisie explicitement par l'enfant.
 - Mélanger les positions des réponses, des cartes à construire et des cartes de droite à associer, en conservant la correction logique et les cartes identiques distinctes. Ne jamais modifier le catalogue source.
@@ -233,7 +233,7 @@ Les types d'exercices ci-dessous constituent la suite du catalogue, à introduir
 
 ### Diversification des mécaniques : exigence prioritaire
 
-Le prototype comporte désormais quatre familles d'interactions : choix de réponse, association de cartes, fusion de lettres en syllabe et assemblage de syllabes en mot. Le catalogue contient 180 activités : soixante au niveau Assemblage, quarante au niveau Syllabes et seize pour chacun des cinq autres paliers. Chaque mission sélectionne huit activités sans changer automatiquement de sous-palier. Les répartitions ci-dessous concernent une mission, et non la taille du catalogue.
+Le prototype comporte plusieurs interactions : choix de cartes, association, construction, segmentation, lecture flash et lecture déclarée terminée. Le catalogue de recette contient 364 exercices (36/48/48/68/68/48/48 par palier). Une mission conserve huit exercices ; sa sélection peut varier les mécaniques. Le tableau suivant décrit uniquement l’introduction historique du premier parcours ; il n’impose plus la composition de chaque mission suivante.
 
 | Sous-palier | Mécaniques réalisées | Répartition dans la mission |
 | --- | --- | --- |
@@ -418,7 +418,7 @@ Le parcours pilote Syllabes propose une démonstration facultative depuis l’am
 
 La navigation adulte commence par Parents, Enseignants, ULIS et AESH, puis Notre démarche, Accessibilité, Données et Questions. Les pages communes sont à la racine du site. Les anciennes adresses sous `/parents/` redirigent en 301 vers les nouvelles ; la construction génère un fichier `_redirects` pour Cloudflare Pages et met à jour les URL canoniques, les liens et le sitemap. L’en-tête enfant distingue les informations adultes des commandes de jeu ; les liens adultes sont absents des écrans de travail et de choix.
 
-Le palier « Premiers sons » couvre actuellement uniquement a, i, o et u (16 exercices). Il ne doit pas être présenté comme couvrant toutes les lettres : les autres correspondances nécessitent des contenus et des prononciations vérifiés, distincts du nom des lettres proposé dans Découvrir.
+Le palier « Premiers sons » propose 48 exercices : 16 correspondances a/i/o/u et 32 tâches sur les débuts de mots, les intrus et le nombre de sons. Les nouvelles tâches utilisent des mots entiers ; les consonnes isolées enregistrées restent absentes. Il ne doit pas être présenté comme couvrant toutes les lettres : les autres correspondances nécessitent des contenus et des prononciations vérifiés, distincts du nom des lettres proposé dans Découvrir.
 
 Référencement : titres visibles explicites, sources et sommaires adultes, entité WebApplication descriptive, image de partage locale, questions structurées reliées aux réponses visibles et dates éditoriales cohérentes. Les branches Cloudflare autres que PRODUCTION_BRANCH (main par défaut) sont désindexées automatiquement, sans bloquer leur exploration, et ne publient pas d’URL dans leur sitemap. Les corrections et limites sont détaillées dans docs/audit-seo-geo-aeo.md.
 
@@ -436,7 +436,7 @@ Les six compagnons sont proposés sur une grille de trois colonnes sur grand éc
 
 ### Dossier de couverture complète des Premiers sons
 
-37 unités et 104 essais éditoriaux sont préparés dans content/sound-curriculum.mjs et content/sound-exercises.mjs. Les cas o ouvert, eu ouvert, w, y et les deux séquences usuelles de x sont documentés. Les mots en contexte utilisent leur propre enregistrement et constituent une tâche distincte ; h ne reçoit pas de phonème fictif. Le contrôle global vérifie couverture, corrections, fichiers, empreintes et déclarations de relecture, sans prétendre vérifier acoustiquement les fichiers. Son export reste un dossier de revue et n’active rien. Le niveau jouable conserve 16 exercices a/i/o/u tant que production audio et revue ne sont pas réalisées. Voir docs/couverture-premiers-sons.md.
+37 unités et 104 essais éditoriaux sont préparés dans content/sound-curriculum.mjs et content/sound-exercises.mjs. Les cas o ouvert, eu ouvert, w, y et les deux séquences usuelles de x sont documentés. Les mots en contexte utilisent leur propre enregistrement et constituent une tâche distincte ; h ne reçoit pas de phonème fictif. Le contrôle global vérifie couverture, corrections, fichiers, empreintes et déclarations de relecture, sans prétendre vérifier acoustiquement les fichiers. Son export reste un dossier de revue et n’active rien. Les 16 correspondances a/i/o/u restent les seuls sons isolés de ce palier ; les tâches sur mots entiers ajoutées ne remplacent pas les fichiers de consonnes enregistrées. Voir docs/couverture-premiers-sons.md.
 
 
 ### Retour enfant sur la voix et premier bilan adulte — 19 novembre 2026
@@ -446,3 +446,20 @@ Le retour rapporté « trop rapide et trop robot » motive un débit plus lent d
 Le bilan local est accessible depuis l’historique adulte et inclus dans son export JSON. Il utilise le même rattachement éditorial aux objectifs que l’outil de couverture, partagé dans app/competencies.js. Il agrège uniquement les résultats encore conservés, distingue sans aide supplémentaire / avec aide ou nouvel essai, et indique jusqu’à trois cibles dont le dernier exercice correspondant était accompagné. Les modèles et les limites des tâches sont explicites. Aucun seuil de maîtrise, diagnostic, changement automatique de niveau ou verrou adulte n’est ajouté. Les résultats inconnus ne sont pas inférés à partir du niveau de la mission. Les résultats restent mélangés si plusieurs enfants utilisent le même navigateur.
 
 Le retour rapporté n’est pas une évaluation systématique : nombres d’enfants, appareils et contexte ne sont pas connus. Une nouvelle écoute avec les enfants reste nécessaire avant de déclarer la voix satisfaisante. Aucune nouvelle consonne enregistrée ni voix d’enfant uniforme n’est livrée dans cet incrément.
+
+
+### Version de recette du plan initial — 19 novembre 2026
+
+Le catalogue contient 364 exercices et 30 objectifs éditoriaux, tous rattachés à la matrice partagée. Les contenus ajoutés sont marqués en attente de relecture et de validation utilisateur. Les anciens identifiants et plans restent valides. La sélection privilégie le moins vu avant la diversité des mécaniques ; le nombre de choix est fixé au démarrage de la mission et conserve la correction et les images correspondantes.
+
+Mécaniques ajoutées : phonologie sur mots entiers illustrés (début commun, intrus et oppositions), comptage de phonèmes et de syllabes, assemblage avec distracteur sans modèle écrit, flash de mots, segmentation interactive de phrases et chronologie par choix successifs. La segmentation conserve les espaces placés et permet de les retirer ; aucune erreur n’est enregistrée avant la demande de vérification. La chronologie conserve les bonnes cartes après une erreur et permet de retirer la dernière. Les démonstrations d’aide sont distinctes du résultat de l’exercice ; elles marquent le recours à l’aide sans produire de résultat de démonstration.
+
+Le flash attend la fin de la consigne avant la présentation. Durées adultes : sans minuterie, 1, 2 ou 4 secondes. L’enfant peut revoir le mot ; cette réexposition est signalée comme aide. Aucun résultat n’est attribué sur la seule base du temps. La coupure audio, la pause et les dialogues ne doivent pas laisser la présentation bloquée ou un minuteur agir sur un autre exercice.
+
+La lecture de texte est terminée volontairement au carré après un démarrage au triangle. Son résultat technique est observed, distinct d’independent/assisted. La mesure facultative conserve une durée bornée à une heure, sans microphone, mots corrects/minute, classement ou correction automatique de la lecture. Une aide peut faire entendre le texte comme modèle, ce qui ne devient pas une lecture autonome évaluée. L’export d’historique passe au format version 2 ; les anciens profils restent lisibles.
+
+Les aides sur lettres muettes et sons complexes reposent sur des segments éditoriaux explicites et restent désactivées sur les discriminations. Les polices Andika, Lexend et OpenDyslexic sont des options locales avec repli sans empattement ; aucun fichier de ces polices n’est embarqué. Le mouvement peut être réduit en plus de la préférence système.
+
+Les 30 fiches adultes présentent objectifs, prérequis, exemples, erreurs possibles, aide et transfert. 29 objectifs peuvent préparer une prochaine mission de huit exercices ; consonant-sound reste indisponible, sans audios. La préparation conserve la mission actuelle, est consommée une seule fois et s’annule lors d’un changement manuel de niveau. Elle ne verrouille jamais Jouer, Découvrir, les aides ou le choix du niveau. Aucun suivi de classe ni compte nominatif n’est ajouté.
+
+Le plan conserve explicitement les dépendances audio et les validations non réalisées. La version est destinée à la recette, pas annoncée comme pédagogiquement exhaustive, cliniquement efficace ou certifiée conforme. Voir docs/recette-complete.md et docs/plan-amelioration.md.

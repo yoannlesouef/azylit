@@ -77,7 +77,7 @@ test('l’accueil expose un vrai lien parents sans placer leurs contenus dans le
 test('la page enseignants est indexable, distingue le prévu du livré et préserve le parcours enfant', async()=>{
  const html=files.get('enseignants/index.html');assert.ok(html);
  assert.ok(html.includes('POUR LES ENSEIGNANTS'));
- assert.ok(html.includes('Les fiches pédagogiques et la préparation de séances restent à développer.'));
+ assert.ok(html.includes('Les fiches et la préparation locale d’une mission sont disponibles en version à relire'));
  assert.ok(html.includes('Un bilan local regroupe les résultats par objectif travaillé'));
  assert.ok(html.includes('Un seul profil est actuellement stocké par navigateur'));
  assert.ok(html.includes('sans compte enseignant'));
@@ -97,7 +97,7 @@ test('la page enseignants est indexable, distingue le prévu du livré et prése
 });
 
 test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>{
- assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/ulis/','/aesh/','/demarche/','/accessibilite/','/donnees/','/questions/']);
+ assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/aesh/','/ulis/','/demarche/','/accessibilite/','/donnees/','/questions/']);
  const html=files.get('parents/index.html');
  const navigation=html.match(/<nav class="parent-nav"[^>]*>([^]*?)<\/nav>/)[1];
  assert.ok(navigation.indexOf('/parents/')<navigation.indexOf('/enseignants/'));

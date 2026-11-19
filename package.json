@@ -12,7 +12,8 @@
     "audit:coverage": "node scripts/coverage.mjs",
     "audit:sounds": "node scripts/audit-sounds.mjs",
     "audit:sound-pilot": "node scripts/check-sound-pilot.mjs",
-    "audit:sound-coverage": "node scripts/check-sound-coverage.mjs"
+    "audit:sound-coverage": "node scripts/check-sound-coverage.mjs",
+    "audit:release": "node scripts/release-report.mjs"
   },
   "engines": { "node": ">=18" }
 }

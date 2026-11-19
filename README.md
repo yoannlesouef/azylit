@@ -6,7 +6,7 @@ Projet d'application web éducative pour aider les enfants à apprendre à lire 
 
 ## État du projet
 
-Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. Le catalogue contient 180 questions de démonstration réparties entre les quatre parcours.
+Une première version fonctionnelle est disponible : choix du compagnon et du parcours, missions de huit questions, aide guidée, encouragements audio, réglages de lecture, sauvegarde locale et reprise de mission. La version de recette contient 364 exercices sur sept paliers, répartis entre les quatre grands parcours. Les contenus restent à relire pédagogiquement.
 
 ## Lancer le projet
 
@@ -73,10 +73,10 @@ Références : [déploiement HTML statique](https://developers.cloudflare.com/pa
 
 - La progression reste dans le navigateur utilisé, sans synchronisation distante ni code avatar.
 - La voix privilégie les voix françaises naturelles ou améliorées disponibles dans le navigateur, avec un débit ralenti par défaut (0,8), y compris pour les félicitations. Les réglages adultes proposent trois vitesses, un choix de voix françaises et une préécoute. Leur disponibilité et leur qualité dépendent de l’appareil ; les fichiers audio validés et les phonèmes isolés restent à produire. Une alternative sans écoute est proposée si la voix est indisponible ou coupée.
-- Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices au même palier (soixante mots en Assemblage, quarante exercices de syllabes et seize exercices aux autres paliers), en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
+- Les questions sont des démonstrations à valider pédagogiquement. Les missions choisissent huit exercices au même palier (36, 48, 48, 68, 68, 48 et 48 exercices dans les sept paliers), en privilégiant ceux encore non réalisés puis les moins revus. Un accompagnement pédagogique adaptatif complet reste à développer.
 - Le positionnement propose un parcours indicatif selon une règle de démonstration non étalonnée.
-- Les exercices combinent choix de réponse, association de lettres par paires, fusion de lettres et assemblage de syllabes par clics successifs. La lecture flash, la fluence chronométrée et les interactions de segmentation et de remise en ordre décrites dans la spécification restent à implémenter.
-- Les réglages proposent les polices système, la taille, les espacements, l'interligne, la coloration des syllabes renseignées et un guide de lecture. Les polices Andika, Lexend et OpenDyslexic ainsi que les aides sur les lettres muettes et les graphèmes complexes restent à intégrer.
+- Les exercices combinent choix de réponse, associations, constructions, phonologie sur des mots entiers, lecture flash, segmentation de phrases et remise en ordre chronologique. Une lecture peut être déclarée terminée, avec une mesure de durée facultative côté adulte ; cette durée ne mesure pas l’exactitude ou la fluence orale.
+- Les réglages proposent les polices système, la taille, les espacements, l'interligne, la coloration des syllabes renseignées et un guide de lecture. Les options Andika, Lexend et OpenDyslexic utilisent les polices déjà installées, avec repli sans empattement ; leurs fichiers ne sont pas inclus. Les aides sur les lettres muettes et les sons complexes couvrent uniquement les mots explicitement annotés, hors discrimination.
 - Le site ne charge aucun service tiers ni police distante.
 
 Les paragraphes ci-dessous décrivent la cible du produit ; `spec.md` conserve la spécification complète.
@@ -176,7 +176,7 @@ Les assemblages gardent leur début correct après une erreur. Une flèche de re
 
 ## Missions variées et historique local
 
-Le catalogue contient 180 activités, soit 60 au niveau Assemblage, 40 au niveau Syllabes et 16 pour chacune des cinq autres positions. Une mission garde huit exercices et la répartition des mécaniques du palier choisi. Les exercices non réalisés sont prioritaires, puis les moins revus ; le dernier plan proposé est aussi pris en compte si une mission a été abandonnée. Une fois les exemples parcourus, ils reviennent en révision, avec un ordre et des positions de réponses ou de cartes variés.
+Le catalogue contient 364 exercices : 36 exercices de lettres, 48 premiers sons, 48 syllabes, 68 assemblages, 68 mots et phrases, 48 secrets des mots et 48 histoires. Une mission garde huit exercices au palier choisi ; les nouvelles missions peuvent varier les mécaniques, tandis qu’une reprise conserve son plan exact. Les exercices non réalisés sont prioritaires, puis les moins revus ; le dernier plan proposé est aussi pris en compte si une mission a été abandonnée. Une fois les exemples parcourus, ils reviennent en révision, avec un ordre et des positions de réponses ou de cartes variés.
 
 Le plan et ses mélanges sont sauvegardés avant de jouer : reprendre une mission conserve exactement les mêmes exercices, réponses et cartes. Une nouvelle mission fait une nouvelle sélection. La complexité ne change pas automatiquement.
 
@@ -236,7 +236,7 @@ L’[audit SEO / GEO / AEO](docs/audit-seo-geo-aeo.md) recense les corrections e
 
 ### Préparation du niveau Premiers sons
 
-Le [parcours proposé](docs/parcours-premiers-sons.md) documente 37 unités sonores et les 26 lettres, avec un premier pilote éditorial sur l, r, f et j. Les données sont dans `content/sound-curriculum.mjs` ; elles ne sont pas utilisées par le jeu tant que contenus et enregistrements ne sont pas relus. `npm run audit:sounds` recense les éléments prêts et manquants ; `node scripts/audit-sounds.mjs --require-ready` retourne un échec lorsque des unités ne disposent pas des métadonnées requises et d’un fichier présent. La vérification technique ne remplace pas une écoute compétente. Le niveau jouable reste sur a, i, o et u.
+Le [parcours proposé](docs/parcours-premiers-sons.md) documente 37 unités sonores et les 26 lettres, avec un premier pilote éditorial sur l, r, f et j. Les données sont dans `content/sound-curriculum.mjs` ; elles ne sont pas utilisées par le jeu tant que contenus et enregistrements ne sont pas relus. `npm run audit:sounds` recense les éléments prêts et manquants ; `node scripts/audit-sounds.mjs --require-ready` retourne un échec lorsque des unités ne disposent pas des métadonnées requises et d’un fichier présent. La vérification technique ne remplace pas une écoute compétente. Les correspondances vocaliques jouables restent a, i, o et u ; d’autres jeux de phonologie utilisent maintenant des mots entiers, sans faire passer le nom d’une lettre pour son phonème.
 
 Le lecteur des futurs sons enregistrés est intégré : MP3 local, pas de repli vers un nom de lettre, réponses après démarrage audio, arrêt et erreurs pris en charge. Aucun nouveau phonème n’est encore activé. Le [kit de production du pilote](docs/kit-enregistrement-pilote.md) décrit les quatre fichiers l/r/f/j et les relectures nécessaires. `npm run audit:sound-pilot` contrôle les fichiers et leur empreinte ; ajouter `-- --export` pour produire un export de revue uniquement lorsque toutes les conditions sont réunies. Cet export ne modifie pas le jeu.
 
@@ -260,3 +260,18 @@ Dans **Réglages → Pour les adultes → Historique des exercices**, un bilan d
 Les audios enregistrés de consonnes et une voix d’enfant uniforme ne sont pas fournis par cet incrément. Les tests simulés ne remplacent pas une écoute avec les enfants sur leurs appareils. Voir [le retour et la recette d’écoute](docs/retours-enfants.md).
 
 Références techniques : [vitesse de parole](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance/rate), [voix disponibles](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/getVoices), [chargement des voix](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/voiceschanged_event).
+
+
+## Version de recette du plan — 19 novembre 2026
+
+La [recette complète](docs/recette-complete.md) décrit les chemins pour essayer chaque jeu. Le [plan](docs/plan-amelioration.md) sépare développement livré, ressources manquantes et validations externes. La recette utilisateur et la relecture professionnelle ne sont pas déclarées réalisées.
+
+- **Premiers apprentissages** : nouvelles comparaisons de débuts de mots, intrus, comptage de sons et de syllabes, formes proches et assemblages avec distracteur sans modèle écrit. Les comparaisons auditives portent sur des mots entiers ; aucun phonème de consonne n’est synthétisé à partir de son nom.
+- **Parcours avancés** : huit lectures flash, huit phrases à segmenter, huit histoires à remettre en ordre et huit lectures déclarées terminées. Les corpus de mots, morphologie et compréhension sont enrichis. Le flash attend la fin de la consigne et peut fonctionner sans minuterie ; la réexposition est disponible.
+- **Confort** : nombre de choix de la prochaine mission (2/3/4, avec minimum de trois pour les tâches qui le nécessitent), mouvement réduit, lettres muettes grisées et sons complexes soulignés sur les mots annotés seulement. Aucun diagnostic n’est demandé.
+- **Enseignants** : 30 fiches éditoriales avec prérequis, exemples, erreurs possibles, aides et transfert hors écran. 29 objectifs permettent de préparer les huit exercices d’une prochaine mission. La mission en cours reste intacte ; changer manuellement de niveau annule la préparation. Aucun passage adulte n’est obligatoire pour jouer.
+- **Suivi** : la lecture déclarée terminée est distincte d’une réponse évaluée. Sa durée facultative reste dans l’historique adulte, sans score de mots corrects par minute, classement ou compte à rebours. L’export JSON est au format version 2.
+
+Après `npm test` et `npm run build`, `npm run audit:release` vérifie les imports distribués, la couverture et les effectifs. `npm run audit:release -- --require-audio` échoue tant que la couverture audio enregistrée reste incomplète. La première commande seule ne déclare donc pas les audios prêts.
+
+**Restes identifiés** : fichiers de consonnes isolées et voix d’enfant enregistrée absents ; polices de confort non embarquées ; rendu navigateur, appareils, enfants et relecture professionnelle non vérifiés ici. Le catalogue de recette ne démontre pas une couverture pédagogique exhaustive du CP au CM2.
