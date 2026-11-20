@@ -1,5 +1,5 @@
 // Local recordings only. No pronunciation text or TTS fallback is accepted here.
-export const isRecordedAudioPath = value => typeof value==='string' && /^\/audio\/sounds\/fr-fr\/[a-z0-9-]+\.mp3$/.test(value);
+export const isRecordedAudioPath = value => typeof value==='string' && /^\/audio\/(?:sounds|voice)\/fr-fr\/[a-z0-9-]+\.mp3$/.test(value);
 export function createRecordedAudioPlayer(createAudio,timeoutMs=8000){
  let active=null,sequence=0,timer;
  function stop(){

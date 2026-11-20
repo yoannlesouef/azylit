@@ -1,3 +1,4 @@
+import {recordedSoundQuestions} from './recorded-content.js';
 import { extendContent } from './additional-content.js';
 import { beginnerBanks } from './foundations.js';
 export const heroes = [
@@ -81,6 +82,7 @@ banks[3].push(
   q('n4-16','Le fil de l’histoire','Que fait Yan à la fin ?','Yan lave une pomme. Il la coupe, puis la mange.',['Il lave la pomme','Il mange la pomme','Il coupe la pomme'],1,'Cherche l’action après « puis ». ',{ruler:true})
 );
 extendContent(beginnerBanks,banks);
+beginnerBanks[1].push(...recordedSoundQuestions);
 export const calibration = [beginnerBanks[0][0], beginnerBanks[1][0], beginnerBanks[2][0], { ...beginnerBanks[3][0], mechanic: undefined, text: 'pa + …', instruction: 'Écoute le mot. Choisis la syllabe qui manque.' }, banks[1][6]];
 export function questionsFor(level, stage = 0) { return level === 0 ? beginnerBanks[stage] : banks[level]; }
 export function questionById(id) { return [...beginnerBanks.flat(), ...banks.slice(1).flat()].find(question => question.id === id); }

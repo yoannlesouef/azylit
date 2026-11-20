@@ -1,6 +1,6 @@
 # Spécification Technique et Fonctionnelle — Azyl.it (`www.azyl.it`)
-**Version :** 1.9.0\
-**Dernière mise à jour :** 19 novembre 2026\
+**Version :** 1.9.1\
+**Dernière mise à jour :** 20 novembre 2026\
 **Domaine cible :** `https://www.azyl.it`  
 **Objet :** Application web éducative et inclusive d'apprentissage et d'entraînement à la lecture (compétences équivalentes CP à CM2), conçue selon les principes de la Conception Universelle de l'Apprentissage (CUA) pour les enfants avec ou sans troubles neurodéveloppementaux (TND).
 
@@ -463,3 +463,14 @@ Les aides sur lettres muettes et sons complexes reposent sur des segments édito
 Les 30 fiches adultes présentent objectifs, prérequis, exemples, erreurs possibles, aide et transfert. 29 objectifs peuvent préparer une prochaine mission de huit exercices ; consonant-sound reste indisponible, sans audios. La préparation conserve la mission actuelle, est consommée une seule fois et s’annule lors d’un changement manuel de niveau. Elle ne verrouille jamais Jouer, Découvrir, les aides ou le choix du niveau. Aucun suivi de classe ni compte nominatif n’est ajouté.
 
 Le plan conserve explicitement les dépendances audio et les validations non réalisées. La version est destinée à la recette, pas annoncée comme pédagogiquement exhaustive, cliniquement efficace ou certifiée conforme. Voir docs/recette-complete.md et docs/plan-amelioration.md.
+
+
+### Activation des ressources enregistrées — 20 novembre 2026
+
+Le build et le serveur de développement remplacent app/recorded-content.js par un module généré depuis les lots explicitement demandés dans content/audio-release.mjs. Les lots non activés restent absents du jeu. Un lot demandé exige ses fichiers, signatures, empreintes et déclarations de relecture ; toute incohérence fait échouer le build. La signature ne constitue pas un décodage MP3 ou un contrôle acoustique.
+
+Le pilote conserve f1-17 à f1-24 ; les 104 questions de couverture utilisent f1-201 à f1-304. Elles portent un objectif explicite, distinguant les mots en contexte des phonèmes. Les identifiants restent compatibles avec les sauvegardes et ne se heurtent pas aux jeux f1-101 à f1-168. Les anciens identifiants de pilote restent disponibles si les deux lots sont actifs.
+
+La bibliothèque vocale contient des prises locales validées avec texte normalisé, sans téléchargement externe à l’exécution. Les prises connues passent avant le TTS ; plusieurs prises alternent sans répétition immédiate quand c’est possible. L’arrêt, la navigation et la réécoute annulent les chaînes précédentes. La répétition d’une cible attend la fin de son fichier, puis la pause habituelle avant Bravo. Un fichier de mot/consigne peut se replier vers la voix française choisie ; un phonème enregistré conserve sa gestion d’erreur sans substitution TTS. La préécoute des réglages teste explicitement le repli de synthèse ; la vitesse choisie ne modifie pas les enregistrements.
+
+Les lots restent tous désactivés, faute de fichiers réels. Le build produit toujours 364 exercices et aucun nouveau clip ; la phase audio et les validations externes restent ouvertes. L’audit de livraison lit les modules distribués pour compter les ressources réellement publiées. Avant toute activation, actualiser également les effectifs et explications des pages publiques.

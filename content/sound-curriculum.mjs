@@ -85,10 +85,12 @@ export const pilotSoundExercises=[
  answer:reverse?1:0,instruction:'Écoute, puis touche la lettre.',audioMode:'recorded-sound',ttsFallback:null,live:false,
  help:['réécoute','exemple distinct','modèle après demande d’aide'],review:'pending'
 })));
-export function audioReadiness(entry){
+export function audioReadiness(entry,{directory='sounds'}={}){
  const audio=entry.audio,issues=[];
  if(entry.contentReview!=='approved')issues.push('contenu non relu');
- if(!audio.file || !/^\/audio\/sounds\/fr-fr\/[a-z0-9-]+\.mp3$/.test(audio.file))issues.push('fichier audio absent ou chemin invalide');
+ const pathPattern=directory==='voice'?/^\/audio\/voice\/fr-fr\/[a-z0-9-]+\.mp3$/:/^\/audio\/sounds\/fr-fr\/[a-z0-9-]+\.mp3$/;
+ if(!['sounds','voice'].includes(directory))issues.push('répertoire audio invalide');
+ if(!audio.file || !pathPattern.test(audio.file))issues.push('fichier audio absent ou chemin invalide');
  if(!audio.source || !audio.rights)issues.push('provenance ou droits non renseignés');
  if(!audio.reviewer || !audio.reviewedAt || !Number.isFinite(Date.parse(audio.reviewedAt)))issues.push('relecture non documentée');
  if(audio.locale!=='fr-FR')issues.push('langue non vérifiée');

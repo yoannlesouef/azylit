@@ -47,3 +47,10 @@ Le relecteur vérifie la pertinence des correspondances, des distracteurs, de l�
 5. Avant l’activation explicite : vérifier les fichiers réels sur les appareils cibles, l’autoplay après un geste, la réécoute, l’arrêt, le retour au jeu, le refus de lecture et l’absence de substitution TTS. Actualiser les effectifs publics si de nouveaux exercices sont livrés, puis observer l’usage avec les enfants.
 
 Le lecteur et ses interactions sont testés avec des simulations. Ces tests ne prouvent pas la prononciation, la qualité acoustique ni l’ergonomie sur appareil. Le pilote reste désactivé tant que les fichiers et validations manquent.
+
+
+## Activation raccordée — 20 novembre 2026
+
+L’export reste utile pour la revue. Après production et approbations réelles, actualiser les informations publiques, puis passer `pilot` à true dans content/audio-release.mjs. Le build et le serveur local contrôlent le lot et génèrent son module ; il n’est plus nécessaire de recopier ses questions dans le moteur. Toute activation incomplète échoue. Les sauvegardes gardent les identifiants f1-17 à f1-24 ; la couverture plus large est réservée à f1-201 à f1-304.
+
+Aucune activation n’a été faite : les fichiers sont toujours absents. Le nouveau mécanisme de bibliothèque vocale utilise content/voice-library.mjs pour les mots, consignes et félicitations ; il reste lui aussi vide et désactivé.

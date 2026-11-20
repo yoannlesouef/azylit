@@ -275,3 +275,16 @@ La [recette complète](docs/recette-complete.md) décrit les chemins pour essaye
 Après `npm test` et `npm run build`, `npm run audit:release` vérifie les imports distribués, la couverture et les effectifs. `npm run audit:release -- --require-audio` échoue tant que la couverture audio enregistrée reste incomplète. La première commande seule ne déclare donc pas les audios prêts.
 
 **Restes identifiés** : fichiers de consonnes isolées et voix d’enfant enregistrée absents ; polices de confort non embarquées ; rendu navigateur, appareils, enfants et relecture professionnelle non vérifiés ici. Le catalogue de recette ne démontre pas une couverture pédagogique exhaustive du CP au CM2.
+
+
+## Branchement des enregistrements — 20 novembre 2026
+
+Le build et le serveur de développement génèrent `recorded-content.js` à partir des lots explicitement activés dans `content/audio-release.mjs`. Les trois lots (`pilot`, `coverage`, `voice`) restent désactivés : aucun vrai fichier n’a été fourni. Un lot demandé mais incomplet fait échouer le build avant de supprimer la précédente distribution.
+
+Le pilote ajoute huit questions aux identifiants f1-17 à f1-24 ; la couverture complète utilise f1-201 à f1-304, sans collision avec les questions déjà livrées. Les fichiers et leurs relectures sont contrôlés avant de les intégrer. Les exercices phonémiques ne prennent jamais le nom d’une lettre comme repli TTS.
+
+`content/voice-library.mjs` reçoit les prises de voix approuvées, avec leur texte exact, chemin local `/audio/voice/fr-fr/…mp3`, provenance, droits, relecteur, date et empreinte SHA-256. Plusieurs prises de « Bravo ! » peuvent partager le même texte ; elles alternent quand plusieurs fichiers sont disponibles. La voix enregistrée passe avant la synthèse pour les textes couverts ; un fichier de consigne ou de mot défaillant permet un repli de synthèse. Ce repli n’existe pas pour les phonèmes isolés. La vitesse de synthèse ne déforme pas les MP3 : produire ces fichiers directement au rythme souhaité.
+
+Après production, relecture et écoute sur appareils : renseigner les métadonnées réelles, actualiser les effectifs et explications des pages publiques, activer le lot voulu, puis exécuter tests, build et audit de livraison avant le push. Les tests utilisent des octets synthétiques pour vérifier le mécanisme ; ils ne prouvent ni la jouabilité ni la qualité acoustique des fichiers.
+
+La distribution actuelle contient **zéro nouvel enregistrement**. Cette intégration termine le branchement technique, pas la production de la voix ni la couverture audio.

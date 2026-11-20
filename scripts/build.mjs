@@ -1,9 +1,12 @@
 import { cp, rm, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { generateRecordedContent } from './recorded-content.mjs';
 import { publicFiles } from './public-pages.mjs';
+const recordedModule=await generateRecordedContent();
 await rm('dist', {recursive:true,force:true});
 await mkdir('dist', { recursive: true });
 for (const file of await readdir('app')) await cp(`app/${file}`, `dist/${file}`, { recursive: true });
+await writeFile('dist/recorded-content.js',recordedModule);
 const generated = publicFiles(await readFile('app/index.html', 'utf8'));
 for (const [path, contents] of generated) {
   await mkdir(dirname(`dist/${path}`), { recursive: true });

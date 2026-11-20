@@ -1,10 +1,12 @@
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { generateRecordedContent } from './recorded-content.mjs';
 import { publicFiles } from './public-pages.mjs';
 import { createRequestHandler } from './http-handler.mjs';
 const root = resolve(process.argv[2] || 'app');
 const generated = process.argv[2] ? new Map() : publicFiles(await readFile(resolve(root, 'index.html'), 'utf8'));
+if(!process.argv[2])generated.set('recorded-content.js',await generateRecordedContent({root}));
 const server = http.createServer(createRequestHandler(root, generated));
 server.on('error', error => { console.error(`Serveur indisponible : ${error.message}`); process.exitCode = 1; });
 server.listen(Number(process.env.PORT || 5173), '127.0.0.1', () => console.log(`Azyl.it : http://127.0.0.1:${server.address().port}`));

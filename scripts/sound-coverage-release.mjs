@@ -40,8 +40,8 @@ export async function inspectSoundCoverage({curriculum=soundCurriculum,exercises
   }catch{fail('fichier introuvable');}
  }
  const ready=issues.length===0;
- return {ready,issues,files:[...files.values()],questions:ready?exercises.map(ex=>({
-  id:ex.id.replace('draft-','f1-'),type:ex.audioMode==='recorded-word'?'sound_context_word':'phoneme_sound',
+ return {ready,issues,files:[...files.values()],questions:ready?exercises.map((ex,index)=>({
+  id:`f1-${201+index}`,competency:ex.audioMode==='recorded-word'?'word-listen':['a','i','o','u','e-closed','e-open','schwa'].includes(ex.targetSoundId)?'vowel-sound':'consonant-sound',type:ex.audioMode==='recorded-word'?'sound_context_word':'phoneme_sound',
   foundation:true,visualAids:false,requiresAudio:true,text:'',instruction:ex.instruction,
   options:[...ex.choices],answer:ex.answer,hint:'Réécoute.',
   recordedAudio:ex.audioMode==='recorded-word'?ex.contextAudio.file:units.get(ex.targetSoundId).audio.file,

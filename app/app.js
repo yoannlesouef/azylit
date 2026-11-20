@@ -1,3 +1,6 @@
+import {recordedVoiceEntries} from './recorded-content.js';
+import {createVoiceRecordings} from './voice-recordings.js';
+import {wordById} from './discovery-data.js';
 import { competencies, primaryCompetency } from './competencies.js';
 import { teachingCatalogue, teachingCard } from './teacher-guide.js';
 import { createGameDemo, updateGameDemo, renderGameDemo } from './game-demo.js';
@@ -22,7 +25,9 @@ let discoveryAudioError = false, speechRequest = 0, praiseTimer, exerciseAudioEr
 let recordedTargetId = null, flashVisible=false, flashReady=false, flashTimer, flashRequest=0, readingStartedAt=null;
 function stopLearning(){clearTimeout(flashTimer);flashRequest++;flashVisible=false;readingStartedAt=null;}
 const recordedPlayer = createRecordedAudioPlayer(()=>new window.Audio());
-const canPlayQuestion = question => question.recordedAudio ? typeof window.Audio === 'function' : hasVoice;
+const voiceRecordings=createVoiceRecordings(recordedVoiceEntries);
+const canSpeakText=text=>hasVoice||(typeof window.Audio==='function'&&voiceRecordings.has(text));
+const canPlayQuestion = question => question.recordedAudio ? typeof window.Audio === 'function' : hasVoice || [exerciseSpeech(question),...(question.optionAudio?question.options:[])].every(canSpeakText);
 const hasVoice = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 let profile;
 let storageOK = true;
@@ -51,42 +56,44 @@ const icon = (name) => ({ audio: '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v
 function avatar(h = hero(), big = false, mood = 'neutral') { return companionArt(h, big, mood); }
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); storageOK = true; } catch { storageOK = false; } }
 const nextPraiseVariation = createPraiseVariation();
-function speak(text, after = null, onFinished = null) {
-  if (!profile.audio || !hasVoice) {onFinished?.();return;}
-  stopAudio();
-  const request = speechRequest;
-  const play = () => {
-    if (request !== speechRequest || !profile.audio) return;
-    const utterance = frenchUtterance(text, SpeechSynthesisUtterance, speechSynthesis.getVoices(),profile.settings);
-    if (/^Bravo(?:\s|[!,])/.test(text)) Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
-    if (after || onFinished) utterance.onend = () => {
-      if (request !== speechRequest) return;
-      onFinished?.();
-      if(after)praiseTimer = setTimeout(() => {
-        if (request === speechRequest) speak(after);
-      }, 450);
-    };
-    utterance.onerror = event => {
-      if (request !== speechRequest || ['canceled','interrupted'].includes(event.error)) return;
-      if (screen === 'discover') {
-        discoveryAudioError = true;
-        if (discoveryState.quiz) discoveryState.quiz.heard = false;
-      } else if (['mission','calibrate'].includes(screen) && !feedback?.correct) exerciseAudioError = true;
-      else return;
-      clearTimeout(praiseTimer);
-      onFinished?.();
-      render(); announce('La voix n’est pas disponible pour le moment. Touche le haut-parleur pour réessayer.');
-    };
-    speechSynthesis.speak(utterance);
+function speak(text, after = null, onFinished = null, useRecordings = true) {
+  if (!profile.audio) {onFinished?.();return;}
+  const file=useRecordings&&typeof window.Audio==='function'?voiceRecordings.next(text):null;
+  if(!hasVoice&&!file){onFinished?.();return;}
+  stopAudio();const request=speechRequest;let settled=false;
+  const finish=()=>{
+    if(request!==speechRequest||settled)return;settled=true;onFinished?.();
+    if(after)praiseTimer=setTimeout(()=>{if(request===speechRequest)speak(after);},450);
   };
-  if (frenchVoices(speechSynthesis.getVoices()).length || !speechSynthesis.addEventListener) { play(); return; }
-  // Browsers often expose their higher-quality voices just after the first interaction.
-  let timeout;
-  const ready = () => { if (!frenchVoices(speechSynthesis.getVoices()).length) return; voiceWaitCleanup?.(); play(); };
-  voiceWaitCleanup = () => { clearTimeout(timeout); speechSynthesis.removeEventListener('voiceschanged', ready); voiceWaitCleanup = null; };
-  speechSynthesis.addEventListener('voiceschanged', ready);
-  timeout = setTimeout(() => { voiceWaitCleanup?.(); play(); }, 700);
+  const failure=event=>{
+    if(request!==speechRequest||settled||['canceled','interrupted'].includes(event.error))return;
+    settled=true;
+    if(screen==='discover'){discoveryAudioError=true;if(discoveryState.quiz)discoveryState.quiz.heard=false;}
+    else if(['mission','calibrate'].includes(screen)&&!feedback?.correct)exerciseAudioError=true;
+    else return;
+    clearTimeout(praiseTimer);onFinished?.();render();announce('La voix n’est pas disponible pour le moment. Touche le haut-parleur pour réessayer.');
+  };
+  const play=()=>{
+    if(request!==speechRequest||!profile.audio)return;
+    const utterance=frenchUtterance(text,SpeechSynthesisUtterance,speechSynthesis.getVoices(),profile.settings);
+    if(/^Bravo(?:\s|[!,])/.test(text))Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
+    if(after||onFinished)utterance.onend=finish;
+    utterance.onerror=failure;speechSynthesis.speak(utterance);
+  };
+  const synthesize=()=>{
+    if(request!==speechRequest)return;
+    if(!hasVoice){failure({error:'recording-unavailable'});return;}
+    if(frenchVoices(speechSynthesis.getVoices()).length||!speechSynthesis.addEventListener){play();return;}
+    let timeout;
+    const ready=()=>{if(!frenchVoices(speechSynthesis.getVoices()).length)return;voiceWaitCleanup?.();play();};
+    voiceWaitCleanup=()=>{clearTimeout(timeout);speechSynthesis.removeEventListener('voiceschanged',ready);voiceWaitCleanup=null;};
+    speechSynthesis.addEventListener('voiceschanged',ready);
+    timeout=setTimeout(()=>{voiceWaitCleanup?.();play();},700);
+  };
+  if(file){recordedPlayer.play(file,{onEnd:finish,onError:synthesize});return;}
+  synthesize();
 }
+
 function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 function playExerciseTarget(question,after=null,onFinished=null){
   if(question.mechanic==='reading'&&profile.session?.helpUsed)return speak(question.text,after);
@@ -149,14 +156,15 @@ function render(focus = false) {
 function home() {
   return `<main id="main" tabindex="-1" class="child-home hero-home"><h1>À toi de jouer !</h1><section class="hero-launch" aria-label="Jouer avec mon compagnon"><div class="launch-companion" aria-hidden="true">${avatar(hero(), true)}<span class="launch-spark">✦</span></div>${playButton(profile.onboarded ? profile.session ? 'resume' : 'start' : 'onboard', profile.session ? 'Continuer' : 'Jouer')}<button class="discover-entry" data-action="discover" aria-label="Découvrir les lettres, les syllabes et les mots">${picture('stories')}<span>Découvrir</span></button></section><nav class="home-adjustments" aria-label="Changer mon compagnon ou mon jeu"><button class="home-adjustment companion-adjustment" data-action="change-hero" aria-label="Changer de compagnon. ${hero().name}, ${hero().title.toLowerCase()}, est choisi."><span class="adjustment-portrait" aria-hidden="true">${avatar()}<span class="adjustment-swap">↔</span></span><span>Mon compagnon</span></button><button class="home-adjustment game-adjustment" data-action="difficulty" aria-label="Mon niveau. ${complexityLabel()}"><span class="game-choice-symbol" aria-hidden="true">${picture('game-choice')}</span><span class="adjustment-label">Mon niveau</span><span class="current-complexity">${complexityLabel()}</span></button></nav></main>`;
 }
-function discoveryView() { return renderDiscovery(discoveryState,hasVoice && !discoveryAudioError,hero()); }
+function discoveryView() { return renderDiscovery(discoveryState,(hasVoice||(typeof window.Audio==='function'&&recordedVoiceEntries.length>0)) && !discoveryAudioError,hero()); }
 function dispatchDiscovery(button) {
   if (button.dataset.command === 'syllable-initial') stopAudio();
-  const result = updateDiscovery(discoveryState,button.dataset.command,button.dataset.value,Math.random,{canSpeak:hasVoice,canHear:hasVoice && profile.audio});
+  const result = updateDiscovery(discoveryState,button.dataset.command,button.dataset.value,Math.random,{canSpeak:canSpeakText(wordById(discoveryState.quiz?.target)?.text),canHear:hasVoice && profile.audio});
   discoveryState = result.state;
   if (result.exit) return actions.home();
-  if (result.listen && hasVoice && !profile.audio) { profile.audio = true; save(); }
-  if (result.speech) discoveryAudioError = false;
+  if (result.listen && canSpeakText(result.speech) && !profile.audio) { profile.audio = true; save(); }
+  if (result.speech) discoveryAudioError = !canSpeakText(result.speech);
+  if(button.dataset.command==='quiz-listen'&&!canSpeakText(wordById(discoveryState.quiz?.target)?.text))discoveryAudioError=true;
   render(result.pageChanged);
   if (result.speech) speak(result.speech);
   if (button.dataset.command === 'syllable-initial') {
@@ -363,7 +371,7 @@ function settings() {
   const settingsLabels = { choiceLimit:'Nombre de choix pour les prochaines missions',flashDuration:'Durée de présentation du mot', size: 'Taille du texte', spacing: 'Espace entre les lettres', line: 'Espace entre les lignes', font: 'Police de lecture', syllables: 'Syllabes en couleurs', ruler: 'Guide de lecture',reducedMotion:'Réduire les mouvements',silentLetters:'Lettres muettes grisées',complexSounds:'Sons complexes soulignés',measureReading:'Mesure facultative du temps de lecture' };
   const options = (key, values, labels) => values.map((value, i) => `<button class="visual-setting ${profile.settings[key] === value ? 'selected' : ''}" data-setting-key="${key}" data-setting-value="${value}" aria-label="${settingsLabels[key]} : ${labels[i]}" aria-pressed="${profile.settings[key] === value}">${['choiceLimit','flashDuration'].includes(key) ? `<span>${key==='flashDuration'?(value===0?'∞':value/1000+' s'):value}</span>` : key === 'size' ? `<span style="font-size:${value}px">A</span>` : key === 'spacing' ? `<span style="letter-spacing:${value}em">abc</span>` : key === 'line' ? `<span style="line-height:${value}">abc<br>abc</span>` : `<span style="font-family:${value},sans-serif">Aa</span><small>${escape(labels[i])}</small>`}</button>`).join('');
   dialog.innerHTML = `<div class="dialog-heading"><h2 id="settings-title">À ta façon</h2><button class="tool" id="settings-voice" aria-label="Réécouter comment choisir les réglages">${icon('audio')}</button><button class="tool" data-close-settings aria-label="Fermer les réglages">✕</button></div><div class="visual-setting-row"><span aria-hidden="true">A ↔ A</span><div>${options('size', [22,28,34], ['normal','grand','très grand'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">a ↔ b</span><div>${options('spacing', [.05,.08,.12], ['confort','aéré','très aéré'])}</div></div><div class="settings-preview reading" id="settings-preview">À mon rythme.</div><button class="next-picture settings-done" data-close-settings aria-label="Valider et reprendre le jeu">✓</button><details class="adult-settings"><summary>Pour les adultes · Réglages avancés</summary>${renderVoiceSettings(profile.settings,hasVoice?speechSynthesis.getVoices():[],hasVoice)}<div class="visual-setting-row"><span aria-hidden="true">↕</span><div>${options('line', [1.6,1.8,2], ['confort','aéré','très aéré'])}</div></div><div class="visual-setting-row"><span aria-hidden="true">Aa</span><div>${options('font', ['sans-serif','Verdana','Arial','Andika','Lexend','OpenDyslexic'], ['sans empattement','Verdana','Arial','Andika si installée','Lexend si installée','OpenDyslexic si installée'])}</div></div><p>Andika, Lexend et OpenDyslexic utilisent la police installée sur cet appareil ; sinon une police sans empattement prend le relais.</p><div class="visual-setting-row"><span>Choix</span><div>${options('choiceLimit',[2,3,4],['deux','trois','quatre'])}</div></div><p>Le nombre de cartes de réponse s’applique à la prochaine mission. Certaines tâches nécessitent au moins trois propositions ; les constructions gardent leurs pièces nécessaires.</p><div class="visual-setting-row"><span>Lecture flash</span><div>${options('flashDuration',[0,1000,2000,4000],['sans minuterie','une seconde','deux secondes','quatre secondes'])}</div></div><div class="visual-toggles">${['syllables','ruler','silentLetters','complexSounds','reducedMotion','measureReading'].map(key => `<button class="visual-setting toggle-setting ${profile.settings[key] ? 'selected' : ''}" data-setting-key="${key}" data-setting-value="${!profile.settings[key]}" aria-label="${settingsLabels[key]}" aria-pressed="${profile.settings[key]}">${key === 'syllables' ? '<span class="syllable-0">ba</span><span class="syllable-1">teau</span>' : `<span>${escape(settingsLabels[key])}</span>`}<span aria-hidden="true">${profile.settings[key] ? '✓' : '○'}</span></button>`).join('')}</div><p>Les réglages sont sauvegardés uniquement sur cet appareil. La voix dépend du navigateur. Une navigation autonome sans lecture nécessite une voix française disponible et le son activé.</p><button class="secondary" id="teacher-button">Préparer une séance et lire les fiches</button><button class="secondary" id="history-button">Historique des exercices</button><button class="secondary" id="privacy-button">Gérer les données locales</button></details>`;
-  bindVoiceSettings(dialog,profile.settings,hasVoice?speechSynthesis:null,{save,preview:()=>{ if(hasVoice){profile.audio=true;save();} speak('Bonjour ! On prend notre temps. À toi de jouer.'); }});
+  bindVoiceSettings(dialog,profile.settings,hasVoice?speechSynthesis:null,{save,preview:()=>{ if(hasVoice){profile.audio=true;save();} speak('Bonjour ! On prend notre temps. À toi de jouer.',null,null,false); }});
   const preview = () => { const el = dialog.querySelector('#settings-preview'); el.style.fontFamily = profile.settings.font+', sans-serif'; el.style.fontSize = profile.settings.size + 'px'; el.style.letterSpacing = profile.settings.spacing + 'em'; el.style.lineHeight = profile.settings.line; };
   dialog.querySelectorAll('[data-setting-key]').forEach(button => button.onclick = () => {
     const key = button.dataset.settingKey, raw = button.dataset.settingValue;
