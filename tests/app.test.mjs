@@ -58,8 +58,10 @@ test('une mission complète sauvegarde les réussites accompagnées et attribue 
   await import('../app/app.js');
   const click = (action, data = {}) => listeners.click({ target: { closest: () => ({ dataset: { action, ...data } }) }, preventDefault() {} });
   assert.match(app.innerHTML, /À toi de jouer/);
-  click('onboard'); click('confirm-settings'); click('finish-setup');
+  assert.match(app.innerHTML, /class="play-button" data-action="start"/);
+  click('start');
   assert.match(app.innerHTML, /exercise-progress/);
+  assert.equal(JSON.parse(memory.get(STORAGE_KEY)).onboarded, true);
   assert.match(app.innerHTML, /exercise-companion-guide/);
   assert.match(app.innerHTML, /companion-neutral/);
   assert.ok(!app.innerHTML.includes('class="stimulus-audio'));
