@@ -11,7 +11,7 @@ const initialSyllables = initial => {
 export function createDiscoveryState() { return { page:'hub', syllableInitial:'m', alphabetSet:'base', wordPage:0, syllableId:null, lastLetter:null, lastWord:null, quiz:null, quizReturn:'hub' }; }
 export function discoveryGuidance(state) {
   return ({
-    hub:'Choisis une image pour découvrir et écouter.',
+    hub:'Choisis une image pour apprendre et écouter.',
     letters:'Touche une lettre pour entendre son nom. Les cartes é et ç ouvrent les autres lettres.',
     syllables:'Touche une syllabe. La petite flèche ouvre les autres syllabes.',
 
@@ -87,7 +87,7 @@ function renderSyllableSwitcher(selected) {
 }
 export function renderDiscovery(state, voiceAvailable = true, companion = null) {
   let content = '';
-  if (state.page === 'hub') content = `${title('Découvrir')}<div class="discovery-modes">${button('letters','','Écouter toutes les lettres','<span class="mode-letters" aria-hidden="true">A a</span><span>Lettres</span>','discovery-mode')}${button('families','','Écouter les syllabes et les mots','<span class="mode-letters" aria-hidden="true">ma</span><span>Syllabes</span>','discovery-mode')}${button('quiz','','Écouter un mot et le retrouver',`${picture('sound')}<span>Écoute et trouve</span>`,'discovery-mode')}</div>`;
+  if (state.page === 'hub') content = `${title('Apprendre')}<div class="discovery-modes">${button('letters','','Écouter toutes les lettres','<span class="mode-letters" aria-hidden="true">A a</span><span>Lettres</span>','discovery-mode')}${button('families','','Écouter les syllabes et les mots','<span class="mode-letters" aria-hidden="true">ma</span><span>Syllabes</span>','discovery-mode')}${button('quiz','','Écouter un mot et le retrouver',`${picture('sound')}<span>Écoute et trouve</span>`,'discovery-mode')}</div>`;
   if (state.page === 'letters') {
     const letters = state.alphabetSet === 'extra' ? extraLetters : alphabet;
     content = `${title('Les lettres')}<div class="discovery-tabs">${button('alphabet-set','base','Les vingt-six lettres de l’alphabet','A → Z','discovery-tab',`aria-pressed="${state.alphabetSet === 'base'}"`)}${button('alphabet-set','extra','Les lettres accentuées et les autres signes','é · ç · œ','discovery-tab',`aria-pressed="${state.alphabetSet === 'extra'}"`)}</div><div class="discovery-letter-grid">${letters.map(letter => button('letter',letter.id,`Écouter le nom de la lettre ${letter.lower}`,`<span>${letter.upper}</span><span>${letter.lower}</span>`,`discovery-letter ${state.lastLetter === letter.id ? 'listened' : ''}`,`aria-pressed="${state.lastLetter === letter.id}"`)).join('')}</div>`;

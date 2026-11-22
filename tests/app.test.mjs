@@ -170,7 +170,8 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   };
   await import('../app/app.js?voice-navigation');
   const click = (action, data = {}) => listeners.click({ target: { closest: () => ({ dataset: { action, ...data } }) }, preventDefault() {} });
-  assert.equal((app.innerHTML.match(/class="play-button"/g) || []).length, 1);
+  assert.equal((app.innerHTML.match(/play-button/g) || []).length, 2);
+  assert.match(app.innerHTML, /data-action="discover"[^>]*aria-label="Apprendre[^>]*>[^]*<span>Apprendre<\/span>/);
   assert.ok(!app.innerHTML.includes('LE MONDE DES POSSIBLES'));
   assert.match(app.innerHTML, /Mon niveau/);
   assert.match(app.innerHTML, /1 · Lettres/);
@@ -178,7 +179,7 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.match(app.innerHTML, /class="teachers-top-link"/);
   assert.match(app.innerHTML, /adult-header-links/);
   assert.match(app.innerHTML, /Parents<\/a>.*Enseignants<\/a>.*AESH<\/a>.*ULIS<\/a>/);
-  click('guide'); assert.match(spoken.at(-1), /grand triangle/);
+  click('guide'); assert.match(spoken.at(-1), /Jouer.*Apprendre/);
   assert.equal(utterances.at(-1).lang, 'fr-FR');
   assert.equal(utterances.at(-1).voice.lang, 'fr-FR');
   click('onboard'); assert.match(spoken.at(-1), /Choisis ton compagnon/);

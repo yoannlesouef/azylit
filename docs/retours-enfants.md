@@ -23,3 +23,18 @@ Observer les demandes de réécoute, la compréhension de la cible et le confort
 ### Dépendances restantes
 
 Les enregistrements de l/r/f/j, leur relecture, les écoutes sur appareils et l’intégration progressive restent ouverts. Une voix enfantine identique sur tous les appareils nécessite des fichiers produits avec un service adapté ou une voix enregistrée, puis une vérification des prononciations et des droits. Un service de création vocale a été proposé, mais n’est pas connecté au moment de cette livraison.
+
+## 22 novembre 2026 — Accueil en paysage et accès à l’apprentissage
+
+Retours transmis par le porteur du projet : l’accueil demande de faire défiler la page sur certains téléphones et tablettes en paysage ; « Découvrir » paraît moins important que « Jouer » et son nom est moins clair.
+
+### Modifications livrées
+
+- « Découvrir » devient « Apprendre » sur l’accueil et dans le titre du parcours libre.
+- Jouer/Continuer et Apprendre utilisent désormais deux boutons principaux de même taille et de même poids visuel.
+- Sur les écrans de faible hauteur en paysage, l’en-tête, le compagnon, les deux actions principales, le choix du compagnon et le niveau adoptent une composition compacte conçue pour rester dans la hauteur visible.
+- La navigation adulte reste visible sur les paysages assez larges ; elle est masquée sur les téléphones en paysage afin de préserver les actions enfant, et réapparaît en portrait.
+
+### Recette à réaliser
+
+Vérifier sans défilement l’accueil sur les appareils réellement utilisés, au minimum en 667 × 375, 844 × 390 et 1024 × 600 pixels, ainsi qu’avec les zones sûres du navigateur. Contrôler la lisibilité, les cibles tactiles, l’accès à Jouer, Apprendre, Mon compagnon et Mon niveau, puis faire pivoter l’appareil dans les deux sens. Cette adaptation logicielle ne remplace pas une nouvelle observation avec les enfants.

@@ -144,7 +144,7 @@ Avant toute implémentation, consulter ces deux documents. Les technologies pré
 
 ## Informations pour les parents et référencement
 
-L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Les liens Parents et Enseignants sont regroupés dans une navigation adulte discrète de l’accueil, séparée des commandes audio et des réglages. La phrase près du logo ouvre aussi l’espace parents. Ces liens disparaissent pendant les exercices, Découvrir et les choix du compagnon ou du niveau.
+L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Les liens Parents et Enseignants sont regroupés dans une navigation adulte discrète de l’accueil, séparée des commandes audio et des réglages. La phrase près du logo ouvre aussi l’espace parents. Ces liens disparaissent pendant les exercices, Apprendre et les choix du compagnon ou du niveau.
 
 Les pages sont générées en HTML complet, sans JavaScript nécessaire, à partir de `content/parents.mjs`. La construction ajoute titres et descriptions distincts, URL canoniques, métadonnées de partage, données structurées cohérentes avec la FAQ visible, sitemap et robots.txt. Le serveur de développement expose les mêmes pages.
 
@@ -162,7 +162,7 @@ SITE_URL=https://preview.exemple.fr INDEXABLE=false npm run build
 
 Les tests de référencement vérifient les pages, les liens, les métadonnées et le JSON-LD. La publication sur le domaine, le contrôle des réponses de l’hébergeur, la validation visuelle, la configuration des outils propriétaires des moteurs et le suivi d’indexation restent nécessaires. Le GEO repose sur des contenus accessibles, clairs et vérifiables ; aucune indexation, citation IA ou position n’est garantie.
 
-Le bouton « Mon niveau » indique le niveau sélectionné. La page « Choisis ton niveau » affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon et le grand bouton Jouer restent prioritaires sur l’accueil.
+Le bouton « Mon niveau » indique le niveau sélectionné. La page « Choisis ton niveau » affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon reste au centre de l’accueil. Les boutons Jouer et Apprendre ont la même importance visuelle ; le niveau et le changement de compagnon restent secondaires. Sur téléphone et tablette en paysage, une composition compacte garde ces quatre actions visibles sans défilement vertical sur les hauteurs courantes.
 
 
 ## Jeux de cartes débutants
@@ -191,9 +191,9 @@ L’enfant choisit son niveau puis touche Jouer, ou Continuer si une mission est
 
 Dans les premiers exercices, l’audio prononce uniquement la cible : nom de la lettre, voyelle, syllabe ou mot à assembler. Le lancement, la réécoute et le retour après erreur n’ajoutent aucune phrase autour de cette cible. Les aides visuelles et le compagnon restent disponibles. Les exercices avancés conservent leurs consignes nécessaires.
 
-## Découvrir les lettres, les syllabes et les mots
+## Apprendre les lettres, les syllabes et les mots
 
-Le bouton **Découvrir** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes immédiatement visibles (ma, mi…), avec les autres séries dépliables au même endroit et des mots à écouter. Les lignes montrent des exemples de syllabes plutôt que des initiales isolées ; « on · ou » reste accessible sur sa propre ligne. Les 124 entrées de syllabes proposées renvoient à 697 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
+Le bouton **Apprendre** de l’accueil ouvre un parcours libre distinct de **Jouer** : alphabet sonore (26 lettres et 18 formes complémentaires), des syllabes immédiatement visibles (ma, mi…), avec les autres séries dépliables au même endroit et des mots à écouter. Les lignes montrent des exemples de syllabes plutôt que des initiales isolées ; « on · ou » reste accessible sur sa propre ligne. Les 124 entrées de syllabes proposées renvoient à 697 mots distincts, avec au moins six mots par syllabe ; le segment associé est surligné. Une flèche permet de revenir à chaque étape.
 
 **Écoute et trouve** propose un mot à entendre et trois mots écrits parmi lesquels le retrouver. Réécoute, essais sans pénalité, coche et nouveau mot sont disponibles. Cette exploration ne change ni la mission conservée ni l’historique des exercices.
 
@@ -212,9 +212,9 @@ Le bouton Retour du navigateur et les flèches internes retrouvent les écrans p
 
 Depuis un exercice, le bouton inférieur de « Choisis ton niveau » affiche un triangle et revient directement au jeu : le même niveau conserve la mission et sa position ; un niveau différent lance une nouvelle mission au niveau choisi. Depuis l’accueil, ce bouton conserve la maison et revient à l’accueil.
 
-Le catalogue proposé dans Découvrir est limité aux syllabes disposant d’au moins six exemples distincts et explicitement associés. Les anciennes entrées sans suffisamment d’exemples ont été retirées de la liste enfant. Les mots restent affichés six par six ; certains sons ont plusieurs graphies, par exemple « noi » et « noy » dans « noyau », avec le segment réellement écrit surligné. Les exemples restent à valider pédagogiquement.
+Le catalogue proposé dans Apprendre est limité aux syllabes disposant d’au moins six exemples distincts et explicitement associés. Les anciennes entrées sans suffisamment d’exemples ont été retirées de la liste enfant. Les mots restent affichés six par six ; certains sons ont plusieurs graphies, par exemple « noi » et « noy » dans « noyau », avec le segment réellement écrit surligné. Les exemples restent à valider pédagogiquement.
 
-Dans Découvrir, les cartes composées d’une seule lettre sont réservées à la rubrique Lettres. La liste Syllabes présente uniquement des cartes d’au moins deux lettres, chacune accompagnée d’au moins six mots. Ce choix organise la navigation enfant ; il ne constitue pas une définition linguistique de la syllabe.
+Dans Apprendre, les cartes composées d’une seule lettre sont réservées à la rubrique Lettres. La liste Syllabes présente uniquement des cartes d’au moins deux lettres, chacune accompagnée d’au moins six mots. Ce choix organise la navigation enfant ; il ne constitue pas une définition linguistique de la syllabe.
 
 Après une réussite dans les exercices de fondation, la voix répète la cible (lettre, syllabe ou mot), attend 450 ms après la fin de sa prononciation, puis dit « Bravo ! ». Cela vaut aussi pour la dernière réponse de la mission. Une navigation, une nouvelle écoute ou la coupure du son annule la félicitation en attente. Les consignes de lancement et de réessai restent limitées à la cible seule.
 
@@ -242,11 +242,11 @@ Le lecteur des futurs sons enregistrés est intégré : MP3 local, pas de repli 
 
 Les pages `/ulis/` et `/aesh/` présentent les usages d’entraînement et d’accompagnement, les problèmes d’accès auxquels les commandes cherchent à répondre et les limites du prototype. Elles citent des ressources institutionnelles, disposent de FAQ visibles et structurées et sont reliées aux autres pages adultes. Aucun mode handicap, compte professionnel ou nouvel accès ne s’ajoute au parcours enfant. Dans les exercices, maison et pause sont à gauche ; son et réglages restent à droite, les réglages étant toujours la dernière commande.
 
-Naya et Pico possèdent les mêmes états discrets de guidage, d’encouragement et de joie que les autres compagnons, y compris dans Découvrir. Le choix affiche les six cartes, sur trois colonnes sur grand écran et deux sur petit écran, et conserve la mission et les résultats existants.
+Naya et Pico possèdent les mêmes états discrets de guidage, d’encouragement et de joie que les autres compagnons, y compris dans Apprendre. Le choix affiche les six cartes, sur trois colonnes sur grand écran et deux sur petit écran, et conserve la mission et les résultats existants.
 
 La [couverture complète préparée](docs/couverture-premiers-sons.md) contient 104 essais non activés : sons et mots en contexte, avec suivi des 26 lettres. `npm run audit:sound-coverage` détaille les manques ; `npm run audit:sound-coverage -- --export` refuse de produire un dossier de revue si un audio ou une relecture manque. Aucun export ne modifie la banque du jeu. Les enregistrements restent à produire avant de finaliser la couverture jouable.
 
-Dans Découvrir/Syllabes, l’écran d’index est supprimé : une série est ouverte d’emblée et une seule peut être dépliée à la fois. Toucher une syllabe l’écoute et affiche ses six mots. Sur la page des mots, les syllabes de la même série restent accessibles pour changer de cible en un clic, sans retour intermédiaire. Le haut-parleur identifie la syllabe sélectionnée et permet de la réécouter. Le retour retrouve la dernière syllabe et sa ligne ouverte, y compris avec l’historique du navigateur.
+Dans Apprendre/Syllabes, l’écran d’index est supprimé : une série est ouverte d’emblée et une seule peut être dépliée à la fois. Toucher une syllabe l’écoute et affiche ses six mots. Sur la page des mots, les syllabes de la même série restent accessibles pour changer de cible en un clic, sans retour intermédiaire. Le haut-parleur identifie la syllabe sélectionnée et permet de la réécouter. Le retour retrouve la dernière syllabe et sa ligne ouverte, y compris avec l’historique du navigateur.
 
 
 ## Voix ralentie et bilan adulte — 19 novembre 2026

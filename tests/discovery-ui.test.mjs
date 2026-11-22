@@ -19,10 +19,10 @@ function fixture(voice=true,hero='pirate',withHistory=false) {
  globalThis.document={documentElement:{style:{setProperty(){}}},body:{dataset:{}},addEventListener(){},querySelector(s){return s==='#app'?app:s==='dialog[open]'?null:{focus(){focused.push(s);},scrollIntoView(options){scrolled.push({selector:s,...options});}};}};
  return {app,spoken,focused,scrolled,entries,saved:()=>JSON.parse(memory.get(STORAGE_KEY)),click(action,command,value){listeners.click({target:{closest:()=>({dataset:{action,command,value}})},preventDefault(){}});}};
 }
-test('Découvrir écoute les cartes et conserve la mission ; une panne audio désactive les réponses',async()=>{
+test('Apprendre écoute les cartes et conserve la mission ; une panne audio désactive les réponses',async()=>{
  const f=fixture();await import('../app/app.js?discovery-controller');const original=f.saved();
  assert.match(f.app.innerHTML,/data-action="discover"/);
- f.click('discover');f.click('discover-action','letters');f.click('discover-action','letter','b');
+ f.click('discover');assert.match(f.app.innerHTML,/<h1>Apprendre<\/h1>/);f.click('discover-action','letters');f.click('discover-action','letter','b');
  assert.equal(f.spoken.at(-1).text,'bé');
  f.click('discover-action','families');f.click('discover-action','syllable','ma');f.click('discover-action','word','w-maman');
  assert.equal(f.spoken.at(-1).text,'maman');
@@ -62,7 +62,7 @@ test('les six mots de la syllabe ma sont tous écoutables, y compris les nouveau
  }
 });
 
-test('les nouveaux compagnons encouragent aussi dans Découvrir',async()=>{
+test('les nouveaux compagnons encouragent aussi dans Apprendre',async()=>{
  for(const [id,name] of [['mermaid','Naya'],['dragon','Pico']]){
   const f=fixture(true,id);await import('../app/app.js?discovery-new-companion-'+id);
   f.click('discover');f.click('discover-action','quiz');
@@ -77,7 +77,7 @@ test('les nouveaux compagnons encouragent aussi dans Découvrir',async()=>{
 });
 
 
-test('deux clics depuis Découvrir donnent les mots ; les syllabes changent en un clic sans toucher la mission',async()=>{
+test('deux clics depuis Apprendre donnent les mots ; les syllabes changent en un clic sans toucher la mission',async()=>{
  const f=fixture();await import('../app/app.js?discovery-short-path');const original=f.saved();
  f.click('discover');f.click('discover-action','families');
  assert.match(f.app.innerHTML,/data-command="syllable" data-value="ma"/);

@@ -1879,7 +1879,7 @@ svg.nav-picture {
   .home-game-preview .preview-syllable { flex-wrap: wrap; justify-content: center; }
 }
 
-/* Parents can discover explanations outside play; the child keeps a single main action. */
+/* Adult explanations stay quiet while the child gets two equally prominent activities. */
 .parent-purpose { text-decoration: none; }
 a.parent-purpose:hover { text-decoration: underline; text-underline-offset: 4px; }
 .parents-entry { text-align: center; padding: 8px 20px 24px; font-size: 12px; color: var(--muted); }
@@ -1888,10 +1888,11 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .hero-home { padding-top: 6px; padding-bottom: 16px; }
 .hero-home h1 { font-size: clamp(28px,4vw,38px); }
 .hero-launch { display: flex; flex-direction: column; align-items: center; margin-top: 8px; }
+.home-primary-actions { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
 .launch-companion { position: relative; width: 240px; height: 228px; border-radius: 48%; background: var(--pale); }
 .launch-companion .hero-art { width: 225px; height: 244px; margin: 0 auto; }
 .launch-spark { position: absolute; right: 6px; top: 32px; color: #bd8e3c; font-size: 30px; }
-.hero-launch .play-button { min-width: 240px; min-height: 108px; margin-top: 20px; border-radius: 32px; box-shadow: 0 7px 0 #00000018, 0 12px 30px #243d3b12; font-size: 22px; }
+.hero-launch .play-button { min-width: 210px; min-height: 108px; margin-top: 0; border-radius: 32px; box-shadow: 0 7px 0 #00000018, 0 12px 30px #243d3b12; font-size: 22px; }
 .hero-launch .play-button svg.nav-picture { width: 68px; height: 68px; }
 .home-adjustments { display: flex; justify-content: center; align-items: stretch; gap: 24px; margin: 32px auto 0; max-width: 440px; padding-top: 20px; border-top: 1px solid var(--line); }
 .home-adjustment { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 7px; min-width: 140px; min-height: 106px; background: #f0efe8; border: 1px solid #e1e4d9; border-radius: 22px; padding: 8px 14px 12px; font-size: 12px; color: #53695b; }
@@ -1906,7 +1907,8 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
   .hero-home h1 { font-size: 28px; margin-top: 2px; }
   .launch-companion { width: 200px; height: 185px; }
   .launch-companion .hero-art { width: 185px; height: 202px; }
-  .hero-launch .play-button { min-width: 228px; min-height: 96px; margin-top: 18px; padding: 8px 28px 14px; }
+  .home-primary-actions { width: 100%; max-width: 430px; gap: 14px; margin-top: 18px; }
+  .hero-launch .play-button { min-width: 0; min-height: 96px; flex: 1; padding: 8px 18px 14px; }
   .hero-launch .play-button svg.nav-picture { width: 58px; height: 58px; }
   .home-adjustments { margin-top: 24px; padding-top: 16px; gap: 20px; max-width: 360px; }
   .home-adjustment { min-width: 0; flex: 1; max-width: 160px; min-height: 96px; padding: 6px 10px 10px; font-size: 12px; }
@@ -2062,8 +2064,6 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 @media(max-width:700px) { .group-library .activity-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 
 /* Free exploration is separate from the mission launcher and keeps the same visual landmarks. */
-.discover-entry { display: inline-flex; align-items: center; justify-content: center; gap: 14px; min-height: 68px; min-width: 210px; margin-top: 18px; padding: 12px 24px; border: 2px solid #d8dfce; border-radius: 24px; background: #fffefa; color: var(--accent); font-size: 17px; font-weight: 700; box-shadow: none; }
-.discover-entry svg.nav-picture { width: 35px; height: 35px; }
 .discovery-screen { max-width: 980px; margin: auto; padding: 12px 32px 40px; text-align: center; }
 .discovery-screen .complexity-heading { max-width: 780px; margin-bottom: 28px; }
 .discovery-screen .complexity-heading h1 { font-size: clamp(23px,3.5vw,32px); }
@@ -2106,9 +2106,8 @@ body:not([data-screen="home"]) > .parents-entry { display: none; }
 .quiet-retry { color: var(--muted); font-size: 30px; }
 .discovery-voice-notice { max-width: 650px; margin: 25px auto 0; padding: 16px; border-radius: 15px; background: #f5ead3; color: #785a2f; font-size: 13px; line-height: 1.8; }
 @media(max-width:700px) {
-  .hero-launch:has(.discover-entry) .launch-companion { height: 165px; width: 180px; }
-  .hero-launch:has(.discover-entry) .launch-companion .hero-art { width: 170px; height: 182px; }
-  .discover-entry { min-width: 210px; min-height: 64px; margin-top: 16px; font-size: 16px; }
+  .hero-launch:has(.learn-button) .launch-companion { height: 165px; width: 180px; }
+  .hero-launch:has(.learn-button) .launch-companion .hero-art { width: 170px; height: 182px; }
   .discovery-screen { padding: 8px 20px 28px; }
   .discovery-screen .complexity-heading { gap: 12px; margin-bottom: 24px; }
   .discovery-screen .complexity-heading h1 { font-size: 24px; }
@@ -2311,6 +2310,45 @@ body[data-reduced-motion="true"] *,body[data-reduced-motion="true"] *::before,bo
 .story-placed { text-align:left;font-size:20px;line-height:1.7;padding-left:28px; }
 body[data-reduced-motion="true"] button:hover { transform:none!important; }
 @media(max-width:420px) { .visual-setting-row { flex-wrap:wrap; } .adult-settings .visual-toggles { grid-template-columns:1fr; } }
+
+/* Short landscape screens keep every home action visible without vertical scrolling. */
+@media (orientation: landscape) and (max-height:700px) {
+  body[data-screen="home"] #app { min-height:100dvh; display:flex; flex-direction:column; }
+  body[data-screen="home"] .child-header.home-header {
+    display:grid;
+    grid-template-columns:auto minmax(0,1fr) auto;
+    gap:8px 14px;
+    width:100%;
+    padding:6px 16px;
+    padding-left:max(16px,env(safe-area-inset-left));
+    padding-right:max(16px,env(safe-area-inset-right));
+  }
+  body[data-screen="home"] .child-header.home-header .brand-with-purpose { display:block; grid-column:1; grid-row:1; }
+  body[data-screen="home"] .child-header.home-header .parent-purpose { display:none; }
+  body[data-screen="home"] .child-header.home-header .adult-header-links { grid-column:2; grid-row:1; justify-self:center; gap:12px; flex-wrap:nowrap; }
+  body[data-screen="home"] .child-header.home-header .adult-header-links a { min-height:40px; padding:4px 0; font-size:11px; }
+  body[data-screen="home"] .child-header.home-header .controls { grid-column:3; grid-row:1; display:flex; justify-self:end; gap:8px; }
+  body[data-screen="home"] .child-header.home-header .tool { min-width:48px; min-height:48px; width:48px; height:48px; padding:10px; }
+  body[data-screen="home"] .hero-home { display:grid; grid-template-rows:auto 1fr auto; flex:1; width:100%; padding:0 16px 8px; padding-right:max(16px,env(safe-area-inset-right)); padding-bottom:max(8px,env(safe-area-inset-bottom)); padding-left:max(16px,env(safe-area-inset-left)); }
+  body[data-screen="home"] .hero-home h1 { align-self:center; margin:0; font-size:26px; line-height:1.1; }
+  body[data-screen="home"] .hero-launch { display:grid; grid-template-columns:145px auto; justify-content:center; align-items:center; gap:16px; margin:0; }
+  body[data-screen="home"] .launch-companion { width:145px; height:138px; }
+  body[data-screen="home"] .launch-companion .hero-art { width:138px; height:150px; }
+  body[data-screen="home"] .launch-spark { top:18px; font-size:22px; }
+  body[data-screen="home"] .home-primary-actions { width:auto; max-width:none; margin:0; gap:12px; }
+  body[data-screen="home"] .hero-launch .play-button { flex:none; width:clamp(126px,19vw,176px); min-width:0; min-height:88px; padding:6px 12px 10px; border-radius:25px; font-size:18px; }
+  body[data-screen="home"] .hero-launch .play-button svg.nav-picture { width:50px; height:50px; }
+  body[data-screen="home"] .home-adjustments { width:min(100%,340px); margin:4px auto 0; padding-top:5px; gap:10px; }
+  body[data-screen="home"] .home-adjustment { min-height:66px; max-width:160px; padding:4px 10px 6px; gap:2px; }
+  body[data-screen="home"] .adjustment-portrait, body[data-screen="home"] .game-choice-symbol { height:38px; }
+  body[data-screen="home"] .adjustment-portrait .hero-art { width:46px; height:50px; }
+  body[data-screen="home"] .game-choice-symbol svg.nav-picture { width:43px; height:43px; }
+  body[data-screen="home"] .current-complexity { line-height:1.2; }
+}
+@media (orientation: landscape) and (max-height:700px) and (max-width:760px) {
+  body[data-screen="home"] .child-header.home-header .adult-header-links { display:none; }
+}
+
 .answers .option-listen { min-width:64px;min-height:64px; }
 .story-card { display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:14px;align-items:center; }
 .story-listen { min-width:64px;min-height:64px;font-size:27px; }
