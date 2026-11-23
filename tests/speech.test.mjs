@@ -44,3 +44,9 @@ test('le rythme choisi persiste sans changer la hauteur de la cible ni accélér
   const praise=createPraiseVariation(()=>0)(rate);assert.ok(praise.rate>=rate*0.98);assert.ok(praise.rate<=Math.min(0.95,rate*1.06));
  }
 });
+test('la synthèse distingue fu de fou sans modifier les mots qui contiennent fu', () => {
+  class Utterance { constructor(text) { this.text = text; } }
+  assert.equal(frenchUtterance('fu', Utterance, []).text, 'fut');
+  assert.equal(frenchUtterance('fou', Utterance, []).text, 'fou');
+  assert.equal(frenchUtterance('fumée', Utterance, []).text, 'fumée');
+});

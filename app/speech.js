@@ -25,7 +25,9 @@ export function preferredFrenchVoice(voices, preferred = '') {
 }
 // Slow the delivery without imitating a child by artificially raising the pitch.
 export function frenchUtterance(text, Utterance, voices, settings = {}) {
-  const utterance = new Utterance(text);
+  // A French word with a silent final t anchors /fy/ for engines that read isolated fu as /fu/.
+  const spokenText = typeof text === 'string' && text.trim().toLowerCase() === 'fu' ? 'fut' : text;
+  const utterance = new Utterance(spokenText);
   utterance.lang = SPEECH_LANGUAGE;
   utterance.rate = speechRate(settings.speechRate);
   utterance.pitch = 1;
