@@ -26,7 +26,7 @@ export function preferredFrenchVoice(voices, preferred = '') {
 // Slow the delivery without imitating a child by artificially raising the pitch.
 export function frenchUtterance(text, Utterance, voices, settings = {}) {
   // Familiar French homophones anchor isolated syllables for speech engines.
-  const syllablePronunciations = { fu:'fut', to:'tôt', lo:'lot' };
+  const syllablePronunciations = { fu:'fut', to:'tôt', lo:'lot', pa:'pas' };
   const key = typeof text === 'string' ? text.trim().toLowerCase() : '';
   const spokenText = Object.hasOwn(syllablePronunciations, key) ? syllablePronunciations[key] : text;
   const utterance = new Utterance(spokenText);

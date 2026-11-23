@@ -55,4 +55,6 @@ test('la synthèse distingue fu de fou sans modifier les mots qui contiennent fu
   assert.equal(frenchUtterance('lo', Utterance, []).text, 'lot');
   assert.equal(frenchUtterance(' LO ', Utterance, []).text, 'lot');
   assert.equal(frenchUtterance('loto', Utterance, []).text, 'loto');
+  assert.equal(frenchUtterance('pa', Utterance, []).text, 'pas');
+  assert.equal(frenchUtterance('papa', Utterance, []).text, 'papa');
 });
