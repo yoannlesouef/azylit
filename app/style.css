@@ -2359,6 +2359,21 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .syllable-count-exercise .answers { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:580px; }
 .syllable-count-exercise .answer { justify-content:center; text-align:center; }
 .words-phrases-exercise .answer { justify-content:center; text-align:center; }
+body[data-screen="home"] #app { min-height:100dvh; display:flex; flex-direction:column; }
+body[data-screen="home"] .hero-home { flex:1; width:100%; }
+body[data-screen="home"] .child-header.home-header { width:100%; grid-template-columns:minmax(0,1fr) auto; }
+body[data-screen="home"] .child-header.home-header .brand-with-purpose { display:flex; grid-column:1; grid-row:1; }
+body[data-screen="home"] .child-header.home-header .controls { grid-column:2; grid-row:1; }
+.home-footer { display:block; width:100%; max-width:1000px; margin:0 auto; padding:8px 16px; border:0; }
+.home-footer .adult-header-links { justify-content:center; flex-wrap:wrap; gap:8px 24px; }
+.home-footer .adult-header-links a { min-height:44px; font-size:12px; }
+@media(max-width:700px) {
+  body[data-screen="home"] .child-header.home-header { gap:8px; }
+  body[data-screen="home"] .child-header.home-header .brand-with-purpose { min-width:0; }
+  body[data-screen="home"] .child-header.home-header .parent-purpose { font-size:11px; }
+  body[data-screen="home"] .child-header.home-header .controls { gap:8px; }
+  body[data-screen="home"] .child-header.home-header .tool { min-width:44px; min-height:44px; padding:10px; }
+}
 .brand .brand-logo { display:block; width:180px; height:54px; object-fit:contain; }
 @media(max-width:700px) { .brand .brand-logo { width:120px; height:36px; } }
 @media(orientation:landscape) and (max-height:700px) { .brand .brand-logo { width:120px; height:36px; } }

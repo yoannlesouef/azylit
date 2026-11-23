@@ -144,7 +144,7 @@ Avant toute implémentation, consulter ces deux documents. Les technologies pré
 
 ## Informations pour les parents et référencement
 
-L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Les liens Parents et Enseignants sont regroupés dans une navigation adulte discrète de l’accueil, séparée des commandes audio et des réglages. La phrase près du logo ouvre aussi l’espace parents. Ces liens disparaissent pendant les exercices, Apprendre et les choix du compagnon ou du niveau.
+L’espace `/parents/` comprend la présentation du projet, la démarche, l’accessibilité, les données locales et une FAQ. Les liens Parents, Enseignants, AESH et ULIS sont regroupés en bas de l’accueil, dans un pied de page discret. L’en-tête conserve le logo et les commandes audio et de réglages. La phrase près du logo ouvre aussi l’espace parents. Ces liens disparaissent pendant les exercices, Apprendre et les choix du compagnon ou du niveau.
 
 Les pages sont générées en HTML complet, sans JavaScript nécessaire, à partir de `content/parents.mjs`. La construction ajoute titres et descriptions distincts, URL canoniques, métadonnées de partage, données structurées cohérentes avec la FAQ visible, sitemap et robots.txt. Le serveur de développement expose les mêmes pages.
 

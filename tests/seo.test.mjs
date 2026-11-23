@@ -93,7 +93,7 @@ test('la page enseignants est indexable, distingue le prévu du livré et prése
  const app=await readFile(new URL('../app/app.js',import.meta.url),'utf8');
  assert.ok(files.get('index.html').includes('href="/enseignants/"'));
  assert.ok(files.get('index.html').includes('class="adult-header-links"'));
- assert.ok(app.includes('const adultLinks = isHome ?'));
+ assert.ok(files.get('index.html').includes('<footer class="home-footer"><nav class="adult-header-links"'));
 });
 
 test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>{
