@@ -152,7 +152,7 @@ test('le grand haut-parleur est commun aux sons, syllabes et mots à assembler',
 
 test('pause et reprise conservent la place et l’aide sans attribuer de résultat',async()=>{
  const f=fixture(profileAt(2));await import('../app/app.js?pause-and-demo');f.click('resume');
- assert.match(f.app.innerHTML,/data-action="pause"/);
+ assert.doesNotMatch(f.app.innerHTML,/data-action="pause"/);
  f.click('help');assert.match(f.dialog.innerHTML,/Un exemple/);
  const target=f.dialog.innerHTML.match(/demo-target[^>]*[^]*?<span>([^<]+)<\/span>/)[1];
  assert.notEqual(target,'ma');assert.notEqual(target,'mi');
@@ -196,11 +196,11 @@ test('le fichier fonctionne sans TTS, et une panne offre une nouvelle écoute sa
  }finally{beginnerBanks[1][0]=original;}
 });
 
-test('dans les exercices les réglages restent tout à droite, la pause reste avec la maison',async()=>{
+test('dans les exercices la maison reste à gauche et les réglages tout à droite, sans bouton pause',async()=>{
  const f=fixture(profileAt(2));await import('../app/app.js?stable-exercise-header');
  const actions=()=>[...f.app.innerHTML.split('</header>')[0].matchAll(/data-action="([^"]+)"/g)].map(match=>match[1]);
  assert.equal(actions().at(-1),'settings');f.click('resume');
- assert.deepEqual(actions(),['quit','pause','audio','settings']);
+ assert.deepEqual(actions(),['quit','audio','settings']);
  f.click('pause');assert.equal(actions().at(-1),'settings');assert.ok(!actions().includes('pause'));
 });
 
