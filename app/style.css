@@ -2355,6 +2355,7 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .syllable-count-instruction { text-align:center; font-size:clamp(20px,3vw,26px); font-weight:700; line-height:1.4; margin:0 auto 12px; }
 .syllable-count-exercise .answers { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:580px; }
 .syllable-count-exercise .answer { justify-content:center; text-align:center; }
+.words-phrases-exercise .answer { justify-content:center; text-align:center; }
 @media(max-width:700px) {
   .syllable-count-exercise .answers { grid-template-columns:1fr; max-width:360px; }
 }
