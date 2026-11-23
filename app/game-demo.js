@@ -11,7 +11,7 @@ export function createGameDemo(source){
  else if(mechanic==='pairs')Object.assign(base,{mechanic:'pairs',pairs:['x','y'],pairOrder:[1,0],instruction:'Un exemple. Choisis une lettre, puis retrouve la même.'});
  else if(mechanic==='reading')Object.assign(base,{mechanic:'reading',text:'Le chat dort.',instruction:'Un exemple. Le triangle commence la lecture. Le carré la termine.'});
  else if(mechanic==='flash')Object.assign(base,{mechanic:'flash',text:'ici',options:['ici','là'],instruction:'Un exemple. Regarde ici. Touche l’œil, puis retrouve ici.'});
- else if(source.type==='syllable_count')Object.assign(base,{options:['● ●','● ● ●'],answer:1,instruction:'Un exemple. Caméra a trois morceaux. Touche les trois ronds.'});
+ else if(source.type==='syllable_count')Object.assign(base,{options:['2 syllabes','3 syllabes'],answer:1,instruction:'Un exemple. Dans caméra, on entend ca, mé, ra. Il y a trois syllabes. Touche 3 syllabes.'});
  else if(source.type==='phoneme_count')Object.assign(base,{options:['● ●','● ● ●'],answer:0,instruction:'Un exemple. Dans rue, il y a deux petits sons. Touche les deux ronds.'});
  else if(source.type==='sound_odd')Object.assign(base,{options:['bateau','bébé','tortue'],answer:2,instruction:'Un exemple. Bateau et bébé commencent pareil. Tortue commence autrement.'});
  return {question:base,interaction:interactionFor(base),correct:false,rejected:[],started:false,hidden:false};

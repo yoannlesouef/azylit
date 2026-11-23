@@ -2352,6 +2352,7 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .answers .option-listen { min-width:64px;min-height:64px; }
 .story-card { display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:14px;align-items:center; }
 .story-listen { min-width:64px;min-height:64px;font-size:27px; }
+.syllable-count-instruction { text-align:center; font-size:clamp(20px,3vw,26px); font-weight:700; line-height:1.4; margin:0 auto 12px; }
 
 /* Two illustrated doors: warm challenges and a cool listening book. */
 .home-primary-actions .play-button {
