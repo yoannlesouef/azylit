@@ -2332,8 +2332,8 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
   body[data-screen="home"] .hero-home { display:grid; grid-template-rows:auto 1fr auto; flex:1; width:100%; padding:0 16px 8px; padding-right:max(16px,env(safe-area-inset-right)); padding-bottom:max(8px,env(safe-area-inset-bottom)); padding-left:max(16px,env(safe-area-inset-left)); }
   body[data-screen="home"] .hero-home h1 { align-self:center; margin:0; font-size:26px; line-height:1.1; }
   body[data-screen="home"] .hero-launch { display:grid; grid-template-columns:145px auto; justify-content:center; align-items:center; gap:16px; margin:0; }
-  body[data-screen="home"] .launch-companion { width:145px; height:138px; }
-  body[data-screen="home"] .launch-companion .hero-art { width:138px; height:150px; }
+  body[data-screen="home"] .hero-launch:has(.learn-button) .launch-companion { width:145px; height:138px; }
+  body[data-screen="home"] .hero-launch:has(.learn-button) .launch-companion .hero-art { width:138px; height:150px; }
   body[data-screen="home"] .launch-spark { top:18px; font-size:22px; }
   body[data-screen="home"] .home-primary-actions { width:auto; max-width:none; margin:0; gap:12px; }
   body[data-screen="home"] .hero-launch .play-button { flex:none; width:clamp(126px,19vw,176px); min-width:0; min-height:88px; padding:6px 12px 10px; border-radius:25px; font-size:18px; }
@@ -2352,3 +2352,40 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .answers .option-listen { min-width:64px;min-height:64px; }
 .story-card { display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:14px;align-items:center; }
 .story-listen { min-width:64px;min-height:64px;font-size:27px; }
+
+/* Two illustrated doors: warm challenges and a cool listening book. */
+.home-primary-actions .play-button {
+  --activity-edge:#d68b54;
+  color:#713b20;
+  background:linear-gradient(155deg,#fff0c9,#ffdab5);
+  border:2px solid #f3c086;
+  border-bottom:4px solid var(--activity-edge);
+  box-shadow:0 5px 0 var(--activity-edge),0 10px 18px #75421b12;
+  gap:3px;
+  padding:8px 18px 12px;
+  transition:transform .18s,box-shadow .18s;
+}
+.home-primary-actions .learn-button {
+  --activity-edge:#68aaa6;
+  color:#165b60;
+  background:linear-gradient(155deg,#e4f7ee,#c7e9e5);
+  border-color:#a0d2c8;
+  border-bottom-color:var(--activity-edge);
+}
+.home-primary-actions .play-button:hover { filter:none; transform:translateY(-3px) rotate(-1deg); }
+.home-primary-actions .learn-button:hover { transform:translateY(-3px) rotate(1deg); }
+.home-primary-actions .play-button:active { transform:translateY(4px); box-shadow:0 1px 0 var(--activity-edge); }
+.home-primary-actions .play-button > span { font-size:24px; line-height:1.15; font-weight:800; }
+.home-primary-actions .play-button small { font-size:12px; line-height:1.4; font-weight:600; white-space:nowrap; }
+.home-primary-actions svg.activity-art { width:108px; height:86px; fill:none; stroke:none; overflow:visible; }
+@media(max-width:700px) {
+  .home-primary-actions .play-button > span { font-size:22px; }
+  .home-primary-actions .play-button small { font-size:10px; }
+  .home-primary-actions svg.activity-art { width:90px; height:72px; }
+}
+@media (orientation:landscape) and (max-height:700px) {
+  body[data-screen="home"] .home-primary-actions .play-button { padding:5px 9px 9px; }
+  .home-primary-actions svg.activity-art { width:76px; height:61px; }
+  .home-primary-actions .play-button > span { font-size:20px; }
+  .home-primary-actions .play-button small { font-size:10px; }
+}
