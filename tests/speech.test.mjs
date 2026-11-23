@@ -49,4 +49,7 @@ test('la synthèse distingue fu de fou sans modifier les mots qui contiennent fu
   assert.equal(frenchUtterance('fu', Utterance, []).text, 'fut');
   assert.equal(frenchUtterance('fou', Utterance, []).text, 'fou');
   assert.equal(frenchUtterance('fumée', Utterance, []).text, 'fumée');
+  assert.equal(frenchUtterance('to', Utterance, []).text, 'tôt');
+  assert.equal(frenchUtterance('tou', Utterance, []).text, 'tou');
+  assert.equal(frenchUtterance('tomate', Utterance, []).text, 'tomate');
 });
