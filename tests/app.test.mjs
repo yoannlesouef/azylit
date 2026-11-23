@@ -173,8 +173,8 @@ test('la navigation illustrée guide sans lecture et la maison arrête le jeu im
   assert.equal((app.innerHTML.match(/play-button/g) || []).length, 2);
   assert.match(app.innerHTML, /data-action="discover"[^>]*aria-label="Apprendre[^>]*>[^]*<span>Apprendre<\/span>/);
   assert.ok(!app.innerHTML.includes('LE MONDE DES POSSIBLES'));
-  assert.match(app.innerHTML, /Mon niveau/);
-  assert.match(app.innerHTML, /1 · Lettres/);
+  assert.doesNotMatch(app.innerHTML, /home-adjustments|data-action="difficulty"/);
+  assert.match(app.innerHTML, /class="launch-companion" data-action="change-hero"/);
   assert.match(app.innerHTML, /class="parents-top-link"/);
   assert.match(app.innerHTML, /class="teachers-top-link"/);
   assert.match(app.innerHTML, /adult-header-links/);

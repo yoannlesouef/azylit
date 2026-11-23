@@ -33,7 +33,7 @@ Le positionnement existe dans le code mais n’est pas proposé dans le parcours
 
 | Élément | Règle produit |
 | --- | --- |
-| Accueil | Jouer ou Continuer et Apprendre sont deux actions principales de même importance. Compagnon et niveau sont secondaires. En paysage, elles restent visibles sans défilement sur les hauteurs courantes. |
+| Accueil | Jouer ou Continuer et Apprendre sont deux actions principales de même importance. Le compagnon visible est directement cliquable pour en changer ; le niveau se modifie pendant le jeu. Aucun bouton supplémentaire en bas. En paysage, les actions restent visibles sans défilement sur les hauteurs courantes. |
 | Navigation | Maison, retour, haut-parleur et aide gardent un rôle et un emplacement cohérents. Aucun groupe ni numéro de groupe. |
 | Exercice | Une tâche à la fois. Deux choix pour commencer ; davantage seulement si la compétence le justifie et après observation. |
 | Consignes | Une action courte, rejouable. Une démonstration visuelle pour une mécanique nouvelle, sans long tutoriel obligatoire. |

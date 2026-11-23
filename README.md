@@ -162,7 +162,7 @@ SITE_URL=https://preview.exemple.fr INDEXABLE=false npm run build
 
 Les tests de référencement vérifient les pages, les liens, les métadonnées et le JSON-LD. La publication sur le domaine, le contrôle des réponses de l’hébergeur, la validation visuelle, la configuration des outils propriétaires des moteurs et le suivi d’indexation restent nécessaires. Le GEO repose sur des contenus accessibles, clairs et vérifiables ; aucune indexation, citation IA ou position n’est garantie.
 
-Le bouton « Mon niveau » indique le niveau sélectionné. La page « Choisis ton niveau » affiche ce niveau, un aperçu et une flèche de retour à l’écran précédent, sans démarrer une mission. Le compagnon reste au centre de l’accueil. Les boutons Jouer et Apprendre ont la même importance visuelle ; le niveau et le changement de compagnon restent secondaires. Sur téléphone et tablette en paysage, une composition compacte garde ces quatre actions visibles sans défilement vertical sur les hauteurs courantes.
+L’accueil propose deux actions principales de même importance : Jouer et Apprendre. Toucher directement le compagnon illustré, repéré par une petite double flèche, permet d’en changer. Aucun bouton de réglage du compagnon ou du niveau n’est ajouté en dessous. Le choix du niveau reste accessible pendant les exercices ; sa page affiche le niveau sélectionné, un aperçu et un retour au jeu. Une composition compacte adapte l’accueil au paysage sur téléphone et tablette.
 
 
 ## Jeux de cartes débutants
