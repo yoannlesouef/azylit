@@ -2356,6 +2356,9 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .syllable-count-exercise .answers { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:580px; }
 .syllable-count-exercise .answer { justify-content:center; text-align:center; }
 .words-phrases-exercise .answer { justify-content:center; text-align:center; }
+.brand .brand-logo { display:block; width:180px; height:54px; object-fit:contain; }
+@media(max-width:700px) { .brand .brand-logo { width:120px; height:36px; } }
+@media(orientation:landscape) and (max-height:700px) { .brand .brand-logo { width:120px; height:36px; } }
 @media(max-width:700px) {
   .syllable-count-exercise .answers { grid-template-columns:1fr; max-width:360px; }
 }
