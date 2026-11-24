@@ -99,7 +99,7 @@ export const pages = [
 // Shared adult pages live at the root; preserve existing bookmarks and search URLs.
 export const legacyRedirects = Object.fromEntries(['demarche','accessibilite','donnees','questions'].flatMap(name=>[[`/parents/${name}`,`/${name}/`],[`/parents/${name}/`,`/${name}/`]]));
 pages.push(...inclusionPages);
-const adultNavigationOrder=['/parents/','/enseignants/','/aesh/','/ulis/','/demarche/','/accessibilite/','/donnees/','/questions/'];
-const navigationLabels=['Parents','Enseignants','AESH','ULIS','Notre démarche','Accessibilité','Données','Questions'];
+const adultNavigationOrder=['/demarche/','/parents/','/enseignants/','/aesh/','/ulis/','/accessibilite/','/donnees/','/questions/'];
+const navigationLabels=['Notre démarche','Parents','Enseignants','AESH','ULIS','Accessibilité','Données','Questions'];
 for(const page of pages)page.navLabel=navigationLabels[adultNavigationOrder.indexOf(page.path)];
 pages.sort((a,b)=>adultNavigationOrder.indexOf(a.path)-adultNavigationOrder.indexOf(b.path));

@@ -97,11 +97,11 @@ test('la page enseignants est indexable, distingue le prévu du livré et prése
 });
 
 test('navigation adulte ordonnée et URLs canoniques communes à la racine',()=>{
- assert.deepEqual(pages.map(page=>page.path),['/parents/','/enseignants/','/aesh/','/ulis/','/demarche/','/accessibilite/','/donnees/','/questions/']);
+ assert.deepEqual(pages.map(page=>page.path),['/demarche/','/parents/','/enseignants/','/aesh/','/ulis/','/accessibilite/','/donnees/','/questions/']);
  const html=files.get('parents/index.html');
  const navigation=html.match(/<nav class="parent-nav"[^>]*>([^]*?)<\/nav>/)[1];
  assert.ok(navigation.indexOf('/parents/')<navigation.indexOf('/enseignants/'));
- assert.ok(navigation.indexOf('/enseignants/')<navigation.indexOf('/demarche/'));
+ assert.ok(navigation.indexOf('/demarche/')<navigation.indexOf('/parents/'));
  for(const name of ['demarche','accessibilite','donnees','questions']){
   const page=files.get(name+'/index.html');
   assert.ok(page.includes(`rel="canonical" href="https://www.azyl.it/${name}/"`));
