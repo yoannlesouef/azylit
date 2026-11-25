@@ -11,7 +11,7 @@ const initialSyllables = initial => {
 export function createDiscoveryState() { return { page:'hub', syllableInitial:'m', alphabetSet:'base', wordPage:0, syllableId:null, lastLetter:null, lastWord:null, quiz:null, quizReturn:'hub' }; }
 export function discoveryGuidance(state) {
   return ({
-    hub:'Choisis une image pour apprendre et écouter.',
+    hub:'Touche Lettres pour écouter les lettres, Syllabes pour écouter les syllabes et leurs mots, ou Écoute et trouve pour retrouver un mot entendu.',
     letters:'Touche une lettre pour entendre son nom. Les cartes é et ç ouvrent les autres lettres.',
     syllables:'Touche une syllabe. La petite flèche ouvre les autres syllabes.',
 
