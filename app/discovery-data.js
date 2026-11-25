@@ -1,4 +1,5 @@
 import { syllableExamples } from './syllable-examples.js';
+import { wordEmoji } from './word-pictures.js';
 // Letter names are deliberately distinct from isolated consonant phonemes.
 const letterNames = ['a','bé','cé','dé','e','effe','gé','ache','i','ji','ka','elle','emme','enne','o','pé','Q','erre','esse','té','u','vé','double vé','iks','i grec','zède'];
 export const alphabet = Array.from('abcdefghijklmnopqrstuvwxyz', (letter,index) => ({ id:letter, lower:letter, upper:letter.toUpperCase(), speech:letterNames[index] }));
@@ -890,7 +891,7 @@ export const discoveryWords = entries.flatMap(([notation,emoji]) => {
   const text = parts.map(part => part.text).join('');
   if (seenWords.has(text)) return [];
   seenWords.add(text);
-  return [{ id:'w-' + text, text, emoji, parts }];
+  return [{ id:'w-' + text, text, emoji:wordEmoji(text,emoji), parts }];
 });
 const soundOverrides = { chi:'chie', lis:'lit', til:'ti', let:'lait', vet:'vais', rêt:'raie', mat:'ma', can:'quand', bam:'banc', chan:'champ', gan:'gant', ter:'té', ler:'lé', mer:'mé', noi:'noix', tion:'sion', man:'m’en', pin:'pain', tin:'tain', din:'daim', sin:'saint', lon:'l’on', pis:'pi', bot:'bo', lot:'lo', lat:'la', gat:'ga', ssin:'saint', gi:'ji', ge:'je', xy:'gzi', lli:'li', quai:'ké', che:'cheu', teau:'tôt', reau:'rot', deau:'dos', meau:'mot', phar:'far', zage:'zage', zine:'zine', zette:'zette', qua:'ka', zé:'zé' };
 const syllables = new Map();
@@ -905,7 +906,7 @@ for (const {syllable,examples} of syllableExamples) {
     const text = before + target + after;
     let word = discoveryWords.find(item => item.text === text);
     if (!word) {
-      word = {id:'w-' + text,text,emoji:'🔊',parts:[{text,syllable:null}]};
+      word = {id:'w-' + text,text,emoji:wordEmoji(text),parts:[{text,syllable:null}]};
       discoveryWords.push(word);
     }
     const parts = [

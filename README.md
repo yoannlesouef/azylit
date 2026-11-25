@@ -216,6 +216,8 @@ Le catalogue proposé dans Apprendre est limité aux syllabes disposant d’au m
 
 Dans Apprendre, les cartes composées d’une seule lettre sont réservées à la rubrique Lettres. La liste Syllabes présente uniquement des cartes d’au moins deux lettres, chacune accompagnée d’au moins six mots. Ce choix organise la navigation enfant ; il ne constitue pas une définition linguistique de la syllabe.
 
+Les images des mots sont associées au mot entier dans `app/word-pictures.js`. Les dessins dédiés de `app/word-pictures.svg` remplacent notamment les approximations de radis, bonnet, coussin, moulin, boudin, culotte, pyjama, tuba, bureau et béret. Les mots sans représentation suffisamment claire gardent un haut-parleur, qui indique l’écoute et ne prétend pas illustrer leur sens. Les images et la compréhension des mots restent à vérifier avec les enfants ; tous les mots du catalogue ne sont pas illustrés.
+
 Après une réussite dans les exercices de fondation, la voix répète la cible (lettre, syllabe ou mot), attend 450 ms après la fin de sa prononciation, puis dit « Bravo ! ». Cela vaut aussi pour la dernière réponse de la mission. Une navigation, une nouvelle écoute ou la coupure du son annule la félicitation en attente. Les consignes de lancement et de réessai restent limitées à la cible seule.
 
 Dans les exercices de choix d’une syllabe, la réécoute utilise un grand pictogramme haut-parleur au côté du compagnon discret. L’ensemble forme un seul bouton, sans dépendre de la lecture d’un libellé et sans ajouter une seconde commande au même niveau.

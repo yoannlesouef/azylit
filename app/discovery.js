@@ -1,5 +1,6 @@
 import { alphabet, extraLetters, discoverySyllables, wordsForSyllable, wordById, syllableById, makeListeningRound } from './discovery-data.js';
 import { companionArt, navigationPicture as picture } from './companions.js';
+import { wordPicture } from './word-pictures.js';
 const escape = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
 const initialFor = syllable => syllable.text.match(/^[^aàâäeéèêëiîïoôöuùûüyœæ]+/i)?.[0] || '*';
 export const syllableInitials = ['*', ...new Set(discoverySyllables.map(initialFor).filter(key=>key!=='*'))].sort((a,b)=>a==='*'?-1:b==='*'?1:a.localeCompare(b,'fr'));
@@ -104,7 +105,7 @@ export function renderDiscovery(state, voiceAvailable = true, companion = null, 
   }
   if (state.page === 'words') {
     const syllable = syllableById(state.syllableId), words = wordsForSyllable(state.syllableId);
-    content = `${title('Les mots')}${renderSyllableSwitcher(syllable)}<div class="discovery-word-grid">${words.slice(state.wordPage*6,(state.wordPage+1)*6).map(word => button('word',word.id,`Écouter le mot ${word.text}`,`<span class="word-picture" aria-hidden="true">${word.emoji}</span><span>${word.parts.map(part => part.syllable === state.syllableId ? `<mark>${escape(part.text)}</mark>` : escape(part.text)).join('')}</span>`,`discovery-word ${state.lastWord === word.id ? 'listened' : ''}`,`aria-pressed="${state.lastWord === word.id}"`)).join('')}</div>${pager('word-page',state.wordPage,words.length)}${button('quiz','','Jouer à écouter et retrouver un mot',`${picture('sound')}<span>Écoute et trouve</span>`,'discovery-listening-link')}`;
+    content = `${title('Les mots')}${renderSyllableSwitcher(syllable)}<div class="discovery-word-grid">${words.slice(state.wordPage*6,(state.wordPage+1)*6).map(word => button('word',word.id,`Écouter le mot ${word.text}`,`<span class="word-picture" aria-hidden="true">${wordPicture(word)}</span><span>${word.parts.map(part => part.syllable === state.syllableId ? `<mark>${escape(part.text)}</mark>` : escape(part.text)).join('')}</span>`,`discovery-word ${state.lastWord === word.id ? 'listened' : ''}`,`aria-pressed="${state.lastWord === word.id}"`)).join('')}</div>${pager('word-page',state.wordPage,words.length)}${button('quiz','','Jouer à écouter et retrouver un mot',`${picture('sound')}<span>Écoute et trouve</span>`,'discovery-listening-link')}`;
   }
   if (state.page === 'quiz') {
     const quiz = state.quiz;
