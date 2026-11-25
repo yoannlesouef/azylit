@@ -24,6 +24,9 @@ test('Apprendre écoute les cartes et conserve la mission ; une panne audio dés
  assert.match(f.app.innerHTML,/data-action="discover"/);
  f.click('discover');assert.match(f.app.innerHTML,/<h1>Apprendre<\/h1>/);f.click('discover-action','letters');f.click('discover-action','letter','b');
  assert.equal(f.spoken.at(-1).text,'bé');
+ f.click('discover-action','letter','q');
+ assert.equal(f.spoken.at(-1).text,'Q');
+ assert.equal(f.spoken.at(-1).lang,'fr-FR');
  f.click('discover-action','families');f.click('discover-action','syllable','ma');f.click('discover-action','word','w-maman');
  assert.equal(f.spoken.at(-1).text,'maman');
  f.click('discover-action','quiz');f.spoken.at(-1).onerror({error:'language-unavailable'});

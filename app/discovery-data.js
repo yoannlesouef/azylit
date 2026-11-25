@@ -1,6 +1,6 @@
 import { syllableExamples } from './syllable-examples.js';
 // Letter names are deliberately distinct from isolated consonant phonemes.
-const letterNames = ['a','bé','cé','dé','e','effe','gé','ache','i','ji','ka','elle','emme','enne','o','pé','ku','erre','esse','té','u','vé','double vé','iks','i grec','zède'];
+const letterNames = ['a','bé','cé','dé','e','effe','gé','ache','i','ji','ka','elle','emme','enne','o','pé','Q','erre','esse','té','u','vé','double vé','iks','i grec','zède'];
 export const alphabet = Array.from('abcdefghijklmnopqrstuvwxyz', (letter,index) => ({ id:letter, lower:letter, upper:letter.toUpperCase(), speech:letterNames[index] }));
 export const extraLetters = [
   ['à','a'],['â','â'],['ä','a'],['é','é'],['è','è'],['ê','è'],['ë','e'],['î','i'],['ï','i'],['ô','ô'],['ö','o'],['ù','u'],['û','u'],['ü','u'],['ÿ','i'],['ç','cé cédille'],['œ','e dans l’o'],['æ','a dans l’e']
