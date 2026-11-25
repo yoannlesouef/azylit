@@ -1730,11 +1730,18 @@ svg.nav-picture {
 .audio-stimulus { display: flex; justify-content: center; }
 .audio-stimulus .stimulus-audio { width: 112px; height: 112px; border-radius: 32px; }
 .audio-stimulus .stimulus-audio svg.nav-picture { width: 68px; height: 68px; }
-.exercise-secondary { display: flex; justify-content: space-between; align-items: center; gap: 24px; max-width: 580px; margin: 30px auto 0; padding-top: 16px; border-top: 1px solid var(--line); }
-.exercise-secondary .help-picture, .exercise-difficulty { display: grid; place-items: center; width: 64px; height: 64px; min-width: 64px; min-height: 64px; margin: 0; padding: 12px; background: transparent; border-radius: 20px; color: #7d887e; }
-.exercise-secondary svg.nav-picture { width: 32px; height: 32px; }
-.exercise-secondary .help-picture svg.nav-picture { color: #8c825e; }
-.exercise-secondary button:hover { background: #efeee6; }
+.exercise-secondary { display: grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:stretch; gap:20px; max-width:440px; margin:30px auto 0; padding-top:20px; border-top:1px solid var(--line); }
+.exercise-secondary .help-picture, .exercise-difficulty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; width:100%; min-width:0; min-height:116px; height:auto; margin:0; padding:10px 12px; background:#f2edf6; border:1px solid #ded4e8; border-radius:22px; color:#604473; }
+.exercise-secondary .exercise-difficulty { background:#edf3ef; border-color:#d5e2d9; color:#285e51; }
+.exercise-help-art { display:flex; align-items:center; justify-content:center; position:relative; height:64px; width:82px; }
+.exercise-help-art .hero-art { width:62px; height:68px; }
+.exercise-help-bubble { position:absolute; top:0; right:0; display:grid; place-items:center; width:26px; height:26px; border:2px solid #c9b6d8; border-radius:50% 50% 50% 4px; background:#fffefa; font-size:18px; font-weight:800; }
+.exercise-secondary svg.nav-picture { width:60px; height:64px; }
+.exercise-secondary svg.level-steps { fill:#b9d7c4; stroke:#36705d; stroke-width:3; }
+.exercise-tool-label { font-size:15px; font-weight:800; line-height:1.3; text-align:center; }
+.exercise-tool-level { font-size:12px; line-height:1.3; text-align:center; }
+.exercise-secondary button:hover { filter:brightness(.97); }
+@media(max-width:370px) { .exercise-secondary { gap:12px; } .exercise-tool-label { font-size:14px; } }
 .exercise .visual-feedback--retry { min-height: 64px; padding: 0; margin: 8px auto 12px; max-width: 240px; background: transparent; gap: 16px; }
 .visual-feedback--retry .feedback-companion, .visual-feedback--retry .feedback-companion .hero-art { width: 64px; height: 72px; }
 .visual-feedback--retry .feedback-badge svg.nav-picture { width: 40px; height: 40px; }
