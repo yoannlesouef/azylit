@@ -2355,6 +2355,13 @@ body[data-reduced-motion="true"] button:hover { transform:none!important; }
 .answers .option-listen { min-width:64px;min-height:64px; }
 .story-card { display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:14px;align-items:center; }
 .story-listen { min-width:64px;min-height:64px;font-size:27px; }
+/* Help speaks instructions; the separate speaker controls the audio state. */
+body[data-screen] .child-header .controls .tool.help-voice,
+body[data-screen] .child-header .controls .tool.audio-toggle { display:flex; flex-direction:column; justify-content:center; gap:4px; width:auto; max-width:none; min-width:64px; height:64px; padding:6px 8px; border-radius:16px; }
+body[data-screen] .child-header .controls .tool .control-label { display:block; font-size:10px; line-height:1.2; font-weight:700; }
+body[data-screen] .child-header .controls .help-voice { background:#eee5f6; color:#72508b; }
+body[data-screen] .child-header .controls .audio-toggle[aria-pressed="false"] { background:#e1f0e7; color:#17685b; }
+@media(max-width:370px) { .brand .brand-logo { width:84px; height:30px; } }
 .syllable-count-instruction { text-align:center; font-size:clamp(20px,3vw,26px); font-weight:700; line-height:1.4; margin:0 auto 12px; }
 .syllable-count-exercise .answers { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:580px; }
 .syllable-count-exercise .answer { justify-content:center; text-align:center; }
