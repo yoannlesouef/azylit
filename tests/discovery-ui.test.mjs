@@ -27,14 +27,17 @@ test('Apprendre écoute les cartes et conserve la mission ; une panne audio dés
  f.click('discover-action','families');f.click('discover-action','syllable','ma');f.click('discover-action','word','w-maman');
  assert.equal(f.spoken.at(-1).text,'maman');
  f.click('discover-action','quiz');f.spoken.at(-1).onerror({error:'language-unavailable'});
- assert.match(f.app.innerHTML,/voix n’est pas disponible/);assert.match(f.app.innerHTML,/disabled/);
- f.click('discover-action','quiz-listen');assert.ok(!f.app.innerHTML.includes('voix n’est pas disponible'));
+ assert.match(f.app.innerHTML,/La lecture audio a échoué/);assert.match(f.app.innerHTML,/disabled/);
+ assert.doesNotMatch(f.app.innerHTML,/Ouvrez le site dans le navigateur principal/);
+ f.click('retry-page-audio');f.spoken.at(-1).onstart();
+ assert.doesNotMatch(f.app.innerHTML,/La lecture audio a échoué|Le son n’a pas démarré/);
  f.click('discovery-home');assert.match(f.app.innerHTML,/Continuer/);
  assert.deepEqual(f.saved().session,original.session);assert.deepEqual(f.saved().exerciseHistory,original.exerciseHistory);assert.equal(f.saved().completed,original.completed);
 });
 test('sans synthèse vocale le quiz indique l’indisponibilité et attend une écoute',async()=>{
  const f=fixture(false);await import('../app/app.js?discovery-no-voice');f.click('discover');f.click('discover-action','quiz');
  assert.match(f.app.innerHTML,/voix n’est pas disponible/);assert.match(f.app.innerHTML,/disabled/);
+ assert.match(f.app.innerHTML,/Messenger.*Chrome sur Android/);
 });
 
 test('le compagnon choisi encourage puis félicite et disparaît au mot suivant',async()=>{

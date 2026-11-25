@@ -8,6 +8,8 @@ Le site prépare désormais la liste des voix dès l’ouverture. Si elle est vi
 
 Tests logiciels : premier clic avec liste vide, voix arrivant après 1,2 seconde, absence d’événement de chargement, moteur silencieux, réessai et annulation. Ces tests simulent le moteur ; la sortie sonore physique du Pixel 8 reste à vérifier sur l’appareil après publication, lors d’une nouvelle visite puis du premier clic sur Jouer.
 
+Le second appareil a ensuite été précisé : Samsung S22, lien ouvert depuis Messenger, Chrome comme navigateur habituel. Une ouverture dans le navigateur intégré de Messenger est une hypothèse probable, à confirmer en ouvrant l’adresse directement dans Chrome. Le parcours Apprendre distingue désormais l’absence d’accès à la synthèse vocale d’un échec de lecture temporaire. Dans ce dernier cas, le réessai du quiz relance le mot cible et le message disparaît au démarrage de la voix. L’aide en cas de fonction absente précise l’ouverture directe dans le navigateur principal ; cela n’ajoute pas la synthèse vocale à une WebView qui ne la fournit pas.
+
 ## 19 novembre 2026 — Voix trop rapide et robotique
 
 Retour transmis par le porteur du projet : « la voix est trop rapide et trop robot ». Une voix plus humaine, enfantine et moins rapide est demandée. Aucun nombre d’enfants, âge, appareil, navigateur, nom de voix ou enregistrement n’a été fourni. Ne pas inventer de résultats d’observation ou présenter ce retour comme une validation systématique.

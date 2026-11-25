@@ -84,7 +84,7 @@ function speak(text, after = null, onFinished = null, useRecordings = true) {
     utterance.onstart=()=>{
       if(request!==speechRequest||settled||activeUtterance!==utterance)return;
       started=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();
-      if(speechNotice){speechNotice=false;render();}
+      if(speechNotice||discoveryAudioError){speechNotice=false;discoveryAudioError=false;render();}
     };
     if(/^Bravo(?:\s|[!,])/.test(text))Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
     utterance.onend=finish;
@@ -190,7 +190,7 @@ function render(focus = false) {
 function home() {
   return `<main id="main" tabindex="-1" class="child-home hero-home"><h1>À toi de jouer !</h1><section class="hero-launch" aria-label="Choisir une activité"><button class="launch-companion" data-action="change-hero" aria-label="Changer de compagnon. ${hero().name}, ${hero().title.toLowerCase()}, est choisi." title="Changer de compagnon"><span aria-hidden="true">${avatar(hero(), true)}<span class="launch-spark">✦</span><span class="companion-change-badge">↔</span></span></button><div class="home-primary-actions">${homeActivityButton()}${homeActivityButton(true)}</div></section></main><footer class="home-footer"><nav class="adult-header-links" aria-label="Informations pour les adultes"><a href="/demarche/">Notre démarche</a><a class="parents-top-link" href="/parents/">Parents</a><a class="teachers-top-link" href="/enseignants/">Enseignants</a><a class="aesh-top-link" href="/aesh/">AESH</a><a class="ulis-top-link" href="/ulis/">ULIS</a></nav></footer>`;
 }
-function discoveryView() { return renderDiscovery(discoveryState,(hasVoice||(typeof window.Audio==='function'&&recordedVoiceEntries.length>0)) && !discoveryAudioError,hero()); }
+function discoveryView() { return renderDiscovery(discoveryState,hasVoice||(typeof window.Audio==='function'&&recordedVoiceEntries.length>0),hero(),discoveryAudioError); }
 function dispatchDiscovery(button) {
   if (button.dataset.command === 'syllable-initial') stopAudio();
   const result = updateDiscovery(discoveryState,button.dataset.command,button.dataset.value,Math.random,{canSpeak:canSpeakText(wordById(discoveryState.quiz?.target)?.text),canHear:hasVoice && profile.audio});
@@ -541,7 +541,7 @@ const actions = {
   privacy,
   repeat() { if(screen==='mission'&&currentQuestion().mechanic==='flash')profile.session.helpUsed=true; if (!profile.audio && canPlayQuestion(currentQuestion())) { profile.audio = true; save(); } readQuestion(); },
   'retry-exercise-audio'() { actions.repeat(); },
-  'retry-page-audio'() { profile.audio=true;save();navigationGuidance(); },
+  'retry-page-audio'() { profile.audio=true;save();if(screen==='discover'&&discoveryState.page==='quiz'&&!discoveryState.quiz.correct)return dispatchDiscovery({dataset:{command:'quiz-listen'}});navigationGuidance(); },
   'listen-word'() { speak(currentQuestion().listen); },
   'option-audio'(button) { speak(currentQuestion().options[Number(button.dataset.option)]); },
   answer(button) { answer(Number(button.dataset.answer)); },
