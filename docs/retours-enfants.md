@@ -1,5 +1,13 @@
 # Retours rapportés et recette d’écoute
 
+## 25 novembre 2026 — Silence au premier lancement sur mobile
+
+Un silence après le premier clic sur Jouer a été rapporté sur Pixel 8 et sur un second mobile non précisé. L’audit du code publié a retrouvé une attente des voix limitée à 700 ms, sans surveillance du démarrage effectif de la synthèse.
+
+Le site prépare désormais la liste des voix dès l’ouverture. Si elle est vide, la première demande française est envoyée pendant le clic ; les voix tardives sont surveillées par événement et par vérification périodique. Une demande encore silencieuse peut être remplacée lorsque la voix française devient disponible. Une lecture commencée n’est pas relancée. Après huit secondes sans démarrage, un bouton « Réessayer le son » est affiché. La navigation et le mode muet annulent les attentes et relances.
+
+Tests logiciels : premier clic avec liste vide, voix arrivant après 1,2 seconde, absence d’événement de chargement, moteur silencieux, réessai et annulation. Ces tests simulent le moteur ; la sortie sonore physique du Pixel 8 reste à vérifier sur l’appareil après publication, lors d’une nouvelle visite puis du premier clic sur Jouer.
+
 ## 19 novembre 2026 — Voix trop rapide et robotique
 
 Retour transmis par le porteur du projet : « la voix est trop rapide et trop robot ». Une voix plus humaine, enfantine et moins rapide est demandée. Aucun nombre d’enfants, âge, appareil, navigateur, nom de voix ou enregistrement n’a été fourni. Ne pas inventer de résultats d’observation ou présenter ce retour comme une validation systématique.

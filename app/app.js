@@ -22,6 +22,7 @@ import { STORAGE_KEY, freshProfile, parseProfile, recommendedLevel, recommendedB
 const app = document.querySelector('#app');
 let discoveryState = createDiscoveryState();
 let discoveryAudioError = false, speechRequest = 0, praiseTimer, exerciseAudioError = false;
+let speechStartTimer, activeUtterance = null, speechNotice = false;
 let recordedTargetId = null, flashVisible=false, flashReady=false, flashTimer, flashRequest=0, readingStartedAt=null;
 function stopLearning(){clearTimeout(flashTimer);flashRequest++;flashVisible=false;readingStartedAt=null;}
 const recordedPlayer = createRecordedAudioPlayer(()=>new window.Audio());
@@ -60,41 +61,66 @@ function speak(text, after = null, onFinished = null, useRecordings = true) {
   if (!profile.audio) {onFinished?.();return;}
   const file=useRecordings&&typeof window.Audio==='function'?voiceRecordings.next(text):null;
   if(!hasVoice&&!file){onFinished?.();return;}
-  stopAudio();const request=speechRequest;let settled=false;
+  stopAudio();const request=speechRequest;let settled=false,started=false;
   const finish=()=>{
-    if(request!==speechRequest||settled)return;settled=true;onFinished?.();
+    if(request!==speechRequest||settled)return;settled=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();onFinished?.();
     if(after)praiseTimer=setTimeout(()=>{if(request===speechRequest)speak(after);},450);
   };
   const failure=event=>{
     if(request!==speechRequest||settled||['canceled','interrupted'].includes(event.error))return;
     settled=true;
+    clearTimeout(speechStartTimer);voiceWaitCleanup?.();
+    speechNotice=true;
+    if(activeUtterance){activeUtterance.onstart=null;activeUtterance.onend=null;activeUtterance.onerror=null;activeUtterance=null;}
+    if(hasVoice)speechSynthesis.cancel();
     if(screen==='discover'){discoveryAudioError=true;if(discoveryState.quiz)discoveryState.quiz.heard=false;}
     else if(['mission','calibrate'].includes(screen)&&!feedback?.correct)exerciseAudioError=true;
-    else return;
-    clearTimeout(praiseTimer);onFinished?.();render();announce('La voix n’est pas disponible pour le moment. Touche le haut-parleur pour réessayer.');
+    clearTimeout(praiseTimer);render();announce('Le son n’a pas démarré. Touche Réessayer le son.');
   };
   const play=()=>{
-    if(request!==speechRequest||!profile.audio)return;
+    if(request!==speechRequest||settled||!profile.audio)return;
     const utterance=frenchUtterance(text,SpeechSynthesisUtterance,speechSynthesis.getVoices(),profile.settings);
+    activeUtterance=utterance;
+    utterance.onstart=()=>{
+      if(request!==speechRequest||settled||activeUtterance!==utterance)return;
+      started=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();
+      if(speechNotice){speechNotice=false;render();}
+    };
     if(/^Bravo(?:\s|[!,])/.test(text))Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
-    if(after||onFinished)utterance.onend=finish;
-    utterance.onerror=failure;speechSynthesis.speak(utterance);
+    utterance.onend=finish;
+    utterance.onerror=failure;
+    clearTimeout(speechStartTimer);
+    speechStartTimer=setTimeout(()=>failure({error:'start-timeout'}),8000);
+    speechStartTimer.unref?.();
+    try { if(speechSynthesis.paused)speechSynthesis.resume(); speechSynthesis.speak(utterance); }
+    catch { failure({error:'synthesis-failed'}); }
   };
   const synthesize=()=>{
     if(request!==speechRequest)return;
     if(!hasVoice){failure({error:'recording-unavailable'});return;}
-    if(frenchVoices(speechSynthesis.getVoices()).length||!speechSynthesis.addEventListener){play();return;}
-    let timeout;
-    const ready=()=>{if(!frenchVoices(speechSynthesis.getVoices()).length)return;voiceWaitCleanup?.();play();};
-    voiceWaitCleanup=()=>{clearTimeout(timeout);speechSynthesis.removeEventListener('voiceschanged',ready);voiceWaitCleanup=null;};
-    speechSynthesis.addEventListener('voiceschanged',ready);
-    timeout=setTimeout(()=>{voiceWaitCleanup?.();play();},700);
+    const voices=speechSynthesis.getVoices();
+    if(frenchVoices(voices).length){play();return;}
+    let timeout,poll;
+    const ready=()=>{
+      if(request!==speechRequest||settled||started||!frenchVoices(speechSynthesis.getVoices()).length)return;
+      voiceWaitCleanup?.();
+      // Replace only a request which has never started, once a French voice is ready.
+      if(activeUtterance){activeUtterance.onstart=null;activeUtterance.onend=null;activeUtterance.onerror=null;speechSynthesis.cancel();}
+      play();
+    };
+    voiceWaitCleanup=()=>{clearTimeout(timeout);clearInterval(poll);speechSynthesis.removeEventListener?.('voiceschanged',ready);voiceWaitCleanup=null;};
+    speechSynthesis.addEventListener?.('voiceschanged',ready);
+    poll=setInterval(ready,200);poll.unref?.();
+    timeout=setTimeout(()=>failure({error:'voice-unavailable'}),8000);timeout.unref?.();
+    // On Android, getVoices can be empty while speak(lang=fr-FR) already works.
+    // Submit during the tap itself to preserve browser user activation.
+    if(!voices.length)play();
   };
   if(file){recordedPlayer.play(file,{onEnd:finish,onError:synthesize});return;}
   synthesize();
 }
 
-function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); voiceWaitCleanup?.(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); clearTimeout(speechStartTimer); voiceWaitCleanup?.(); if(activeUtterance){activeUtterance.onstart=null;activeUtterance.onend=null;activeUtterance.onerror=null;activeUtterance=null;} if ('speechSynthesis' in window) speechSynthesis.cancel(); }
 function playExerciseTarget(question,after=null,onFinished=null){
   if(question.mechanic==='reading'&&profile.session?.helpUsed)return speak(question.text,after);
   if(question.mechanic==='segment'&&profile.session?.helpUsed)return speak(completedText(question),after);
@@ -157,7 +183,7 @@ function render(focus = false) {
   document.body.dataset.screen = screen;
   document.body.dataset.reducedMotion=String(profile.settings.reducedMotion);
   const pages = { home, onboarding, mission, celebration, calibrate, calibrationResult, difficulty, discover:discoveryView };
-  app.innerHTML = header(screen === 'mission' || screen === 'calibrate' || screen === 'discover') + pages[screen]() + (!storageOK ? '<div class="storage-notice" role="status">La sauvegarde sur cet appareil est indisponible. Ta progression reste accessible pendant cette visite.</div>' : '');
+  app.innerHTML = header(screen === 'mission' || screen === 'calibrate' || screen === 'discover') + pages[screen]() + (speechNotice && profile.audio ? '<div class="speech-notice" role="status"><span>Le son n’a pas démarré.</span><button data-action="retry-page-audio">Réessayer le son</button></div>' : '') + (!storageOK ? '<div class="storage-notice" role="status">La sauvegarde sur cet appareil est indisponible. Ta progression reste accessible pendant cette visite.</div>' : '');
   navigation.sync(screen + (screen === 'discover' ? ':' + discoveryState.page : ''), {screen,step,discoveryState,difficultyReturn});
   if (focus && !document.querySelector('dialog[open]')) document.querySelector('#main')?.focus();
 }
@@ -515,6 +541,7 @@ const actions = {
   privacy,
   repeat() { if(screen==='mission'&&currentQuestion().mechanic==='flash')profile.session.helpUsed=true; if (!profile.audio && canPlayQuestion(currentQuestion())) { profile.audio = true; save(); } readQuestion(); },
   'retry-exercise-audio'() { actions.repeat(); },
+  'retry-page-audio'() { profile.audio=true;save();navigationGuidance(); },
   'listen-word'() { speak(currentQuestion().listen); },
   'option-audio'(button) { speak(currentQuestion().options[Number(button.dataset.option)]); },
   answer(button) { answer(Number(button.dataset.answer)); },
@@ -573,5 +600,7 @@ document.addEventListener('keydown', event => {
 });
 // The horizontal guide follows the pointed line without requiring a fine drag gesture.
 app.addEventListener('pointermove', event => { const text = event.target.closest('.reading.ruler'); if (text) { const box = text.getBoundingClientRect(); const line = parseFloat(getComputedStyle(text).lineHeight); const y = Math.floor((event.clientY - box.top - 24) / line) * line + 24; text.style.setProperty('--guide-height', line + 'px'); text.style.setProperty('--guide-y', Math.max(24, y) + 'px'); } });
+// Start loading device voices before the first tap, without autoplaying anything.
+if(hasVoice)speechSynthesis.getVoices();
 save();
 render();

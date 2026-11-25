@@ -93,3 +93,52 @@ test('le bilan local reste dans les outils adultes et conserve les résultats et
  assert.ok(!f.app.innerHTML.includes('Bilan des entraînements'));assert.equal(f.voiceListeners.size,0);
  assert.deepEqual(f.saved(),original);
 });
+
+test('premier tap avec voix vides : demande immédiate puis voix française tardive sans navigation',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=controller([]);await import('../app/app.js?mobile-empty-voices');
+ assert.equal(f.utterances.length,0);
+ f.click('resume');assert.equal(f.utterances.length,1);
+ assert.equal(f.utterances[0].lang,'fr-FR');
+ t.mock.timers.tick(1200);assert.ok(f.voiceListeners.size>0);
+ f.updateVoices([french]);assert.equal(f.utterances.length,2);
+ assert.equal(f.utterances.at(-1).voice,french);
+ f.utterances.at(-1).onstart();t.mock.timers.tick(10000);
+ assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ f.click('audio');
+});
+
+test('une voix silencieuse affiche un réessai et le prochain tap peut démarrer le son',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=controller([french]);await import('../app/app.js?mobile-silent-engine');
+ f.click('resume');const old=f.utterances.at(-1);
+ t.mock.timers.tick(8000);
+ assert.match(f.app.innerHTML,/Réessayer le son/);
+ assert.equal(old.onstart,null);
+ f.click('retry-page-audio');assert.equal(f.utterances.length,2);
+ f.utterances.at(-1).onstart();
+ assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ f.click('audio');
+});
+
+test('une navigation annule une demande sans voix et son futur réessai',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=controller([]);await import('../app/app.js?mobile-cancel-pending');
+ f.click('resume');f.click('audio');const count=f.utterances.length;
+ f.updateVoices([french]);t.mock.timers.tick(10000);
+ assert.equal(f.utterances.length,count);assert.equal(f.voiceListeners.size,0);
+ assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+});
+
+test('les voix tardives sont détectées même sans événement et une lecture commencée ne redémarre pas',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=controller([]);await import('../app/app.js?mobile-poll-voices');
+ f.click('resume');f.voiceListeners.clear();
+ t.mock.timers.tick(1200);f.updateVoices([french]);
+ assert.equal(f.utterances.length,1);
+ t.mock.timers.tick(200);assert.equal(f.utterances.length,2);
+ f.utterances.at(-1).onstart();t.mock.timers.tick(10000);
+ assert.equal(f.utterances.length,2);
+ assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ f.click('audio');
+});
