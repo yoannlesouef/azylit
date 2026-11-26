@@ -1,5 +1,15 @@
 # Retours rapportés et recette d’écoute
 
+## 26 novembre 2026 — Aider à sortir des navigateurs intégrés
+
+L’aide audio est désormais affichée dès l’ouverture dans un navigateur identifié comme intégré (marqueurs Facebook/Messenger, Instagram, TikTok ou WebView Android), ainsi que lorsque la synthèse est absente ou qu’une lecture échoue. La détection par User-Agent reste indicative ; les fonctions vocales sont aussi vérifiées.
+
+Le panneau guide vers le menu de l’application, propose « Copier le lien » avec un champ sélectionnable si le presse-papiers est refusé et, sur Android, un lien intent explicite « Ouvrir dans Chrome ». Il n’y a pas de redirection automatique. Le fonctionnement de cet intent dans chaque application reste à confirmer sur appareil. Les autres navigateurs conservent l’accueil sans panneau lorsque le son ne signale pas de problème.
+
+La première demande française part directement pendant le clic, même si la liste initiale de voix ne contient que des voix non françaises. Un refus de disponibilité de voix avant leur chargement garde l’attente bornée active pour permettre une relance lorsque le français apparaît. Un refus de permission de lecture affiche le réessai. Aucun son silencieux ou énoncé vide n’est utilisé comme garantie de déverrouillage.
+
+La priorité donnée aux MP3 est déjà implémentée, mais la bibliothèque vocale et les fichiers sont toujours absents : aucun repli sonore universel n’a été activé. Sa livraison nécessite de produire ou fournir les enregistrements, puis vérifier leur prononciation avant activation. Une liste de voix vide ne suffit pas à conclure à l’absence de synthèse sur Android.
+
 ## 25 novembre 2026 — Silence au premier lancement sur mobile
 
 Un silence après le premier clic sur Jouer a été rapporté sur Pixel 8 et sur un second mobile non précisé. L’audit du code publié a retrouvé une attente des voix limitée à 700 ms, sans surveillance du démarrage effectif de la synthèse.

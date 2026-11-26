@@ -1,4 +1,5 @@
 import {recordedVoiceEntries} from './recorded-content.js';
+import {renderAudioAccess,copyAudioLink} from './audio-access.js';
 import {createVoiceRecordings} from './voice-recordings.js';
 import {wordById} from './discovery-data.js';
 import { competencies, primaryCompetency } from './competencies.js';
@@ -29,7 +30,7 @@ const recordedPlayer = createRecordedAudioPlayer(()=>new window.Audio());
 const voiceRecordings=createVoiceRecordings(recordedVoiceEntries);
 const canSpeakText=text=>hasVoice||(typeof window.Audio==='function'&&voiceRecordings.has(text));
 const canPlayQuestion = question => question.recordedAudio ? typeof window.Audio === 'function' : hasVoice || [exerciseSpeech(question),...(question.optionAudio?question.options:[])].every(canSpeakText);
-const hasVoice = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+const hasVoice = Boolean(window.speechSynthesis && typeof window.speechSynthesis.speak==='function' && typeof window.SpeechSynthesisUtterance==='function');
 let profile;
 let storageOK = true;
 try { profile = parseProfile(localStorage.getItem(STORAGE_KEY)); } catch { profile = freshProfile(); storageOK = false; }
@@ -60,7 +61,7 @@ const nextPraiseVariation = createPraiseVariation();
 function speak(text, after = null, onFinished = null, useRecordings = true) {
   if (!profile.audio) {onFinished?.();return;}
   const file=useRecordings&&typeof window.Audio==='function'?voiceRecordings.next(text):null;
-  if(!hasVoice&&!file){onFinished?.();return;}
+  if(!hasVoice&&!file){stopAudio();speechNotice=true;render();return;}
   stopAudio();const request=speechRequest;let settled=false,started=false;
   const finish=()=>{
     if(request!==speechRequest||settled)return;settled=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();onFinished?.();
@@ -83,12 +84,20 @@ function speak(text, after = null, onFinished = null, useRecordings = true) {
     activeUtterance=utterance;
     utterance.onstart=()=>{
       if(request!==speechRequest||settled||activeUtterance!==utterance)return;
-      started=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();
-      if(speechNotice||discoveryAudioError){speechNotice=false;discoveryAudioError=false;render();}
+      playbackStarted();
     };
     if(/^Bravo(?:\s|[!,])/.test(text))Object.assign(utterance,nextPraiseVariation(profile.settings.speechRate));
     utterance.onend=finish;
-    utterance.onerror=failure;
+    utterance.onerror=event=>{
+      // A cold Android engine can reject the first request before voices arrive.
+      // Keep the bounded wait alive for voice availability errors, not autoplay denial.
+      if(!started&&!settled&&request===speechRequest&&voiceWaitCleanup&&
+        ['language-unavailable','voice-unavailable','synthesis-unavailable','synthesis-failed'].includes(event.error)&&
+        !frenchVoices(speechSynthesis.getVoices()).length){
+        clearTimeout(speechStartTimer);return;
+      }
+      failure(event);
+    };
     clearTimeout(speechStartTimer);
     speechStartTimer=setTimeout(()=>failure({error:'start-timeout'}),8000);
     speechStartTimer.unref?.();
@@ -114,13 +123,18 @@ function speak(text, after = null, onFinished = null, useRecordings = true) {
     timeout=setTimeout(()=>failure({error:'voice-unavailable'}),8000);timeout.unref?.();
     // On Android, getVoices can be empty while speak(lang=fr-FR) already works.
     // Submit during the tap itself to preserve browser user activation.
-    if(!voices.length)play();
+    play();
   };
-  if(file){recordedPlayer.play(file,{onEnd:finish,onError:synthesize});return;}
+  const playbackStarted=()=>{
+    if(request!==speechRequest||settled)return;
+    started=true;clearTimeout(speechStartTimer);voiceWaitCleanup?.();
+    if(speechNotice||discoveryAudioError){speechNotice=false;discoveryAudioError=false;render();}
+  };
+  if(file){recordedPlayer.play(file,{onStart:playbackStarted,onEnd:finish,onError:synthesize});return;}
   synthesize();
 }
 
-function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); clearTimeout(speechStartTimer); voiceWaitCleanup?.(); if(activeUtterance){activeUtterance.onstart=null;activeUtterance.onend=null;activeUtterance.onerror=null;activeUtterance=null;} if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+function stopAudio() { recordedPlayer.stop(); speechRequest++; clearTimeout(praiseTimer); clearTimeout(speechStartTimer); voiceWaitCleanup?.(); if(activeUtterance){activeUtterance.onstart=null;activeUtterance.onend=null;activeUtterance.onerror=null;activeUtterance=null;} if(hasVoice)speechSynthesis.cancel(); }
 function playExerciseTarget(question,after=null,onFinished=null){
   if(question.mechanic==='reading'&&profile.session?.helpUsed)return speak(question.text,after);
   if(question.mechanic==='segment'&&profile.session?.helpUsed)return speak(completedText(question),after);
@@ -183,7 +197,7 @@ function render(focus = false) {
   document.body.dataset.screen = screen;
   document.body.dataset.reducedMotion=String(profile.settings.reducedMotion);
   const pages = { home, onboarding, mission, celebration, calibrate, calibrationResult, difficulty, discover:discoveryView };
-  app.innerHTML = header(screen === 'mission' || screen === 'calibrate' || screen === 'discover') + pages[screen]() + (speechNotice && profile.audio ? '<div class="speech-notice" role="status"><span>Le son n’a pas démarré.</span><button data-action="retry-page-audio">Réessayer le son</button></div>' : '') + (!storageOK ? '<div class="storage-notice" role="status">La sauvegarde sur cet appareil est indisponible. Ta progression reste accessible pendant cette visite.</div>' : '');
+  app.innerHTML = header(screen === 'mission' || screen === 'calibrate' || screen === 'discover') + renderAudioAccess({userAgent:window.navigator?.userAgent,href:window.location?.href,canSpeak:hasVoice||(typeof window.Audio==='function'&&recordedVoiceEntries.length>0),failed:speechNotice,audio:profile.audio}) + pages[screen]() + (!storageOK ? '<div class="storage-notice" role="status">La sauvegarde sur cet appareil est indisponible. Ta progression reste accessible pendant cette visite.</div>' : '');
   navigation.sync(screen + (screen === 'discover' ? ':' + discoveryState.page : ''), {screen,step,discoveryState,difficultyReturn});
   if (focus && !document.querySelector('dialog[open]')) document.querySelector('#main')?.focus();
 }
@@ -546,6 +560,12 @@ const actions = {
   repeat() { if(screen==='mission'&&currentQuestion().mechanic==='flash')profile.session.helpUsed=true; if (!profile.audio && canPlayQuestion(currentQuestion())) { profile.audio = true; save(); } readQuestion(); },
   'retry-exercise-audio'() { actions.repeat(); },
   'retry-page-audio'() { profile.audio=true;save();if(screen==='discover'&&discoveryState.page==='quiz'&&!discoveryState.quiz.correct)return dispatchDiscovery({dataset:{command:'quiz-listen'}});navigationGuidance(); },
+  async 'copy-site-link'() {
+    const copied=await copyAudioLink(window.navigator?.clipboard,window.location?.href);
+    const status=document.querySelector('#audio-link-status');
+    if(status)status.textContent=copied?'Lien copié. Ouvrez votre navigateur et collez-le dans la barre d’adresse.':'La copie automatique est bloquée. Appuyez longtemps sur le lien ci-dessous pour le copier.';
+    if(!copied){const input=document.querySelector('#audio-link-fallback');if(input){input.hidden=false;input.focus();input.select?.();}}
+  },
   'listen-word'() { speak(currentQuestion().listen); },
   'option-audio'(button) { speak(currentQuestion().options[Number(button.dataset.option)]); },
   answer(button) { answer(Number(button.dataset.answer)); },

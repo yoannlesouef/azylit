@@ -71,11 +71,11 @@ test('la préécoute et les réglages adultes ralentissent les exercices sans mo
  assert.deepEqual(f.saved().exerciseHistory,original.exerciseHistory);
 });
 
-test('une liste anglaise provisoire attend la voix française et une navigation annule toute attente',async()=>{
+test('une liste anglaise provisoire ne retarde pas le premier appel français et une navigation annule toute attente',async()=>{
  const f=controller([english]);await import('../app/app.js?delayed-french-voice');
- f.click('discover');assert.equal(f.utterances.length,0);
- f.updateVoices([english]);assert.equal(f.utterances.length,0);
- f.updateVoices([english,french]);assert.equal(f.utterances.length,1);assert.equal(f.utterances.at(-1).voice,french);
+ f.click('discover');assert.equal(f.utterances.length,1);assert.equal(f.utterances[0].lang,'fr-FR');assert.equal(f.utterances[0].voice,undefined);
+ f.updateVoices([english]);assert.equal(f.utterances.length,1);
+ f.updateVoices([english,french]);assert.equal(f.utterances.length,2);assert.equal(f.utterances.at(-1).voice,french);
  f.updateVoices([english]);f.click('guide');assert.ok(f.voiceListeners.size>0);
  f.click('audio');const count=f.utterances.length;f.updateVoices([english,french]);
  assert.equal(f.utterances.length,count);assert.equal(f.voiceListeners.size,0);
@@ -104,7 +104,7 @@ test('premier tap avec voix vides : demande immédiate puis voix française tard
  f.updateVoices([french]);assert.equal(f.utterances.length,2);
  assert.equal(f.utterances.at(-1).voice,french);
  f.utterances.at(-1).onstart();t.mock.timers.tick(10000);
- assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ assert.doesNotMatch(f.app.innerHTML,/Le son n’a pas démarré/);
  f.click('audio');
 });
 
@@ -117,7 +117,7 @@ test('une voix silencieuse affiche un réessai et le prochain tap peut démarrer
  assert.equal(old.onstart,null);
  f.click('retry-page-audio');assert.equal(f.utterances.length,2);
  f.utterances.at(-1).onstart();
- assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ assert.doesNotMatch(f.app.innerHTML,/Le son n’a pas démarré/);
  f.click('audio');
 });
 
@@ -127,7 +127,7 @@ test('une navigation annule une demande sans voix et son futur réessai',async t
  f.click('resume');f.click('audio');const count=f.utterances.length;
  f.updateVoices([french]);t.mock.timers.tick(10000);
  assert.equal(f.utterances.length,count);assert.equal(f.voiceListeners.size,0);
- assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ assert.doesNotMatch(f.app.innerHTML,/Le son n’a pas démarré/);
 });
 
 test('les voix tardives sont détectées même sans événement et une lecture commencée ne redémarre pas',async t=>{
@@ -139,6 +139,16 @@ test('les voix tardives sont détectées même sans événement et une lecture c
  t.mock.timers.tick(200);assert.equal(f.utterances.length,2);
  f.utterances.at(-1).onstart();t.mock.timers.tick(10000);
  assert.equal(f.utterances.length,2);
- assert.doesNotMatch(f.app.innerHTML,/speech-notice/);
+ assert.doesNotMatch(f.app.innerHTML,/Le son n’a pas démarré/);
  f.click('audio');
+});
+
+test('un moteur Android froid peut refuser la voix avant son chargement sans perdre la relance',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=controller([english]);await import('../app/app.js?cold-android-language-error');
+ f.click('resume');f.utterances.at(-1).onerror({error:'language-unavailable'});
+ assert.doesNotMatch(f.app.innerHTML,/Le son n’a pas démarré/);
+ t.mock.timers.tick(1200);f.updateVoices([french]);
+ assert.equal(f.utterances.length,2);assert.equal(f.utterances.at(-1).voice,french);
+ f.utterances.at(-1).onstart();f.click('audio');
 });

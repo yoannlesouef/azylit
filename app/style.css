@@ -2374,8 +2374,14 @@ body[data-screen] .child-header .controls .audio-toggle[aria-pressed="false"] { 
 .syllable-count-exercise .answers { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:580px; }
 .syllable-count-exercise .answer { justify-content:center; text-align:center; }
 .words-phrases-exercise .answer { justify-content:center; text-align:center; }
-.speech-notice { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:12px; margin:12px auto; padding:12px 20px; max-width:600px; background:#fff0d3; border-radius:18px; }
-.speech-notice button { min-height:48px; padding:10px 18px; border-radius:14px; background:#17685b; color:white; font-weight:700; }
+.audio-access { width:calc(100% - 32px); max-width:760px; margin:8px auto 20px; padding:18px 20px; border:1px solid #ead8ad; border-radius:20px; background:#fff2d6; color:#624a25; font-size:14px; line-height:1.5; }
+.audio-access p+p { margin-top:8px; }
+.audio-access-title { font-weight:800; font-size:16px; }
+.audio-access-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.audio-access-actions button,.audio-access-actions a { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:10px 16px; border-radius:14px; background:#17685b; color:white; text-decoration:none; font-size:14px; font-weight:700; }
+.audio-access-actions .audio-access-copy { background:#fffefa; color:#17685b; border:1px solid #bbcbbf; }
+.audio-access .audio-access-hint { font-size:12px; margin-top:10px; }
+.audio-link-fallback { width:100%; min-height:48px; margin-top:10px; padding:10px; border:1px solid #c8bd9e; border-radius:10px; font:inherit; }
 body[data-screen="home"] #app { min-height:100dvh; display:flex; flex-direction:column; }
 body[data-screen="home"] .hero-home { flex:1; width:100%; }
 body[data-screen="home"] .child-header.home-header { width:100%; grid-template-columns:minmax(0,1fr) auto; }
